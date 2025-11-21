@@ -1,16 +1,65 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#09090b" />
-    <meta name="description" content="ChronoMap - Modern interactive world clock and timezone visualizer" />
-    <title>ChronoMap | World Clock</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>ChronoMap | World Clock & Timezone Visualizer</title>
+    <meta name="title" content="ChronoMap | World Clock & Timezone Visualizer" />
+    <meta name="description" content="Modern interactive world clock, timezone converter, and Discord timestamp generator. Visualize time across the globe with a beautiful dark mode map." />
+    <meta name="keywords" content="world clock, timezone converter, time travel, discord timestamp generator, interactive map, utc time, gmt offset, digital clock, map visualizer" />
+    <meta name="author" content="Agenciarse" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://agenciarse.com" />
+    <meta property="og:title" content="ChronoMap | World Clock & Timezone Visualizer" />
+    <meta property="og:description" content="Modern interactive world clock, timezone converter, and Discord timestamp generator. Visualize time across the globe with a beautiful dark mode map." />
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/4481/4481127.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://agenciarse.com" />
+    <meta property="twitter:title" content="ChronoMap | World Clock & Timezone Visualizer" />
+    <meta property="twitter:description" content="Modern interactive world clock, timezone converter, and Discord timestamp generator. Visualize time across the globe with a beautiful dark mode map." />
+    <meta property="twitter:image" content="https://cdn-icons-png.flaticon.com/512/4481/4481127.png" />
+
     <link rel="manifest" href="/manifest.json" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ChronoMap",
+        "url": "https://agenciarse.com",
+        "description": "Interactive world clock and timezone converter with time travel capabilities.",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any",
+        "author": {
+          "@type": "Organization",
+          "name": "Agenciarse",
+          "url": "https://agenciarse.com"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+
     <script>
       tailwind.config = {
         darkMode: 'class',

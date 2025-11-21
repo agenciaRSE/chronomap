@@ -2,12 +2,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MapChart } from './components/MapChart';
 import { DiscordGenerator } from './components/DiscordGenerator';
+import { AboutModal } from './components/AboutModal';
 import { TimeScrubber } from './components/TimeScrubber';
 import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation } from './types';
 import { addHours, subHours, differenceInMinutes } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
-import { Globe, Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Plus, X, MapPin, Clock, History, Zap } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Plus, X, MapPin, Clock, History, Zap, Info } from 'lucide-react';
 
 const App: React.FC = () => {
   // Real-world wall clock time
@@ -23,6 +24,7 @@ const App: React.FC = () => {
 
   const [locations, setLocations] = useState<SavedLocation[]>([]);
   const [showDiscordGen, setShowDiscordGen] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
 
@@ -176,12 +178,26 @@ const App: React.FC = () => {
       {/* Header */}
       <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-6 bg-black/80 backdrop-blur-md z-20">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
-            <Globe className="w-6 h-6 text-primary" />
+          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] group">
+             {/* Custom Logo: Globe + Clock */}
+             <svg 
+               viewBox="0 0 24 24" 
+               fill="none" 
+               stroke="currentColor" 
+               strokeWidth="2" 
+               strokeLinecap="round" 
+               strokeLinejoin="round" 
+               className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300"
+             >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+                <path d="M2 12h20" className="opacity-50" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" className="opacity-50" />
+             </svg>
           </div>
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.0</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.0.1</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
@@ -219,13 +235,22 @@ const App: React.FC = () => {
              {format(realTime, 'HH:mm:ss')}
            </div>
            
-           <button 
-             onClick={() => setShowDiscordGen(true)}
-             className="mt-1 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group"
-           >
-             <Share2 className="w-3 h-3 group-hover:text-primary transition-colors" />
-             <span>Share Timestamp</span>
-           </button>
+           <div className="flex items-center gap-2 mt-1">
+             <button 
+               onClick={() => setShowAbout(true)}
+               className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
+               title="About & Changelog"
+             >
+               <Info className="w-3 h-3" />
+             </button>
+             <button 
+               onClick={() => setShowDiscordGen(true)}
+               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group"
+             >
+               <Share2 className="w-3 h-3 group-hover:text-primary transition-colors" />
+               <span>Share</span>
+             </button>
+           </div>
         </div>
       </header>
 
@@ -363,6 +388,11 @@ const App: React.FC = () => {
           timezone={'UTC'} 
           onClose={() => setShowDiscordGen(false)}
         />
+      )}
+      
+      {/* About & Changelog Modal */}
+      {showAbout && (
+        <AboutModal onClose={() => setShowAbout(false)} />
       )}
     </div>
   );
