@@ -5,8 +5,8 @@ import { DiscordGenerator } from './components/DiscordGenerator';
 import { TimeScrubber } from './components/TimeScrubber';
 import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation } from './types';
-import { format, addHours, subHours, differenceInMinutes } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
+import { addHours, subHours, differenceInMinutes } from 'date-fns';
+import { format, toZonedTime } from 'date-fns-tz';
 import { Globe, Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Plus, X, MapPin, Clock, History, Zap } from 'lucide-react';
 
 const App: React.FC = () => {

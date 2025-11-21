@@ -4,8 +4,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { MAJOR_CITIES } from '../constants';
 import { SavedLocation, MapClickEvent } from '../types';
-import { toZonedTime } from 'date-fns-tz';
-import { format } from 'date-fns';
+import { format, toZonedTime } from 'date-fns-tz';
 
 interface MapChartProps {
   currentTime: Date;
