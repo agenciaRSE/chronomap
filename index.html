@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <meta name="description" content="ChronoMap - Modern interactive world clock and timezone visualizer" />
+    <title>ChronoMap | World Clock</title>
+    <link rel="manifest" href="/manifest.json" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              background: "#09090b",
+              foreground: "#fafafa",
+              card: "#18181b",
+              "card-foreground": "#fafafa",
+              primary: "#3b82f6",
+              "primary-foreground": "#ffffff",
+              secondary: "#27272a",
+              "secondary-foreground": "#fafafa",
+              muted: "#27272a",
+              "muted-foreground": "#a1a1aa",
+              accent: "#27272a",
+              "accent-foreground": "#fafafa",
+              destructive: "#7f1d1d",
+              "destructive-foreground": "#fef2f2",
+              border: "#27272a",
+              input: "#27272a",
+              ring: "#3b82f6",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050505;
+        color: #ffffff;
+        overflow: hidden; /* Prevent scrolling on main body */
+        overscroll-behavior: none;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #09090b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #27272a;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3f3f46;
+      }
+      
+      .dot-pattern {
+        background-image: radial-gradient(#27272a 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "date-fns": "https://aistudiocdn.com/date-fns@^4.1.0",
+    "d3": "https://aistudiocdn.com/d3@^7.9.0",
+    "topojson-client": "https://aistudiocdn.com/topojson-client@^3.1.0",
+    "date-fns-tz": "https://aistudiocdn.com/date-fns-tz@^3.2.0",
+    "vite": "https://aistudiocdn.com/vite@^7.2.4",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

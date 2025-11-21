@@ -1,0 +1,22 @@
+{
+  "name": "ChronoMap World Clock",
+  "short_name": "ChronoMap",
+  "description": "Interactive 3D-style world map and timezone converter.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#09090b",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/4481/4481127.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/4481/4481127.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
