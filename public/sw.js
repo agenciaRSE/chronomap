@@ -1,11 +1,10 @@
 
-const CACHE_NAME = 'chronomap-v2';
+const CACHE_NAME = 'chronomap-v3';
 const urlsToCache = [
   '/',
   '/index.html',
   '/favicon.svg',
-  '/manifest.json',
-  '/pwa-icon.svg'
+  '/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {

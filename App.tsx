@@ -29,6 +29,16 @@ const App: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
 
+  // Check for PWA Shortcuts actions on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('action') === 'discord') {
+      setShowDiscordGen(true);
+      // Optional: Clean up URL
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
+
   // Real-time clock ticker
   useEffect(() => {
     const interval = setInterval(() => {
