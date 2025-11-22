@@ -97,7 +97,20 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.1.1</span>
+                      <span className="text-sm font-mono text-primary">v2.2.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">Productivity Update</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Pin Locations:</strong> You can now pin your favorite cities to save them for your next visit.</li>
+                        <li><strong>Advanced Time Travel:</strong> Select different time units (Minute, Hour, Day, Week, Month) to jump through time with precision.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                {/* Version Item */}
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.1.1</span>
                       <span className="text-xs text-zinc-500 mb-1">Database Mega-Update</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Global Coverage:</strong> Database expanded to 150+ locations.</li>

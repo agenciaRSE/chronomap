@@ -7,9 +7,19 @@ import { TimeScrubber } from './components/TimeScrubber';
 import { LocationSearch } from './components/LocationSearch';
 import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
-import { addHours, subHours, differenceInMinutes } from 'date-fns';
+import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown } from 'lucide-react';
+
+// Configuration for time steps
+const TIME_STEPS = [
+  { label: '1 MINUTE', fn: addMinutes, amount: 1 },
+  { label: '15 MINS', fn: addMinutes, amount: 15 },
+  { label: '1 HOUR', fn: addHours, amount: 1 },
+  { label: '1 DAY', fn: addDays, amount: 1 },
+  { label: '1 WEEK', fn: addWeeks, amount: 1 },
+  { label: '1 MONTH', fn: addMonths, amount: 1 },
+];
 
 const App: React.FC = () => {
   // Real-world wall clock time
@@ -23,11 +33,30 @@ const App: React.FC = () => {
     formattedDate: ''
   });
 
-  const [locations, setLocations] = useState<SavedLocation[]>([]);
+  // Time Step Selection State (Default to 1 HOUR which is index 2)
+  const [timeStepIndex, setTimeStepIndex] = useState(2);
+
+  // Initialize locations from localStorage if available
+  const [locations, setLocations] = useState<SavedLocation[]>(() => {
+    try {
+      const saved = localStorage.getItem('chronomap-pinned-locations');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error("Failed to load saved locations", e);
+      return [];
+    }
+  });
+
   const [showDiscordGen, setShowDiscordGen] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
+
+  // Persist pinned locations to localStorage whenever locations change
+  useEffect(() => {
+    const pinnedLocations = locations.filter(loc => loc.isPinned);
+    localStorage.setItem('chronomap-pinned-locations', JSON.stringify(pinnedLocations));
+  }, [locations]);
 
   // Check for PWA Shortcuts actions on mount
   useEffect(() => {
@@ -99,7 +128,8 @@ const App: React.FC = () => {
       lng: data.lng,
       name,
       timezone,
-      lngOffset: data.lng / 15 
+      lngOffset: data.lng / 15,
+      isPinned: false
     };
 
     setLocations(prev => [...prev, newLocation]);
@@ -112,7 +142,8 @@ const App: React.FC = () => {
       lng: city.lng,
       name: `${city.name}, ${city.country}`,
       timezone: city.timezone,
-      lngOffset: city.lng / 15
+      lngOffset: city.lng / 15,
+      isPinned: false
     };
     setLocations(prev => [...prev, newLocation]);
   };
@@ -121,13 +152,28 @@ const App: React.FC = () => {
     setLocations(prev => prev.filter(l => l.id !== id));
   };
 
-  const handleTimeShift = (hours: number) => {
+  const togglePin = (id: string) => {
+    setLocations(prev => prev.map(loc => 
+      loc.id === id ? { ...loc, isPinned: !loc.isPinned } : loc
+    ));
+  };
+
+  const handleTimeShift = (direction: 1 | -1) => {
     setIsPaused(true); // Auto-pause when manually shifting
+    const step = TIME_STEPS[timeStepIndex];
+    
     setTimeState(prev => ({
       ...prev,
       mode: 'custom',
-      current: hours > 0 ? addHours(prev.current, hours) : subHours(prev.current, Math.abs(hours))
+      current: step.fn(prev.current, step.amount * direction)
     }));
+  };
+
+  const changeStep = (direction: 1 | -1) => {
+    const newIndex = timeStepIndex + direction;
+    if (newIndex >= 0 && newIndex < TIME_STEPS.length) {
+      setTimeStepIndex(newIndex);
+    }
   };
 
   const handleScrubberChange = (newTime: Date) => {
@@ -313,15 +359,26 @@ const App: React.FC = () => {
              )}
 
              {locations.map(loc => (
-               <div key={loc.id} className="pointer-events-auto group bg-zinc-900/80 backdrop-blur-md border border-zinc-800 hover:border-zinc-600 p-4 rounded-xl transition-all duration-200 relative shadow-lg">
-                  <button 
-                    onClick={() => removeLocation(loc.id)}
-                    className="absolute top-2 right-2 p-1.5 text-zinc-600 hover:text-red-400 hover:bg-red-400/10 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 transition-all"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
+               <div key={loc.id} className={`pointer-events-auto group bg-zinc-900/80 backdrop-blur-md border ${loc.isPinned ? 'border-primary/40 ring-1 ring-primary/20' : 'border-zinc-800'} hover:border-zinc-600 p-4 rounded-xl transition-all duration-200 relative shadow-lg`}>
+                  <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all bg-black/20 backdrop-blur-sm rounded-lg p-0.5">
+                    <button 
+                      onClick={() => togglePin(loc.id)}
+                      className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-primary hover:text-primary/80 bg-primary/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
+                      title={loc.isPinned ? "Unpin Location" : "Pin Location"}
+                    >
+                      <Pin className={`w-3.5 h-3.5 ${loc.isPinned ? 'fill-current' : ''}`} />
+                    </button>
+                    <div className="w-[1px] h-4 bg-zinc-700/50 mx-0.5"></div>
+                    <button 
+                      onClick={() => removeLocation(loc.id)}
+                      className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
+                      title="Remove Location"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                   
-                  <div className="flex items-center justify-between mb-1 pr-6">
+                  <div className="flex items-center justify-between mb-1 pr-16">
                     <span className="text-[9px] font-bold text-primary/80 uppercase tracking-wider truncate max-w-[70%] bg-primary/5 px-1.5 py-0.5 rounded">
                       {loc.timezone ? loc.timezone.split('/')[1].replace('_', ' ') : `GMT${loc.lngOffset >= 0 ? '+' : ''}${Math.round(loc.lngOffset)}`}
                     </span>
@@ -368,13 +425,44 @@ const App: React.FC = () => {
 
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 p-4">
           
-          {/* Left: Quick Jump */}
-          <div className="flex items-center gap-1">
-            <button onClick={() => handleTimeShift(-1)} className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800">
+          {/* Left: Quick Jump & Unit Selector */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => handleTimeShift(-1)} 
+              className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
+              title="Go Back"
+            >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-wider px-2">1 Hour</span>
-            <button onClick={() => handleTimeShift(1)} className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800">
+            
+            {/* Time Step Selector */}
+            <div className="flex flex-col items-center gap-0.5">
+                <button 
+                  onClick={() => changeStep(1)}
+                  disabled={timeStepIndex >= TIME_STEPS.length - 1}
+                  className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronUp size={14} />
+                </button>
+                
+                <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-16 text-center select-none">
+                  {TIME_STEPS[timeStepIndex].label}
+                </span>
+                
+                <button 
+                  onClick={() => changeStep(-1)}
+                  disabled={timeStepIndex <= 0}
+                  className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronDown size={14} />
+                </button>
+            </div>
+
+            <button 
+              onClick={() => handleTimeShift(1)} 
+              className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
+              title="Go Forward"
+            >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
