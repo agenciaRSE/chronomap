@@ -193,7 +193,7 @@ const App: React.FC = () => {
       
       {/* Header */}
       <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-6 bg-black/80 backdrop-blur-md z-20">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3">
           <div className="p-2.5 bg-white/5 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] group">
              {/* Custom Logo: Globe + Clock */}
              <svg 
@@ -211,6 +211,16 @@ const App: React.FC = () => {
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" className="opacity-50" />
              </svg>
           </div>
+
+          {/* Mobile Info Button (Left Column) */}
+          <button 
+            onClick={() => setShowAbout(true)}
+            className="md:hidden flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
+            title="About & Changelog"
+          >
+            <Info className="w-3 h-3" />
+          </button>
+
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
               ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.1.1</span>
@@ -254,7 +264,7 @@ const App: React.FC = () => {
            <div className="flex items-center gap-2 mt-1">
              <button 
                onClick={() => setShowAbout(true)}
-               className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
+               className="hidden md:flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
                title="About & Changelog"
              >
                <Info className="w-3 h-3" />
