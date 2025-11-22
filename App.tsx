@@ -8,7 +8,7 @@ import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation } from './types';
 import { addHours, subHours, differenceInMinutes } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Plus, X, MapPin, Clock, History, Zap, Info } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info } from 'lucide-react';
 
 const App: React.FC = () => {
   // Real-world wall clock time
@@ -99,6 +99,7 @@ const App: React.FC = () => {
   };
 
   const handleTimeShift = (hours: number) => {
+    setIsPaused(true); // Auto-pause when manually shifting
     setTimeState(prev => ({
       ...prev,
       mode: 'custom',
@@ -107,6 +108,7 @@ const App: React.FC = () => {
   };
 
   const handleScrubberChange = (newTime: Date) => {
+    setIsPaused(true); // Auto-pause when scrubbing
     setTimeState(prev => ({
       ...prev,
       mode: 'custom',
@@ -115,6 +117,7 @@ const App: React.FC = () => {
   };
 
   const handleCustomDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsPaused(true); // Auto-pause when picking a date
     const newDate = new Date(e.target.value);
     if (!isNaN(newDate.getTime())) {
       setTimeState(prev => ({
@@ -336,30 +339,41 @@ const App: React.FC = () => {
           </div>
 
           {/* Center: Playback & Date Picker */}
-          <div className="flex items-center gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg">
-             
-             <button 
-                onClick={() => setIsPaused(!isPaused)}
-                className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
-             >
-                {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
-                <span className="text-xs font-medium pr-1">{isPaused ? "Resume" : "Pause"}</span>
-             </button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg">
+               
+               <button 
+                  onClick={() => setIsPaused(!isPaused)}
+                  className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
+               >
+                  {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
+                  <span className="text-xs font-medium pr-1">{isPaused ? "Resume" : "Pause"}</span>
+               </button>
 
-             <div className="h-6 w-[1px] bg-zinc-800"></div>
+               <div className="h-6 w-[1px] bg-zinc-800"></div>
 
-             <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                  <Plus className="h-3 w-3 text-zinc-500" />
-                </div>
-                <input 
-                  type="datetime-local"
-                  value={format(timeState.current, "yyyy-MM-dd'T'HH:mm")}
-                  onChange={handleCustomDateChange}
-                  className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[180px] font-mono"
-                  style={{ colorScheme: 'dark' }}
-                />
-             </div>
+               <div className="flex items-center gap-1">
+                  <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                        <Calendar className="h-3 w-3 text-zinc-500" />
+                      </div>
+                      <input 
+                        type="datetime-local"
+                        value={format(timeState.current, "yyyy-MM-dd'T'HH:mm")}
+                        onChange={handleCustomDateChange}
+                        className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[180px] font-mono cursor-pointer"
+                        style={{ colorScheme: 'dark' }}
+                      />
+                  </div>
+                  <button 
+                    className="p-1.5 rounded-md hover:bg-green-500/20 hover:text-green-500 text-zinc-600 transition-colors"
+                    title="Set Date & Time"
+                    onClick={() => setIsPaused(true)}
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                  </button>
+               </div>
+            </div>
           </div>
 
           {/* Right: Reset */}
