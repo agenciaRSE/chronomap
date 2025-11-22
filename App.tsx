@@ -189,7 +189,7 @@ const App: React.FC = () => {
   const offsetInfo = getOffsetDisplay();
 
   return (
-    <div className="flex flex-col h-screen bg-black text-foreground font-sans overflow-hidden selection:bg-primary/30">
+    <div className="flex flex-col h-[100dvh] bg-black text-foreground font-sans overflow-hidden selection:bg-primary/30">
       
       {/* Header */}
       <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-6 bg-black/80 backdrop-blur-md z-20">
@@ -274,16 +274,16 @@ const App: React.FC = () => {
       <main className="flex-1 relative overflow-hidden flex flex-col md:flex-row">
         
         {/* Sidebar */}
-        <div className="absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto border-r border-zinc-800/50 bg-black/20 backdrop-blur-lg md:backdrop-blur-none">
+        <div className="absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg">
            
            {/* Search Bar Area */}
-           <div className="p-4 border-b border-zinc-800/50 bg-black/40">
+           <div className="p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
              <LocationSearch onSelectCity={handleCitySelect} />
            </div>
 
            <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4">
              {locations.length === 0 && (
-               <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/20">
+               <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
                   <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
                   <h3 className="text-zinc-500 font-medium text-sm">No Locations Tracked</h3>
                   <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Search for a city or click on the map to compare times.</p>
@@ -291,10 +291,10 @@ const App: React.FC = () => {
              )}
 
              {locations.map(loc => (
-               <div key={loc.id} className="pointer-events-auto group bg-zinc-900/40 hover:bg-zinc-900/80 backdrop-blur-md border border-zinc-800 hover:border-zinc-600 p-4 rounded-xl transition-all duration-200 relative">
+               <div key={loc.id} className="pointer-events-auto group bg-zinc-900/80 backdrop-blur-md border border-zinc-800 hover:border-zinc-600 p-4 rounded-xl transition-all duration-200 relative shadow-lg">
                   <button 
                     onClick={() => removeLocation(loc.id)}
-                    className="absolute top-2 right-2 p-1.5 text-zinc-600 hover:text-red-400 hover:bg-red-400/10 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                    className="absolute top-2 right-2 p-1.5 text-zinc-600 hover:text-red-400 hover:bg-red-400/10 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 transition-all"
                   >
                     <X className="w-3 h-3" />
                   </button>
