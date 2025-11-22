@@ -1,4 +1,6 @@
+
 {
+  "id": "/",
   "name": "ChronoMap World Clock",
   "short_name": "ChronoMap",
   "description": "Interactive 3D-style world map and timezone converter.",
@@ -7,16 +9,35 @@
   "background_color": "#050505",
   "theme_color": "#09090b",
   "orientation": "landscape",
+  "categories": ["utilities", "productivity", "world clock", "travel"],
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/4481/4481127.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "https://cdn-icons-png.flaticon.com/512/4481/4481127.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop Dashboard"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile View"
     }
   ]
 }

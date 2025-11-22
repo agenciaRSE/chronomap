@@ -22,14 +22,14 @@
     <meta property="og:url" content="https://agenciarse.com" />
     <meta property="og:title" content="ChronoMap | World Clock & Timezone Visualizer" />
     <meta property="og:description" content="Modern interactive world clock, timezone converter, and Discord timestamp generator. Visualize time across the globe with a beautiful dark mode map." />
-    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/4481/4481127.png" />
+    <meta property="og:image" content="/screenshot-desktop.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://agenciarse.com" />
     <meta property="twitter:title" content="ChronoMap | World Clock & Timezone Visualizer" />
     <meta property="twitter:description" content="Modern interactive world clock, timezone converter, and Discord timestamp generator. Visualize time across the globe with a beautiful dark mode map." />
-    <meta property="twitter:image" content="https://cdn-icons-png.flaticon.com/512/4481/4481127.png" />
+    <meta property="twitter:image" content="/screenshot-desktop.png" />
 
     <link rel="manifest" href="/manifest.json" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -136,6 +136,19 @@
   }
 }
 </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
 </head>
   <body>
     <div id="root"></div>
