@@ -1,4 +1,3 @@
-
 {
   "id": "/",
   "name": "ChronoMap World Clock",
@@ -27,16 +26,16 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshot-desktop.svg",
+      "src": "https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg",
       "sizes": "1920x1080",
-      "type": "image/svg+xml",
+      "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Desktop Dashboard"
     },
     {
-      "src": "/screenshot-mobile.svg",
+      "src": "https://agenciarse.com/wp-content/uploads/2025/11/screenshot-mobile.png",
       "sizes": "1080x1920",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "form_factor": "narrow",
       "label": "Mobile View"
     }
