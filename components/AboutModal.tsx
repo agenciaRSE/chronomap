@@ -92,13 +92,27 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
              </h4>
              
              <div className="relative pl-4 space-y-6 border-l border-zinc-800">
-                
+
                 {/* Version Item */}
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.1.0</span>
-                      <span className="text-xs text-zinc-500 mb-1">Current Version</span>
+                      <span className="text-sm font-mono text-primary">v2.1.1</span>
+                      <span className="text-xs text-zinc-500 mb-1">Database Mega-Update</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Global Coverage:</strong> Database expanded to 150+ locations.</li>
+                        <li><strong>New Regions:</strong> Added missing capitals in Africa, Central Asia, and the Caribbean.</li>
+                        <li><strong>Search:</strong> You can now search for almost any country capital.</li>
+                      </ul>
+                   </div>
+                </div>
+                
+                {/* Version Item */}
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.1.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">Feature Release</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Global Search:</strong> Quickly find and track time for any major city or country.</li>
                         <li><strong>Map Zoom:</strong> Use scroll or buttons to zoom in for detail or out for global view.</li>
