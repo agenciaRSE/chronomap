@@ -277,7 +277,7 @@ const App: React.FC = () => {
         <div className="absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg">
            
            {/* Search Bar Area */}
-           <div className="p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
+           <div className="relative z-50 p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
              <LocationSearch onSelectCity={handleCitySelect} />
            </div>
 
