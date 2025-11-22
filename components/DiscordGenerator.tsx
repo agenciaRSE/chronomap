@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Copy, Check, Clock } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 
 interface DiscordGeneratorProps {
   targetDate: Date;
@@ -14,13 +15,13 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
   const unixTimestamp = Math.floor(targetDate.getTime() / 1000);
 
   const formats = [
-    { code: 't', label: 'Short Time', example: format(targetDate, 'h:mm a') },
-    { code: 'T', label: 'Long Time', example: format(targetDate, 'h:mm:ss a') },
-    { code: 'd', label: 'Short Date', example: format(targetDate, 'MM/dd/yyyy') },
-    { code: 'D', label: 'Long Date', example: format(targetDate, 'MMMM d, yyyy') },
-    { code: 'f', label: 'Short Date/Time', example: format(targetDate, 'MMMM d, yyyy h:mm a') },
-    { code: 'F', label: 'Long Date/Time', example: format(targetDate, 'eeee, MMMM d, yyyy h:mm a') },
-    { code: 'R', label: 'Relative', example: 'in 5 minutes / 2 hours ago' },
+    { code: 't', label: 'Short Time', preview: format(targetDate, 'h:mm a') },
+    { code: 'T', label: 'Long Time', preview: format(targetDate, 'h:mm:ss a') },
+    { code: 'd', label: 'Short Date', preview: format(targetDate, 'MM/dd/yyyy') },
+    { code: 'D', label: 'Long Date', preview: format(targetDate, 'MMMM d, yyyy') },
+    { code: 'f', label: 'Short Date/Time', preview: format(targetDate, 'MMMM d, yyyy h:mm a') },
+    { code: 'F', label: 'Long Date/Time', preview: format(targetDate, 'eeee, MMMM d, yyyy h:mm a') },
+    { code: 'R', label: 'Relative', preview: formatDistanceToNow(targetDate, { addSuffix: true }) },
   ];
 
   const handleCopy = (code: string) => {
@@ -61,7 +62,7 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
               >
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-foreground">{fmt.label}</span>
-                  <span className="text-xs text-muted-foreground mt-1">Example: {fmt.example}</span>
+                  <span className="text-xs text-muted-foreground mt-1">{fmt.preview}</span>
                 </div>
                 
                 <div className="flex items-center gap-3">

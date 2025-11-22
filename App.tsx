@@ -392,7 +392,7 @@ const App: React.FC = () => {
                         type="datetime-local"
                         value={format(timeState.current, "yyyy-MM-dd'T'HH:mm")}
                         onChange={handleCustomDateChange}
-                        className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[180px] font-mono cursor-pointer"
+                        className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[220px] font-mono cursor-pointer"
                         style={{ colorScheme: 'dark' }}
                       />
                   </div>
