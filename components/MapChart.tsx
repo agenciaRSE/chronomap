@@ -17,7 +17,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const svgRef = useRef<SVGSVGElement>(null);
   const mapGroupRef = useRef<SVGGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown>>(null);
+  const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   
   const [worldData, setWorldData] = useState<any>(null);
   const [dimensions, setDimensions] = useState({ width: 960, height: 500 });

@@ -4,8 +4,9 @@ import { MapChart } from './components/MapChart';
 import { DiscordGenerator } from './components/DiscordGenerator';
 import { AboutModal } from './components/AboutModal';
 import { TimeScrubber } from './components/TimeScrubber';
+import { LocationSearch } from './components/LocationSearch';
 import { MAJOR_CITIES } from './constants';
-import { MapClickEvent, TimeState, SavedLocation } from './types';
+import { MapClickEvent, TimeState, SavedLocation, City } from './types';
 import { addHours, subHours, differenceInMinutes } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
 import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info } from 'lucide-react';
@@ -93,6 +94,18 @@ const App: React.FC = () => {
 
     setLocations(prev => [...prev, newLocation]);
   }, []);
+
+  const handleCitySelect = (city: City) => {
+    const newLocation: SavedLocation = {
+      id: crypto.randomUUID(),
+      lat: city.lat,
+      lng: city.lng,
+      name: `${city.name}, ${city.country}`,
+      timezone: city.timezone,
+      lngOffset: city.lng / 15
+    };
+    setLocations(prev => [...prev, newLocation]);
+  };
 
   const removeLocation = (id: string) => {
     setLocations(prev => prev.filter(l => l.id !== id));
@@ -261,13 +274,19 @@ const App: React.FC = () => {
       <main className="flex-1 relative overflow-hidden flex flex-col md:flex-row">
         
         {/* Sidebar */}
-        <div className="absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto border-r border-zinc-800/50 bg-black/20">
+        <div className="absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto border-r border-zinc-800/50 bg-black/20 backdrop-blur-lg md:backdrop-blur-none">
+           
+           {/* Search Bar Area */}
+           <div className="p-4 border-b border-zinc-800/50 bg-black/40">
+             <LocationSearch onSelectCity={handleCitySelect} />
+           </div>
+
            <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4">
              {locations.length === 0 && (
                <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/20">
                   <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
                   <h3 className="text-zinc-500 font-medium text-sm">No Locations Tracked</h3>
-                  <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Select points on the map to compare times simultaneously.</p>
+                  <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Search for a city or click on the map to compare times.</p>
                </div>
              )}
 
