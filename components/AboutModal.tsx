@@ -97,10 +97,25 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.0.1</span>
+                      <span className="text-sm font-mono text-primary">v2.1.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Current Version</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
-                        <li>Fixed Vercel deployment issues (date-fns-tz compatibility).</li>
+                        <li><strong>Global Search:</strong> Quickly find and track time for any major city or country.</li>
+                        <li><strong>Map Zoom:</strong> Use scroll or buttons to zoom in for detail or out for global view.</li>
+                        <li><strong>PWA Support:</strong> Install ChronoMap on your device; works offline.</li>
+                        <li><strong>SEO & Social:</strong> Improved previews and search visibility.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                {/* Version Item */}
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.0.1</span>
+                      <span className="text-xs text-zinc-500 mb-1">Fixes & Improvements</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li>Fixed Vercel deployment issues.</li>
                         <li>Optimized mobile layout for sidebar.</li>
                         <li>Added About & Support modal.</li>
                       </ul>
@@ -115,7 +130,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                       <span className="text-xs text-zinc-500 mb-1">Initial Release</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li>Complete UI overhaul to "Dark Modern".</li>
-                        <li>Interactive SVG map with zoom support.</li>
+                        <li>Interactive SVG map with real-time clock.</li>
                         <li>Time scrubber for past/future visualization.</li>
                         <li>Discord timestamp generator.</li>
                       </ul>
