@@ -114,21 +114,19 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
   const handlePointerDown = (e: React.PointerEvent) => {
     setIsDragging(true);
     lastX.current = e.clientX;
-    containerRef.current?.setPointerCapture(e.pointerId);
-    containerRef.current?.style.setProperty('cursor', 'grabbing');
+    try {
+      containerRef.current?.setPointerCapture(e.pointerId);
+      containerRef.current?.style.setProperty('cursor', 'grabbing');
+    } catch (err) {
+      // Ignore capture errors
+    }
     onInteractionStart?.();
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging) return;
     
-    const deltaX = lastX.current - e.clientX; // Dragging left moves time forward? No, typical timeline: Dragging map left moves view right (future). 
-    // Actually for a ruler:
-    // If I drag the ruler to the LEFT, the numbers on the right come into view. 
-    // The center is fixed. So numbers appearing from right are "Future".
-    // So dragging LEFT means we are looking at Future.
-    // Dragging LEFT means deltaX is POSITIVE (Start - Current > 0).
-    // So Positive Delta -> Add Time.
+    const deltaX = lastX.current - e.clientX;
     
     const deltaMinutes = deltaX / PIXELS_PER_MINUTE;
     const newTime = addMinutes(time, deltaMinutes);
@@ -138,8 +136,17 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isDragging) return;
     setIsDragging(false);
-    containerRef.current?.releasePointerCapture(e.pointerId);
+    
+    try {
+      if (containerRef.current?.hasPointerCapture(e.pointerId)) {
+        containerRef.current?.releasePointerCapture(e.pointerId);
+      }
+    } catch (err) {
+      // Ignore release errors if ID is invalid or lost
+    }
+    
     containerRef.current?.style.removeProperty('cursor');
     onInteractionEnd?.();
   };
@@ -151,7 +158,7 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
+      // Removed onPointerLeave to allow dragging outside
     >
        <canvas ref={canvasRef} className="absolute inset-0 block" />
        
