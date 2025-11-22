@@ -1,3 +1,4 @@
+
 {
   "id": "/",
   "name": "ChronoMap World Clock",
@@ -26,16 +27,16 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshot-desktop.png",
+      "src": "/screenshot-desktop.svg",
       "sizes": "1920x1080",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "form_factor": "wide",
       "label": "Desktop Dashboard"
     },
     {
-      "src": "/screenshot-mobile.png",
+      "src": "/screenshot-mobile.svg",
       "sizes": "1080x1920",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "form_factor": "narrow",
       "label": "Mobile View"
     }

@@ -264,7 +264,7 @@ const App: React.FC = () => {
                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group"
              >
                <Share2 className="w-3 h-3 group-hover:text-primary transition-colors" />
-               <span>Share</span>
+               <span>Share Timestamp</span>
              </button>
            </div>
         </div>
