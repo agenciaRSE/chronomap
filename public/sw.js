@@ -1,10 +1,13 @@
 
-const CACHE_NAME = 'chronomap-v1';
+const CACHE_NAME = 'chronomap-v2';
 const urlsToCache = [
   '/',
   '/index.html',
   '/favicon.svg',
-  '/manifest.json'
+  '/manifest.json',
+  '/pwa-icon.svg',
+  '/screenshot-desktop.svg',
+  '/screenshot-mobile.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -31,23 +34,44 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // CRITICAL: Navigation requests (HTML) must be Network First.
+  // This prevents the "White Screen" where the SW serves an old index.html
+  // that points to JS files that no longer exist on the server.
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          return caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          });
+        })
+        .catch(() => {
+          // If offline, fall back to cached index.html
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // For all other assets (JS, CSS, Images), use Cache First for performance.
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
+      .then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
         }
         return fetch(event.request).then(
-          (response) => {
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
+          (networkResponse) => {
+            if(!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+              return networkResponse;
             }
-            const responseToCache = response.clone();
+            const responseToCache = networkResponse.clone();
             caches.open(CACHE_NAME)
               .then((cache) => {
                 cache.put(event.request, responseToCache);
               });
-            return response;
+            return networkResponse;
           }
         );
       })

@@ -261,10 +261,12 @@ const App: React.FC = () => {
              </button>
              <button 
                onClick={() => setShowDiscordGen(true)}
-               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group"
+               className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group h-auto"
              >
-               <Share2 className="w-3 h-3 group-hover:text-primary transition-colors" />
-               <span>Share Timestamp</span>
+               <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0" />
+               <span className="text-center leading-3">
+                  Share<br className="sm:hidden" /> Timestamp
+               </span>
              </button>
            </div>
         </div>
