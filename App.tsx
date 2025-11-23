@@ -9,7 +9,7 @@ import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
 import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon } from 'lucide-react';
 
 // Configuration for time steps
 const TIME_STEPS = [
@@ -51,6 +51,9 @@ const App: React.FC = () => {
   const [showAbout, setShowAbout] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  
+  // Mobile View State: 'true' means Sidebar (List) is visible, 'false' means Map is visible
+  const [isMobileListOpen, setIsMobileListOpen] = useState(true);
 
   // Persist pinned locations to localStorage whenever locations change
   useEffect(() => {
@@ -133,6 +136,8 @@ const App: React.FC = () => {
     };
 
     setLocations(prev => [...prev, newLocation]);
+    // On mobile, if map is clicked (adding a pin), optionally switch to list view to see it? 
+    // For now, we keep the user on the map so they can see the pin.
   }, []);
 
   const handleCitySelect = (city: City) => {
@@ -250,36 +255,39 @@ const App: React.FC = () => {
       {/* Header */}
       <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-6 bg-black/80 backdrop-blur-md z-20">
         <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3">
-          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] group">
-             {/* Custom Logo: Globe + Clock */}
-             <svg 
-               viewBox="0 0 24 24" 
-               fill="none" 
-               stroke="currentColor" 
-               strokeWidth="2" 
-               strokeLinecap="round" 
-               strokeLinejoin="round" 
-               className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300"
-             >
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-                <path d="M2 12h20" className="opacity-50" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" className="opacity-50" />
-             </svg>
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] overflow-hidden group relative flex-none">
+             {/* New JPG Logo */}
+             <img 
+               src="https://agenciarse.com/wp-content/uploads/2025/11/logo.jpg" 
+               alt="ChronoMap Logo" 
+               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+             />
           </div>
+          
+          {/* Mobile Left Actions Row */}
+          <div className="flex md:hidden items-center gap-3">
+             {/* Info Button */}
+             <button 
+                onClick={() => setShowAbout(true)}
+                className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
+                title="About & Changelog"
+              >
+                <Info className="w-3 h-3" />
+              </button>
 
-          {/* Mobile Info Button (Left Column) */}
-          <button 
-            onClick={() => setShowAbout(true)}
-            className="md:hidden flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
-            title="About & Changelog"
-          >
-            <Info className="w-3 h-3" />
-          </button>
+              {/* Map/List Toggle Button */}
+              <button
+                onClick={() => setIsMobileListOpen(!isMobileListOpen)}
+                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${!isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
+              >
+                {isMobileListOpen ? <MapIcon className="w-3 h-3" /> : <List className="w-3 h-3" />}
+                <span>{isMobileListOpen ? 'Map' : 'List'}</span>
+              </button>
+          </div>
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.1.1</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.3.2</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
@@ -342,14 +350,15 @@ const App: React.FC = () => {
       <main className="flex-1 relative overflow-hidden flex flex-col md:flex-row">
         
         {/* Sidebar */}
-        <div className="absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg">
+        {/* Modified to support toggling on mobile via translate transform */}
+        <div className={`absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg transition-transform duration-300 ease-in-out ${isMobileListOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
            
            {/* Search Bar Area */}
            <div className="relative z-50 p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
              <LocationSearch onSelectCity={handleCitySelect} />
            </div>
 
-           <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4">
+           <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4 bg-black/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none pointer-events-auto">
              {locations.length === 0 && (
                <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
                   <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />

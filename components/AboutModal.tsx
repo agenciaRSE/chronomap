@@ -97,7 +97,46 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.2.0</span>
+                      <span className="text-sm font-mono text-primary">v2.3.2</span>
+                      <span className="text-xs text-zinc-500 mb-1">Mobile Experience</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Mobile Sidebar:</strong> You can now toggle the location list on mobile to interact fully with the map.</li>
+                        <li><strong>New Logo:</strong> Updated application branding.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                {/* Version Item */}
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.3.1</span>
+                      <span className="text-xs text-zinc-500 mb-1">3D Visuals Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Continent Outlines:</strong> Fixed an issue where coastlines were missing in 3D Globe mode.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                {/* Version Item */}
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.3.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">3D Globe Update</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>3D Zoom:</strong> You can now zoom in/out in 3D Globe mode.</li>
+                        <li><strong>Visual Details:</strong> Added country borders and coastline contours to the 3D view.</li>
+                        <li><strong>Refined Style:</strong> Restored the classic dark aesthetic for the 2D map while improving contrast for 3D.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                {/* Version Item */}
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.2.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Productivity Update</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Pin Locations:</strong> You can now pin your favorite cities to save them for your next visit.</li>
@@ -131,35 +170,6 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                         <li><strong>Map Zoom:</strong> Use scroll or buttons to zoom in for detail or out for global view.</li>
                         <li><strong>PWA Support:</strong> Install ChronoMap on your device; works offline.</li>
                         <li><strong>SEO & Social:</strong> Improved previews and search visibility.</li>
-                      </ul>
-                   </div>
-                </div>
-
-                {/* Version Item */}
-                <div className="relative">
-                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
-                   <div className="flex flex-col">
-                      <span className="text-sm font-mono text-zinc-400">v2.0.1</span>
-                      <span className="text-xs text-zinc-500 mb-1">Fixes & Improvements</span>
-                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
-                        <li>Fixed Vercel deployment issues.</li>
-                        <li>Optimized mobile layout for sidebar.</li>
-                        <li>Added About & Support modal.</li>
-                      </ul>
-                   </div>
-                </div>
-
-                {/* Version Item */}
-                <div className="relative">
-                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
-                   <div className="flex flex-col">
-                      <span className="text-sm font-mono text-zinc-400">v2.0.0</span>
-                      <span className="text-xs text-zinc-500 mb-1">Initial Release</span>
-                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
-                        <li>Complete UI overhaul to "Dark Modern".</li>
-                        <li>Interactive SVG map with real-time clock.</li>
-                        <li>Time scrubber for past/future visualization.</li>
-                        <li>Discord timestamp generator.</li>
                       </ul>
                    </div>
                 </div>
