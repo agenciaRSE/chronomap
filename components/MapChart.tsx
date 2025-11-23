@@ -43,7 +43,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         
         // 2. Mesh for drawing clean borders on top
         // Passing no filter function returns ALL arcs (coastlines + borders)
-        // This fixes the issue where continent outlines were missing in 3D
         const borders = topojson.mesh(data, data.objects.countries);
 
         setMapData({ features, borders });
@@ -102,14 +101,46 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       // --- 3D MODE ---
       g.attr("transform", null);
 
+      // Local variable to track drag distance for click detection
+      let totalMovement = 0;
+
       const drag = d3.drag<SVGSVGElement, unknown>()
+        .on("start", () => {
+          totalMovement = 0;
+          svg.style("cursor", "grabbing");
+        })
         .on("drag", (event) => {
+          totalMovement += Math.hypot(event.dx, event.dy);
           const sensitivity = 75 / projection.scale();
           setRotation(curr => [
             curr[0] + event.dx * sensitivity,
             curr[1] - event.dy * sensitivity,
             curr[2]
           ]);
+        })
+        .on("end", (event) => {
+          svg.style("cursor", "grab");
+          
+          // SMART CLICK DETECTION
+          // If movement is very small (< 5px), treat as click.
+          // This allows clicking on the globe to set a location even in drag mode.
+          if (totalMovement < 5) {
+             const [x, y] = d3.pointer(event, mapGroupRef.current);
+             const coords = projection.invert?.([x, y]);
+             
+             if (coords) {
+               const [lng, lat] = coords;
+               // Verify click is on the front of the globe
+               if (isFinite(lng) && isFinite(lat)) {
+                 onMapClick({ 
+                    x: event.sourceEvent.clientX, 
+                    y: event.sourceEvent.clientY, 
+                    lat, 
+                    lng 
+                 });
+               }
+             }
+          }
         });
       
       const zoom = d3.zoom<SVGSVGElement, unknown>()
@@ -122,6 +153,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.on("mousedown", () => svg.style("cursor", "grabbing"));
       svg.on("mouseup", () => svg.style("cursor", "grab"));
 
+      // Bind zoom for scroll but disable gestures that conflict with drag
       svg.call(zoom)
          .on("mousedown.zoom", null)
          .on("touchstart.zoom", null)
@@ -151,7 +183,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       }
     }
 
-  }, [isGlobe, dimensions, projection, globeZoom, zoomLevel]);
+  }, [isGlobe, dimensions, projection, globeZoom, zoomLevel, onMapClick]);
 
 
   // --- Render Static Layers ---
@@ -197,27 +229,28 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("fill", fill)
       .attr("stroke", stroke) 
       .attr("stroke-width", 0.5)
+      // IMPORTANT: In 3D mode, disable pointer events on land so drag/click falls through to SVG handler
+      .style("pointer-events", isGlobe ? "none" : "auto")
       .style("cursor", isGlobe ? "grab" : "crosshair")
       .on("click", (event) => {
-         // Click works on 2D and 3D (if not dragging)
-         const [x, y] = d3.pointer(event, mapGroupRef.current);
-         const coords = projection.invert?.([x, y]);
-         if (coords) {
-           const [lng, lat] = coords;
-           if (isFinite(lng) && isFinite(lat)) {
+         // 2D click handler (3D is handled by SVG drag end)
+         if (!isGlobe) {
+           const [x, y] = d3.pointer(event, mapGroupRef.current);
+           const coords = projection.invert?.([x, y]);
+           if (coords) {
+             const [lng, lat] = coords;
              onMapClick({ x: event.clientX, y: event.clientY, lat, lng });
            }
          }
       })
       .on("mouseenter", function() {
-         d3.select(this).attr("fill", hoverFill);
+         if (!isGlobe) d3.select(this).attr("fill", hoverFill);
       })
       .on("mouseleave", function() {
-         d3.select(this).attr("fill", fill);
+         if (!isGlobe) d3.select(this).attr("fill", fill);
       });
 
     // 4. Borders (Mesh - Lines Only)
-    // Includes coastlines now because we removed the filter in useEffect
     const borderData = isGlobe ? [mapData.borders] : [];
     staticGroup.selectAll("path.borders")
       .data(borderData)
@@ -303,6 +336,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     return format(date, 'HH:mm');
   };
 
+  // Scale Logic:
   const markerScale = isGlobe 
     ? Math.max(1, Math.sqrt(globeZoom)) 
     : Math.max(0.2, 1 / Math.sqrt(zoomLevel)); 
@@ -336,16 +370,20 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                         cx={pos[0]}
                         cy={pos[1]}
                         r={(isGlobe ? 2.5 : 2) * markerScale}
-                        className="fill-zinc-700 hover:fill-blue-500 cursor-pointer transition-colors"
+                        // Disable direct pointer events on markers in 3D mode
+                        // This ensures the SVG drag/click handler receives the event for rotation or smart-click logic
+                        className={`fill-zinc-700 hover:fill-blue-500 transition-colors ${isGlobe ? 'pointer-events-none' : 'cursor-pointer'}`}
                         onClick={(e) => {
-                          if(!isGlobe) e.stopPropagation(); 
-                          onMapClick({
-                            x: e.clientX,
-                            y: e.clientY,
-                            lat: city.lat,
-                            lng: city.lng,
-                            city: city
-                          })
+                          if(!isGlobe) {
+                            e.stopPropagation(); 
+                            onMapClick({
+                              x: e.clientX,
+                              y: e.clientY,
+                              lat: city.lat,
+                              lng: city.lng,
+                              city: city
+                            });
+                          }
                         }}
                     />
                   )
@@ -357,7 +395,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                   const timeStr = getTimeString(loc);
                   
                   return (
-                    <g key={loc.id} transform={`translate(${pos[0]}, ${pos[1]})`}>
+                    <g key={loc.id} transform={`translate(${pos[0]}, ${pos[1]})`} className={isGlobe ? 'pointer-events-none' : ''}>
                         <circle r={8 * markerScale} className="fill-blue-500/20 animate-ping" />
                         <circle r={3 * markerScale} className="fill-blue-500 stroke-black" strokeWidth={1 * markerScale} />
                         
