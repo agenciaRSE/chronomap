@@ -39,7 +39,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .then(response => response.json())
       .then(data => {
         // 1. Features for clicking and filling land
-        const features = topojson.feature(data, data.objects.countries).features;
+        // Cast to any to avoid TS error: Property 'features' does not exist on type 'Feature<Point, GeoJsonProperties>'
+        const features = (topojson.feature(data, data.objects.countries) as any).features;
         
         // 2. Mesh for drawing clean borders on top
         // Passing no filter function returns ALL arcs (coastlines + borders)
@@ -119,11 +120,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           ]);
         })
         .on("end", (event) => {
-          svg.style("cursor", "grab");
+          // Reset cursor to crosshair (indicating clickability) when drag ends
+          svg.style("cursor", "crosshair");
           
           // SMART CLICK DETECTION
           // If movement is very small (< 5px), treat as click.
-          // This allows clicking on the globe to set a location even in drag mode.
+          // This enables clicking on the globe to place pins.
           if (totalMovement < 5) {
              const [x, y] = d3.pointer(event, mapGroupRef.current);
              const coords = projection.invert?.([x, y]);
@@ -149,10 +151,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
            setGlobeZoom(event.transform.k);
         });
 
-      svg.call(drag).style("cursor", "grab");
-      svg.on("mousedown", () => svg.style("cursor", "grabbing"));
-      svg.on("mouseup", () => svg.style("cursor", "grab"));
-
+      svg.call(drag).style("cursor", "crosshair");
+      
       // Bind zoom for scroll but disable gestures that conflict with drag
       svg.call(zoom)
          .on("mousedown.zoom", null)
@@ -229,7 +229,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("fill", fill)
       .attr("stroke", stroke) 
       .attr("stroke-width", 0.5)
-      // IMPORTANT: In 3D mode, disable pointer events on land so drag/click falls through to SVG handler
+      // Disable interactions on path in 3D mode so drag handler on SVG takes over
       .style("pointer-events", isGlobe ? "none" : "auto")
       .style("cursor", isGlobe ? "grab" : "crosshair")
       .on("click", (event) => {
@@ -347,9 +347,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
   return (
     <div ref={containerRef} className="w-full h-full min-h-[400px] relative overflow-hidden bg-black shadow-inner">
+      {/* Starry Background effect */}
       <div className="absolute inset-0 pointer-events-none dot-pattern opacity-20" />
       
-      <svg ref={svgRef} width="100%" height="100%" className={`relative z-10 touch-none ${isGlobe ? 'cursor-grab' : 'cursor-move'}`}>
+      <svg ref={svgRef} width="100%" height="100%" className={`relative z-10 touch-none ${isGlobe ? 'cursor-crosshair' : 'cursor-move'}`}>
          <defs>
             <pattern id="dot-pattern" width="8" height="8" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1" fill="#27272a" />
