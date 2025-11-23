@@ -19,23 +19,15 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const containerRef = useRef<HTMLDivElement>(null);
   const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   
-  // Store both features (polygons) and mesh (lines)
   const [mapData, setMapData] = useState<{ features: any[], borders: any } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 960, height: 500 });
   
-  // View State
   const [isGlobe, setIsGlobe] = useState(false);
-  
-  // 2D State
   const [zoomLevel, setZoomLevel] = useState(1); 
-  
-  // 3D State
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
   const [globeZoom, setGlobeZoom] = useState(1);
 
-  // --- Refs for D3 Performance ---
-  // Using refs prevents the useEffect hook that binds D3 events from re-running on every state change.
-  // This eliminates stuttering during rotation/zoom.
+  // Refs to keep D3 listeners stable and avoid re-binding
   const rotationRef = useRef(rotation);
   const globeZoomRef = useRef(globeZoom);
   const isGlobeRef = useRef(isGlobe);
@@ -46,19 +38,13 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     isGlobeRef.current = isGlobe;
   }, [rotation, globeZoom, isGlobe]);
 
-  // Fetch map data once and prepare Mesh
   useEffect(() => {
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(response => response.json())
       .then(data => {
-        // 1. Features for clicking and filling land
-        // Cast to any to avoid TS error with topojson types
         const features = (topojson.feature(data, data.objects.countries) as any).features;
-        
-        // 2. Mesh for drawing clean borders on top
-        // Passing no filter function returns ALL arcs (coastlines + borders)
+        // No filter: include both internal borders and coastlines
         const borders = topojson.mesh(data, data.objects.countries);
-
         setMapData({ features, borders });
       });
 
@@ -77,21 +63,18 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // --- Projections ---
   const projection = useMemo(() => {
     const { width, height } = dimensions;
     
     if (isGlobe) {
-      // 3D Orthographic Projection
       const baseScale = Math.min(width, height) / 2.2;
       return d3.geoOrthographic()
         .scale(baseScale * globeZoom)
         .translate([width / 2, height / 2])
         .rotate(rotation)
         .precision(0.1)
-        .clipAngle(90); // Hides the back of the globe
+        .clipAngle(90);
     } else {
-      // 2D Equirectangular Projection
       return d3.geoEquirectangular()
         .fitSize([width, height], mapData ? { type: "FeatureCollection", features: mapData.features } : { type: "Sphere" })
         .translate([width / 2, height / 2 + (height * 0.05)]);
@@ -101,14 +84,14 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const pathGenerator = useMemo(() => d3.geoPath().projection(projection), [projection]);
   const graticule = useMemo(() => d3.geoGraticule10(), []);
 
-  // --- Interaction Handling (Zoom vs Drag) ---
+  // --- Interaction Handling ---
   useEffect(() => {
     if (!svgRef.current || !mapGroupRef.current) return;
 
     const svg = d3.select(svgRef.current);
     const g = d3.select(mapGroupRef.current);
 
-    // Clean up previous listeners to avoid duplicates
+    // Remove previous listeners to prevent stacking/stuttering
     svg.on(".zoom", null);
     svg.on(".drag", null);
 
@@ -118,10 +101,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
       let totalMovement = 0;
 
-      // 1. DRAG BEHAVIOR (Rotation)
-      // Filter: Allow mouse (button 0) or 1-finger touch. Block multi-touch (pinch).
+      // DRAG (ROTATION) CONFIGURATION
       const drag = d3.drag<SVGSVGElement, unknown>()
         .filter((event) => {
+           // Allow: Mouse main button OR Touch with exactly 1 finger
            if (event.type === 'touchstart') return event.touches.length === 1;
            return !event.button; 
         })
@@ -132,11 +115,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         .on("drag", (event) => {
           totalMovement += Math.hypot(event.dx, event.dy);
           
-          // Use REF values to calculate sensitivity to avoid re-binding
           const currentZoom = globeZoomRef.current;
           const baseScale = Math.min(dimensions.width, dimensions.height) / 2.2;
           const scale = baseScale * currentZoom;
-          const sensitivity = 75 / scale;
+          
+          // Sensitivity: 250 provides a good balance for touch rotation
+          const sensitivity = 250 / scale;
           
           const currRotation = rotationRef.current;
           const newRotation: [number, number, number] = [
@@ -145,15 +129,39 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
             currRotation[2]
           ];
           
-          setRotation(newRotation); // State update triggers render, but NOT this effect re-run
+          setRotation(newRotation);
         })
         .on("end", (event) => {
           svg.style("cursor", "crosshair");
           
           // SMART CLICK DETECTION
-          // If movement is tiny (< 5px), consider it a click
-          if (totalMovement < 5) {
-             // Reconstruct temporary projection using REFS to invert coordinates accurately
+          // If movement is minimal (< 10px to account for finger wobble), treat as click
+          if (totalMovement < 10) {
+             let clientX, clientY;
+             
+             // Handle coordinates for both Mouse and Touch events
+             if (event.sourceEvent.type === 'touchend') {
+                // touchend has no 'touches', use 'changedTouches'
+                const touch = event.sourceEvent.changedTouches[0];
+                if (touch) {
+                    clientX = touch.clientX;
+                    clientY = touch.clientY;
+                }
+             } else {
+                clientX = event.sourceEvent.clientX;
+                clientY = event.sourceEvent.clientY;
+             }
+
+             if (clientX === undefined || clientY === undefined) return;
+
+             // Get relative coordinates within the container
+             const rect = containerRef.current?.getBoundingClientRect();
+             if (!rect) return;
+             
+             const relX = clientX - rect.left;
+             const relY = clientY - rect.top;
+
+             // Reconstruct temp projection for accurate inversion
              const { width, height } = dimensions;
              const baseScale = Math.min(width, height) / 2.2;
              const tempProjection = d3.geoOrthographic()
@@ -162,30 +170,24 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                 .rotate(rotationRef.current)
                 .clipAngle(90);
 
-             const [x, y] = d3.pointer(event, mapGroupRef.current);
-             const coords = tempProjection.invert?.([x, y]);
+             const coords = tempProjection.invert?.([relX, relY]);
              
              if (coords) {
                const [lng, lat] = coords;
                if (isFinite(lng) && isFinite(lat)) {
-                 onMapClick({ 
-                    x: event.sourceEvent.clientX, 
-                    y: event.sourceEvent.clientY, 
-                    lat, 
-                    lng 
-                 });
+                 onMapClick({ x: clientX, y: clientY, lat, lng });
                }
              }
           }
         });
       
-      // 2. ZOOM BEHAVIOR (Scale)
-      // Filter: Allow wheel or 2-finger touch (Pinch).
+      // ZOOM (PINCH/WHEEL) CONFIGURATION
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.5, 8])
         .filter((event) => {
+           // Allow: Mouse Wheel OR Touch with 2+ fingers (Pinch)
            if (event.type === 'wheel') return true;
-           if (event.type === 'touchstart' && event.touches.length === 2) return true;
+           if (event.type === 'touchstart' && event.touches.length >= 2) return true;
            return false;
         })
         .on("zoom", (event) => {
@@ -195,7 +197,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.call(drag).style("cursor", "crosshair");
       svg.call(zoom).on("dblclick.zoom", null);
 
-      // Initialize Zoom Transform without triggering events
+      // Initialize Zoom Transform
       svg.call(zoom.transform, d3.zoomIdentity.scale(globeZoomRef.current));
       zoomBehaviorRef.current = zoom;
 
@@ -218,7 +220,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       }
     }
 
-  }, [isGlobe, dimensions]); // Minimal dependencies to ensure stability
+  }, [isGlobe, dimensions]); 
 
 
   // --- Render Static Layers ---
@@ -228,7 +230,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     const group = d3.select(mapGroupRef.current);
     let staticGroup = group.select<SVGGElement>(".static-map-layer");
     
-    // 1. Sphere Background (The Ocean/Space)
+    // 1. Sphere Background
     const sphereData = isGlobe ? [{ type: "Sphere" }] : [];
     staticGroup.selectAll("path.sphere")
       .data(sphereData)
@@ -239,7 +241,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("stroke", "#27272a")
       .attr("stroke-width", 1.5);
 
-    // 2. Graticule (The Grid)
+    // 2. Graticule
     const graticuleData = isGlobe ? [graticule] : [];
     staticGroup.selectAll("path.graticule")
       .data(graticuleData)
@@ -251,7 +253,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("stroke-width", 0.5)
       .attr("stroke-opacity", 0.3);
 
-    // 3. Land (Filled Polygons - Features)
+    // 3. Land
     const fill = isGlobe ? "#27272a" : "#09090b"; 
     const hoverFill = isGlobe ? "#3f3f46" : "#18181b";
     const stroke = isGlobe ? "none" : "#3f3f46"; 
@@ -264,11 +266,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("fill", fill)
       .attr("stroke", stroke) 
       .attr("stroke-width", 0.5)
-      // Disable interactions on path in 3D mode so drag handler on SVG takes over
+      // In 3D, disable pointer events so drag handler gets the input
       .style("pointer-events", isGlobe ? "none" : "auto")
       .style("cursor", isGlobe ? "grab" : "crosshair")
       .on("click", (event) => {
-         // 2D click handler (3D is handled by SVG drag end logic)
          if (!isGlobe) {
            const [x, y] = d3.pointer(event, mapGroupRef.current);
            const coords = projection.invert?.([x, y]);
@@ -285,7 +286,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
          if (!isGlobe) d3.select(this).attr("fill", fill);
       });
 
-    // 4. Borders (Mesh - Lines Only)
+    // 4. Borders (Mesh)
     const borderData = isGlobe ? [mapData.borders] : [];
     staticGroup.selectAll("path.borders")
       .data(borderData)
@@ -293,11 +294,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("class", "borders")
       .attr("d", pathGenerator as any)
       .attr("fill", "none")
-      .attr("stroke", "#a1a1aa") // Visible borders in 3D
+      .attr("stroke", "#a1a1aa")
       .attr("stroke-width", 0.8)
       .style("pointer-events", "none");
 
-    // 5. Dashed Connection Lines
+    // 5. Links
     const links = [];
     for(let i=0; i < MAJOR_CITIES.length - 1; i+=2) {
        links.push({
@@ -419,8 +420,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                         cx={pos[0]}
                         cy={pos[1]}
                         r={(isGlobe ? 2.5 : 2) * markerScale}
-                        // Disable direct pointer events on markers in 3D mode
-                        // The SVG drag handler manages click detection
                         className={`fill-zinc-700 hover:fill-blue-500 transition-colors ${isGlobe ? 'pointer-events-none' : 'cursor-pointer'}`}
                         onClick={(e) => {
                           if(!isGlobe) {
