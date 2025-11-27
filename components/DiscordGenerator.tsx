@@ -49,8 +49,8 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
         
         <div className="p-6 space-y-4">
           <div className="text-sm text-muted-foreground mb-4">
-             Generate a dynamic timestamp for <span className="text-primary font-mono">{format(targetDate, 'yyyy-MM-dd HH:mm:ss')}</span> (Local equivalent). 
-             When pasted into Discord, this will show the correct local time for everyone who sees it.
+             Generate a dynamic timestamp for <span className="text-primary font-mono">{format(targetDate, 'yyyy-MM-dd HH:mm:ss')}</span>. 
+             The previews below show exactly how it will look in Discord.
           </div>
 
           <div className="grid gap-3 max-h-[60vh] overflow-y-auto pr-2">
@@ -62,7 +62,7 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
               >
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-foreground">{fmt.label}</span>
-                  <span className="text-xs text-muted-foreground mt-1">{fmt.preview}</span>
+                  <span className="text-xs text-muted-foreground mt-1 bg-black/20 px-1.5 py-0.5 rounded inline-block">{fmt.preview}</span>
                 </div>
                 
                 <div className="flex items-center gap-3">

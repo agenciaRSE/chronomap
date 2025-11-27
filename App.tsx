@@ -9,7 +9,7 @@ import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
 import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2 } from 'lucide-react';
 
 // Configuration for time steps
 const TIME_STEPS = [
@@ -136,8 +136,6 @@ const App: React.FC = () => {
     };
 
     setLocations(prev => [...prev, newLocation]);
-    // On mobile, if map is clicked (adding a pin), optionally switch to list view to see it? 
-    // For now, we keep the user on the map so they can see the pin.
   }, []);
 
   const handleCitySelect = (city: City) => {
@@ -155,6 +153,10 @@ const App: React.FC = () => {
 
   const removeLocation = (id: string) => {
     setLocations(prev => prev.filter(l => l.id !== id));
+  };
+
+  const clearUnpinnedLocations = () => {
+    setLocations(prev => prev.filter(l => l.isPinned));
   };
 
   const togglePin = (id: string) => {
@@ -337,7 +339,8 @@ const App: React.FC = () => {
                onClick={() => setShowDiscordGen(true)}
                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group h-auto"
              >
-               <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0" />
+               {/* Use hidden md:block to hide icon on mobile, show on desktop */}
+               <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0 hidden md:block" />
                <span className="text-center leading-3">
                   Share<br className="sm:hidden" /> Timestamp
                </span>
@@ -350,12 +353,26 @@ const App: React.FC = () => {
       <main className="flex-1 relative overflow-hidden flex flex-col md:flex-row">
         
         {/* Sidebar */}
-        {/* Modified to support toggling on mobile via translate transform */}
         <div className={`absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg transition-transform duration-300 ease-in-out ${isMobileListOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
            
            {/* Search Bar Area */}
            <div className="relative z-50 p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
              <LocationSearch onSelectCity={handleCitySelect} />
+             
+             {/* Sidebar Stats & Clear Toolbar */}
+             <div className="flex items-center justify-between mt-3 px-1">
+               <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">
+                 {locations.length} Locations
+               </span>
+               {locations.some(l => !l.isPinned) && (
+                 <button 
+                   onClick={clearUnpinnedLocations} 
+                   className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors px-1.5 py-0.5 rounded hover:bg-red-400/10"
+                 >
+                   <Trash2 size={10} /> Clear Unpinned
+                 </button>
+               )}
+             </div>
            </div>
 
            <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4 bg-black/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none pointer-events-auto">
@@ -432,52 +449,91 @@ const App: React.FC = () => {
           onInteractionEnd={() => setIsScrubbing(false)}
         />
 
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 p-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 p-2 md:p-4">
           
-          {/* Left: Quick Jump & Unit Selector */}
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => handleTimeShift(-1)} 
-              className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-              title="Go Back"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
+          {/* Row 1 Mobile: 3-Column Grid */}
+          <div className="w-full md:w-auto grid grid-cols-[1fr_auto_1fr] items-center md:flex md:gap-3">
             
-            {/* Time Step Selector */}
-            <div className="flex flex-col items-center gap-0.5">
-                <button 
-                  onClick={() => changeStep(1)}
-                  disabled={timeStepIndex >= TIME_STEPS.length - 1}
-                  className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  <ChevronUp size={14} />
-                </button>
-                
-                <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-16 text-center select-none">
-                  {TIME_STEPS[timeStepIndex].label}
-                </span>
-                
-                <button 
-                  onClick={() => changeStep(-1)}
-                  disabled={timeStepIndex <= 0}
-                  className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  <ChevronDown size={14} />
-                </button>
+            {/* Left: Mobile Reset Button (Above Resume) using justify-self-end to bring it close to center */}
+            <div className="justify-self-end md:hidden pr-4">
+               <button 
+                  onClick={resetToLive}
+                  disabled={timeState.mode === 'live'}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                    timeState.mode === 'live' 
+                      ? 'text-zinc-600 cursor-not-allowed opacity-50' 
+                      : 'text-primary hover:bg-primary/10 border border-primary/20'
+                  }`}
+               >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Live</span>
+               </button>
             </div>
 
-            <button 
-              onClick={() => handleTimeShift(1)} 
-              className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-              title="Go Forward"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            {/* Center: Navigation Controls */}
+            <div className="flex items-center gap-3 justify-self-center">
+              <button 
+                onClick={() => handleTimeShift(-1)} 
+                className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
+                title="Go Back"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              
+              {/* Time Step Selector */}
+              <div className="flex flex-col items-center gap-0.5">
+                  <button 
+                    onClick={() => changeStep(1)}
+                    disabled={timeStepIndex >= TIME_STEPS.length - 1}
+                    className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    <ChevronUp size={14} />
+                  </button>
+                  
+                  <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-16 text-center select-none">
+                    {TIME_STEPS[timeStepIndex].label}
+                  </span>
+                  
+                  <button 
+                    onClick={() => changeStep(-1)}
+                    disabled={timeStepIndex <= 0}
+                    className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    <ChevronDown size={14} />
+                  </button>
+              </div>
+
+              <button 
+                onClick={() => handleTimeShift(1)} 
+                className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
+                title="Go Forward"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Right: Empty spacer to balance grid on mobile */}
+            <div className="md:hidden"></div>
+            
+            {/* Desktop Reset Button */}
+            <div className="hidden md:block">
+               <button 
+                  onClick={resetToLive}
+                  disabled={timeState.mode === 'live'}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                    timeState.mode === 'live' 
+                      ? 'text-zinc-600 cursor-not-allowed opacity-50' 
+                      : 'text-primary hover:bg-primary/10 border border-primary/20'
+                  }`}
+               >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Return to Now</span>
+               </button>
+            </div>
           </div>
 
           {/* Center: Playback & Date Picker */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center w-full md:w-auto gap-2">
             <div className="flex items-center gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg">
                
                <button 
@@ -499,7 +555,7 @@ const App: React.FC = () => {
                         type="datetime-local"
                         value={format(timeState.current, "yyyy-MM-dd'T'HH:mm")}
                         onChange={handleCustomDateChange}
-                        className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[220px] font-mono cursor-pointer"
+                        className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[240px] font-mono cursor-pointer"
                         style={{ colorScheme: 'dark' }}
                       />
                   </div>
@@ -512,22 +568,6 @@ const App: React.FC = () => {
                   </button>
                </div>
             </div>
-          </div>
-
-          {/* Right: Reset */}
-          <div>
-             <button 
-                onClick={resetToLive}
-                disabled={timeState.mode === 'live'}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                  timeState.mode === 'live' 
-                    ? 'text-zinc-600 cursor-not-allowed opacity-50' 
-                    : 'text-primary hover:bg-primary/10 border border-primary/20'
-                }`}
-             >
-                <RotateCcw className="w-3 h-3" />
-                <span>Return to Now</span>
-             </button>
           </div>
 
         </div>

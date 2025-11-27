@@ -27,7 +27,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
   const [globeZoom, setGlobeZoom] = useState(1);
 
-  // Refs to keep D3 listeners stable and avoid re-binding
+  // Refs for stable D3 callbacks
   const rotationRef = useRef(rotation);
   const globeZoomRef = useRef(globeZoom);
   const isGlobeRef = useRef(isGlobe);
@@ -43,7 +43,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .then(response => response.json())
       .then(data => {
         const features = (topojson.feature(data, data.objects.countries) as any).features;
-        // No filter: include both internal borders and coastlines
+        // Provide no filter to get all boundaries including coastlines
         const borders = topojson.mesh(data, data.objects.countries);
         setMapData({ features, borders });
       });
@@ -91,7 +91,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     const svg = d3.select(svgRef.current);
     const g = d3.select(mapGroupRef.current);
 
-    // Remove previous listeners to prevent stacking/stuttering
     svg.on(".zoom", null);
     svg.on(".drag", null);
 
@@ -101,10 +100,9 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
       let totalMovement = 0;
 
-      // DRAG (ROTATION) CONFIGURATION
       const drag = d3.drag<SVGSVGElement, unknown>()
         .filter((event) => {
-           // Allow: Mouse main button OR Touch with exactly 1 finger
+           // STRICT FILTER: Only allow drag if it's a mouse or exactly 1 finger.
            if (event.type === 'touchstart') return event.touches.length === 1;
            return !event.button; 
         })
@@ -119,7 +117,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           const baseScale = Math.min(dimensions.width, dimensions.height) / 2.2;
           const scale = baseScale * currentZoom;
           
-          // Sensitivity: 250 provides a good balance for touch rotation
+          // INCREASED SENSITIVITY (250) for smoother mobile rotation
           const sensitivity = 250 / scale;
           
           const currRotation = rotationRef.current;
@@ -134,14 +132,13 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         .on("end", (event) => {
           svg.style("cursor", "crosshair");
           
-          // SMART CLICK DETECTION
-          // If movement is minimal (< 10px to account for finger wobble), treat as click
+          // SMART CLICK DETECTION (< 10px movement)
           if (totalMovement < 10) {
              let clientX, clientY;
              
-             // Handle coordinates for both Mouse and Touch events
+             // Handle Touch vs Mouse coordinates
              if (event.sourceEvent.type === 'touchend') {
-                // touchend has no 'touches', use 'changedTouches'
+                // For touchend, we must use changedTouches as touches list is empty
                 const touch = event.sourceEvent.changedTouches[0];
                 if (touch) {
                     clientX = touch.clientX;
@@ -154,14 +151,14 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
              if (clientX === undefined || clientY === undefined) return;
 
-             // Get relative coordinates within the container
+             // Convert to container-relative coordinates for D3
              const rect = containerRef.current?.getBoundingClientRect();
              if (!rect) return;
              
              const relX = clientX - rect.left;
              const relY = clientY - rect.top;
 
-             // Reconstruct temp projection for accurate inversion
+             // Reconstruct temporary projection to invert coordinates accurately using latest refs
              const { width, height } = dimensions;
              const baseScale = Math.min(width, height) / 2.2;
              const tempProjection = d3.geoOrthographic()
@@ -181,11 +178,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           }
         });
       
-      // ZOOM (PINCH/WHEEL) CONFIGURATION
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.5, 8])
         .filter((event) => {
-           // Allow: Mouse Wheel OR Touch with 2+ fingers (Pinch)
+           // STRICT FILTER: Only allow wheel or 2+ fingers.
            if (event.type === 'wheel') return true;
            if (event.type === 'touchstart' && event.touches.length >= 2) return true;
            return false;
@@ -197,7 +193,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.call(drag).style("cursor", "crosshair");
       svg.call(zoom).on("dblclick.zoom", null);
 
-      // Initialize Zoom Transform
+      // Initialize zoom transform to match current state
       svg.call(zoom.transform, d3.zoomIdentity.scale(globeZoomRef.current));
       zoomBehaviorRef.current = zoom;
 
@@ -266,7 +262,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("fill", fill)
       .attr("stroke", stroke) 
       .attr("stroke-width", 0.5)
-      // In 3D, disable pointer events so drag handler gets the input
       .style("pointer-events", isGlobe ? "none" : "auto")
       .style("cursor", isGlobe ? "grab" : "crosshair")
       .on("click", (event) => {
@@ -481,7 +476,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
          </g>
       </svg>
       
-      <div className="absolute bottom-6 right-6 flex flex-col gap-2 z-20">
+      {/* Controls positioned higher on mobile (bottom-40) to avoid footer overlap */}
+      <div className="absolute bottom-40 md:bottom-6 right-4 md:right-6 flex flex-col gap-2 z-40">
         <button 
           onClick={() => {
             setIsGlobe(!isGlobe);
@@ -519,7 +515,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         </button>
       </div>
 
-      <div className="absolute bottom-4 left-4 pointer-events-none">
+      <div className="absolute bottom-4 left-4 pointer-events-none hidden md:block">
         <h2 className="text-zinc-500 text-xs uppercase tracking-widest font-bold">
           {isGlobe ? '3D Globe View' : 'Multi-Point View'}
         </h2>
