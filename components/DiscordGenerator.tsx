@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Copy, Check, Clock } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface DiscordGeneratorProps {
   targetDate: Date;
@@ -15,13 +16,13 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
   const unixTimestamp = Math.floor(targetDate.getTime() / 1000);
 
   const formats = [
-    { code: 't', label: 'Short Time', preview: format(targetDate, 'h:mm a') },
-    { code: 'T', label: 'Long Time', preview: format(targetDate, 'h:mm:ss a') },
-    { code: 'd', label: 'Short Date', preview: format(targetDate, 'MM/dd/yyyy') },
-    { code: 'D', label: 'Long Date', preview: format(targetDate, 'MMMM d, yyyy') },
-    { code: 'f', label: 'Short Date/Time', preview: format(targetDate, 'MMMM d, yyyy h:mm a') },
-    { code: 'F', label: 'Long Date/Time', preview: format(targetDate, 'eeee, MMMM d, yyyy h:mm a') },
-    { code: 'R', label: 'Relative', preview: formatDistanceToNow(targetDate, { addSuffix: true }) },
+    { code: 't', label: 'Hora Corta', preview: format(targetDate, 'p', { locale: es }) },
+    { code: 'T', label: 'Hora Larga', preview: format(targetDate, 'pp', { locale: es }) },
+    { code: 'd', label: 'Fecha Corta', preview: format(targetDate, 'P', { locale: es }) },
+    { code: 'D', label: 'Fecha Larga', preview: format(targetDate, 'PP', { locale: es }) },
+    { code: 'f', label: 'Fecha/Hora Corta', preview: format(targetDate, 'Pp', { locale: es }) },
+    { code: 'F', label: 'Fecha/Hora Larga', preview: format(targetDate, 'PPpp', { locale: es }) },
+    { code: 'R', label: 'Relativo', preview: formatDistanceToNow(targetDate, { addSuffix: true, locale: es }) },
   ];
 
   const handleCopy = (code: string) => {
@@ -35,12 +36,13 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-card border border-border w-full max-w-lg rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="p-4 border-b border-border flex justify-between items-center bg-secondary/30">
-          <h3 className="font-semibold text-foreground flex items-center gap-2">
+          <h2 className="font-semibold text-foreground flex items-center gap-2">
             <Clock className="w-4 h-4 text-primary" />
-            Discord Timestamp Generator
-          </h3>
+            Generador de Timestamp de Discord
+          </h2>
           <button 
             onClick={onClose}
+            aria-label="Cerrar"
             className="text-muted-foreground hover:text-foreground transition-colors text-2xl leading-none"
           >
             &times;
@@ -49,8 +51,8 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
         
         <div className="p-6 space-y-4">
           <div className="text-sm text-muted-foreground mb-4">
-             Generate a dynamic timestamp for <span className="text-primary font-mono">{format(targetDate, 'yyyy-MM-dd HH:mm:ss')}</span>. 
-             The previews below show exactly how it will look in Discord.
+             Genera una marca de tiempo dinámica para <span className="text-primary font-mono">{format(targetDate, 'yyyy-MM-dd HH:mm:ss')}</span>. 
+             Las previsualizaciones muestran cómo se verá en Discord.
           </div>
 
           <div className="grid gap-3 max-h-[60vh] overflow-y-auto pr-2">

@@ -9,16 +9,17 @@ import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
 import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
+import { es } from 'date-fns/locale';
 import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2 } from 'lucide-react';
 
 // Configuration for time steps
 const TIME_STEPS = [
-  { label: '1 MINUTE', fn: addMinutes, amount: 1 },
+  { label: '1 MINUTO', fn: addMinutes, amount: 1 },
   { label: '15 MINS', fn: addMinutes, amount: 15 },
-  { label: '1 HOUR', fn: addHours, amount: 1 },
-  { label: '1 DAY', fn: addDays, amount: 1 },
-  { label: '1 WEEK', fn: addWeeks, amount: 1 },
-  { label: '1 MONTH', fn: addMonths, amount: 1 },
+  { label: '1 HORA', fn: addHours, amount: 1 },
+  { label: '1 DÍA', fn: addDays, amount: 1 },
+  { label: '1 SEMANA', fn: addWeeks, amount: 1 },
+  { label: '1 MES', fn: addMonths, amount: 1 },
 ];
 
 const App: React.FC = () => {
@@ -102,7 +103,7 @@ const App: React.FC = () => {
     setTimeState(prev => ({
       ...prev,
       formattedTime: format(prev.current, 'HH:mm:ss'),
-      formattedDate: format(prev.current, 'EEE, MMM d, yyyy')
+      formattedDate: format(prev.current, 'EEE, d MMM, yyyy', { locale: es })
     }));
   }, [timeState.current]);
 
@@ -225,11 +226,11 @@ const App: React.FC = () => {
   const formatLocationTime = (loc: SavedLocation, baseTime: Date, fmt: string) => {
     const time = getLocationTime(loc, baseTime);
     if (loc.timezone) {
-      return format(time, fmt);
+      return format(time, fmt, { locale: es });
     }
     // Arbitrary offset display hack using UTC
     const shifted = new Date(baseTime.getTime() + (loc.lngOffset * 3600 * 1000));
-    return format(shifted, fmt, { timeZone: 'UTC' });
+    return format(shifted, fmt, { timeZone: 'UTC', locale: es });
   };
 
   // Calculate offset for display in header
@@ -239,11 +240,11 @@ const App: React.FC = () => {
     const hours = Math.floor(absMins / 60);
     const mins = absMins % 60;
     
-    if (absMins < 1) return { text: 'LIVE', color: 'text-green-500', bg: 'bg-green-500/10' };
+    if (absMins < 1) return { text: 'EN VIVO', color: 'text-green-500', bg: 'bg-green-500/10' };
     
     const isFuture = diffMins > 0;
     const sign = isFuture ? '+' : '-';
-    const text = `${sign}${hours}h ${mins > 0 ? `${mins}m` : ''} (${isFuture ? 'Future' : 'Past'})`;
+    const text = `${sign}${hours}h ${mins > 0 ? `${mins}m` : ''} (${isFuture ? 'Futuro' : 'Pasado'})`;
     
     if (isFuture) return { text, color: 'text-blue-400', bg: 'bg-blue-500/10' };
     return { text, color: 'text-amber-500', bg: 'bg-amber-500/10' };
@@ -258,32 +259,30 @@ const App: React.FC = () => {
       <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-6 bg-black/80 backdrop-blur-md z-20">
         <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3">
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] overflow-hidden group relative flex-none">
-             {/* New JPG Logo */}
              <img 
                src="https://agenciarse.com/wp-content/uploads/2025/11/logo.jpg" 
-               alt="ChronoMap Logo" 
+               alt="Logo de ChronoMap" 
                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
              />
           </div>
           
           {/* Mobile Left Actions Row */}
           <div className="flex md:hidden items-center gap-3">
-             {/* Info Button */}
              <button 
                 onClick={() => setShowAbout(true)}
                 className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
-                title="About & Changelog"
+                title="Acerca de y registro de cambios"
+                aria-label="Acerca de ChronoMap"
               >
                 <Info className="w-3 h-3" />
               </button>
 
-              {/* Map/List Toggle Button */}
               <button
                 onClick={() => setIsMobileListOpen(!isMobileListOpen)}
                 className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${!isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
               >
                 {isMobileListOpen ? <MapIcon className="w-3 h-3" /> : <List className="w-3 h-3" />}
-                <span>{isMobileListOpen ? 'Map' : 'List'}</span>
+                <span>{isMobileListOpen ? 'Mapa' : 'Lista'}</span>
               </button>
           </div>
 
@@ -291,27 +290,24 @@ const App: React.FC = () => {
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
               ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.3.2</span>
             </h1>
-            <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
+            <span className="text-xs text-muted-foreground">Geovisualización Temporal</span>
           </div>
         </div>
         
         {/* Central Time Display */}
         <div className="flex flex-col items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
            
-           {/* Status Badge */}
            <div className={`mb-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 ${offsetInfo.bg} ${offsetInfo.color} border border-white/5`}>
               {timeState.mode === 'live' ? <Zap className="w-3 h-3 fill-current" /> : <History className="w-3 h-3" />}
               {offsetInfo.text}
            </div>
 
-           {/* Target Time */}
            <div className="flex items-baseline gap-3">
               <div className={`text-4xl md:text-5xl font-mono font-bold tabular-nums tracking-tighter leading-none ${timeState.mode === 'live' ? 'text-white' : offsetInfo.color} drop-shadow-2xl`}>
                 {timeState.formattedTime}
               </div>
            </div>
            
-           {/* Target Date */}
            <div className="text-xs text-zinc-500 font-medium tracking-wide mt-1 uppercase">
               {timeState.formattedDate}
            </div>
@@ -321,7 +317,7 @@ const App: React.FC = () => {
         <div className="flex flex-col items-end gap-1">
            <div className="flex items-center gap-2 mb-1 text-zinc-500">
               <Clock className="w-3 h-3" />
-              <span className="text-[10px] uppercase tracking-wider font-bold">Local Time</span>
+              <span className="text-[10px] uppercase tracking-wider font-bold">Hora Local</span>
            </div>
            <div className="text-sm font-mono text-zinc-400 tabular-nums">
              {format(realTime, 'HH:mm:ss')}
@@ -331,7 +327,8 @@ const App: React.FC = () => {
              <button 
                onClick={() => setShowAbout(true)}
                className="hidden md:flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
-               title="About & Changelog"
+               title="Acerca de y registro de cambios"
+               aria-label="Acerca de ChronoMap"
              >
                <Info className="w-3 h-3" />
              </button>
@@ -339,10 +336,9 @@ const App: React.FC = () => {
                onClick={() => setShowDiscordGen(true)}
                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group h-auto"
              >
-               {/* Use hidden md:block to hide icon on mobile, show on desktop */}
                <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0 hidden md:block" />
                <span className="text-center leading-3">
-                  Share<br className="sm:hidden" /> Timestamp
+                  Compartir<br className="sm:hidden" /> Hora
                </span>
              </button>
            </div>
@@ -355,21 +351,19 @@ const App: React.FC = () => {
         {/* Sidebar */}
         <div className={`absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg transition-transform duration-300 ease-in-out ${isMobileListOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
            
-           {/* Search Bar Area */}
            <div className="relative z-50 p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
              <LocationSearch onSelectCity={handleCitySelect} />
              
-             {/* Sidebar Stats & Clear Toolbar */}
              <div className="flex items-center justify-between mt-3 px-1">
                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">
-                 {locations.length} Locations
+                 {locations.length} Ubicaciones
                </span>
                {locations.some(l => !l.isPinned) && (
                  <button 
                    onClick={clearUnpinnedLocations} 
                    className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors px-1.5 py-0.5 rounded hover:bg-red-400/10"
                  >
-                   <Trash2 size={10} /> Clear Unpinned
+                   <Trash2 size={10} /> Limpiar no fijadas
                  </button>
                )}
              </div>
@@ -379,8 +373,8 @@ const App: React.FC = () => {
              {locations.length === 0 && (
                <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
                   <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
-                  <h3 className="text-zinc-500 font-medium text-sm">No Locations Tracked</h3>
-                  <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Search for a city or click on the map to compare times.</p>
+                  <h3 className="text-zinc-500 font-medium text-sm">No hay ubicaciones</h3>
+                  <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Busca una ciudad o haz clic en el mapa para comparar horas.</p>
                </div>
              )}
 
@@ -390,7 +384,8 @@ const App: React.FC = () => {
                     <button 
                       onClick={() => togglePin(loc.id)}
                       className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-primary hover:text-primary/80 bg-primary/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
-                      title={loc.isPinned ? "Unpin Location" : "Pin Location"}
+                      title={loc.isPinned ? "Desfijar Ubicación" : "Fijar Ubicación"}
+                      aria-label={loc.isPinned ? "Desfijar Ubicación" : "Fijar Ubicación"}
                     >
                       <Pin className={`w-3.5 h-3.5 ${loc.isPinned ? 'fill-current' : ''}`} />
                     </button>
@@ -398,7 +393,8 @@ const App: React.FC = () => {
                     <button 
                       onClick={() => removeLocation(loc.id)}
                       className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
-                      title="Remove Location"
+                      title="Eliminar Ubicación"
+                      aria-label="Eliminar Ubicación"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -406,7 +402,7 @@ const App: React.FC = () => {
                   
                   <div className="flex items-center justify-between mb-1 pr-16">
                     <span className="text-[9px] font-bold text-primary/80 uppercase tracking-wider truncate max-w-[70%] bg-primary/5 px-1.5 py-0.5 rounded">
-                      {loc.timezone ? loc.timezone.split('/')[1].replace('_', ' ') : `GMT${loc.lngOffset >= 0 ? '+' : ''}${Math.round(loc.lngOffset)}`}
+                      {loc.timezone ? loc.timezone.split('/')[1].replace(/_/g, ' ') : `GMT${loc.lngOffset >= 0 ? '+' : ''}${Math.round(loc.lngOffset)}`}
                     </span>
                   </div>
                   
@@ -421,14 +417,13 @@ const App: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-[10px] text-zinc-600 mt-1 font-medium uppercase tracking-wide">
-                     {formatLocationTime(loc, timeState.current, 'MMM d, yyyy')}
+                     {formatLocationTime(loc, timeState.current, 'd MMM, yyyy')}
                   </div>
                </div>
              ))}
            </div>
         </div>
 
-        {/* Map Area */}
         <div className="absolute inset-0 md:relative flex-1 bg-[#050505] z-0">
           <MapChart 
             currentTime={timeState.current} 
@@ -441,7 +436,6 @@ const App: React.FC = () => {
       {/* Footer Controls */}
       <footer className="flex-none bg-black border-t border-zinc-800 z-30">
         
-        {/* The Time Scrubber */}
         <TimeScrubber 
           time={timeState.current}
           onChange={handleScrubberChange}
@@ -451,10 +445,8 @@ const App: React.FC = () => {
 
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 p-2 md:p-4">
           
-          {/* Row 1 Mobile: 3-Column Grid */}
           <div className="w-full md:w-auto grid grid-cols-[1fr_auto_1fr] items-center md:flex md:gap-3">
             
-            {/* Left: Mobile Reset Button (Above Resume) using justify-self-end to bring it close to center */}
             <div className="justify-self-end md:hidden pr-4">
                <button 
                   onClick={resetToLive}
@@ -466,31 +458,31 @@ const App: React.FC = () => {
                   }`}
                >
                   <RotateCcw className="w-3 h-3" />
-                  <span>Live</span>
+                  <span>En Vivo</span>
                </button>
             </div>
 
-            {/* Center: Navigation Controls */}
             <div className="flex items-center gap-3 justify-self-center">
               <button 
                 onClick={() => handleTimeShift(-1)} 
                 className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-                title="Go Back"
+                title="Retroceder en el tiempo"
+                aria-label="Retroceder en el tiempo"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               
-              {/* Time Step Selector */}
               <div className="flex flex-col items-center gap-0.5">
                   <button 
                     onClick={() => changeStep(1)}
                     disabled={timeStepIndex >= TIME_STEPS.length - 1}
                     className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="Aumentar paso de tiempo"
                   >
                     <ChevronUp size={14} />
                   </button>
                   
-                  <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-16 text-center select-none">
+                  <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-20 text-center select-none">
                     {TIME_STEPS[timeStepIndex].label}
                   </span>
                   
@@ -498,6 +490,7 @@ const App: React.FC = () => {
                     onClick={() => changeStep(-1)}
                     disabled={timeStepIndex <= 0}
                     className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                     aria-label="Disminuir paso de tiempo"
                   >
                     <ChevronDown size={14} />
                   </button>
@@ -506,16 +499,15 @@ const App: React.FC = () => {
               <button 
                 onClick={() => handleTimeShift(1)} 
                 className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-                title="Go Forward"
+                title="Avanzar en el tiempo"
+                aria-label="Avanzar en el tiempo"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Right: Empty spacer to balance grid on mobile */}
             <div className="md:hidden"></div>
             
-            {/* Desktop Reset Button */}
             <div className="hidden md:block">
                <button 
                   onClick={resetToLive}
@@ -527,12 +519,11 @@ const App: React.FC = () => {
                   }`}
                >
                   <RotateCcw className="w-3 h-3" />
-                  <span>Return to Now</span>
+                  <span>Volver al presente</span>
                </button>
             </div>
           </div>
 
-          {/* Center: Playback & Date Picker */}
           <div className="flex items-center justify-center w-full md:w-auto gap-2">
             <div className="flex items-center gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg">
                
@@ -541,7 +532,7 @@ const App: React.FC = () => {
                   className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
                >
                   {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
-                  <span className="text-xs font-medium pr-1">{isPaused ? "Resume" : "Pause"}</span>
+                  <span className="text-xs font-medium pr-1">{isPaused ? "Reanudar" : "Pausar"}</span>
                </button>
 
                <div className="h-6 w-[1px] bg-zinc-800"></div>
@@ -561,7 +552,8 @@ const App: React.FC = () => {
                   </div>
                   <button 
                     className="p-1.5 rounded-md hover:bg-green-500/20 hover:text-green-500 text-zinc-600 transition-colors"
-                    title="Set Date & Time"
+                    title="Establecer Fecha y Hora"
+                    aria-label="Establecer Fecha y Hora"
                     onClick={() => setIsPaused(true)}
                   >
                     <Check className="w-3.5 h-3.5" />
@@ -573,7 +565,6 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Discord Generator Modal */}
       {showDiscordGen && (
         <DiscordGenerator 
           targetDate={timeState.current}
@@ -582,7 +573,6 @@ const App: React.FC = () => {
         />
       )}
       
-      {/* About & Changelog Modal */}
       {showAbout && (
         <AboutModal onClose={() => setShowAbout(false)} />
       )}

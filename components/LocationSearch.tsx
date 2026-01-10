@@ -55,7 +55,7 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
         <input
           type="text"
           className="block w-full pl-10 pr-3 py-2.5 border border-zinc-800 rounded-xl leading-5 bg-zinc-900/50 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:bg-zinc-900 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-all"
-          placeholder="Search city or country..."
+          placeholder="Buscar ciudad o país..."
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -67,6 +67,7 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
           <button 
             className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 hover:text-zinc-300"
             onClick={() => setQuery('')}
+            aria-label="Limpiar búsqueda"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -95,7 +96,7 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
       
       {isOpen && query.length >= 2 && results.length === 0 && (
         <div className="absolute z-50 mt-1 w-full bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl py-4 text-center text-sm text-zinc-500">
-          No locations found
+          No se encontraron ubicaciones
         </div>
       )}
     </div>
