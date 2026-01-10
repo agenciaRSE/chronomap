@@ -27,23 +27,30 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
   const [globeZoom, setGlobeZoom] = useState(1);
 
-  // Refs for stable D3 callbacks
   const rotationRef = useRef(rotation);
   const globeZoomRef = useRef(globeZoom);
-  const isGlobeRef = useRef(isGlobe);
+  const inertiaRef = useRef<number | null>(null);
+  const velocityRef = useRef<[number, number]>([0, 0]);
+
 
   useEffect(() => {
     rotationRef.current = rotation;
     globeZoomRef.current = globeZoom;
-    isGlobeRef.current = isGlobe;
-  }, [rotation, globeZoom, isGlobe]);
+  }, [rotation, globeZoom]);
+
+  useEffect(() => {
+    return () => {
+      if (inertiaRef.current) {
+        cancelAnimationFrame(inertiaRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(response => response.json())
       .then(data => {
         const features = (topojson.feature(data, data.objects.countries) as any).features;
-        // Provide no filter to get all boundaries including coastlines
         const borders = topojson.mesh(data, data.objects.countries);
         setMapData({ features, borders });
       });
@@ -93,57 +100,81 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
     svg.on(".zoom", null);
     svg.on(".drag", null);
+    
+    if (inertiaRef.current) {
+      cancelAnimationFrame(inertiaRef.current);
+      inertiaRef.current = null;
+    }
 
     if (isGlobe) {
-      // --- 3D MODE ---
       g.attr("transform", null);
-
       let totalMovement = 0;
 
       const drag = d3.drag<SVGSVGElement, unknown>()
         .filter((event) => {
-           // STRICT FILTER: Only allow drag if it's a mouse or exactly 1 finger.
            if (event.type === 'touchstart') return event.touches.length === 1;
            return !event.button; 
         })
         .on("start", () => {
+          if (inertiaRef.current) {
+            cancelAnimationFrame(inertiaRef.current);
+            inertiaRef.current = null;
+          }
+          velocityRef.current = [0, 0];
           totalMovement = 0;
           svg.style("cursor", "grabbing");
         })
         .on("drag", (event) => {
           totalMovement += Math.hypot(event.dx, event.dy);
           
-          const currentZoom = globeZoomRef.current;
-          const baseScale = Math.min(dimensions.width, dimensions.height) / 2.2;
-          const scale = baseScale * currentZoom;
+          const sensitivity = 80 / projection.scale();
+          const dx = event.dx * sensitivity;
+          const dy = event.dy * sensitivity;
           
-          // INCREASED SENSITIVITY (250) for smoother mobile rotation
-          const sensitivity = 250 / scale;
+          velocityRef.current = [dx, dy];
           
-          const currRotation = rotationRef.current;
-          const newRotation: [number, number, number] = [
-            currRotation[0] + event.dx * sensitivity,
-            currRotation[1] - event.dy * sensitivity,
-            currRotation[2]
-          ];
-          
-          setRotation(newRotation);
+          setRotation(prevRotation => {
+              let newLon = prevRotation[0] + dx;
+              let newLat = prevRotation[1] - dy;
+              newLat = Math.max(-90, Math.min(90, newLat));
+              return [newLon, newLat, prevRotation[2]];
+          });
         })
         .on("end", (event) => {
           svg.style("cursor", "crosshair");
           
-          // SMART CLICK DETECTION (< 10px movement)
+          if (Math.hypot(...velocityRef.current) > 0.1) {
+            const inertiaLoop = () => {
+              const decay = 0.95;
+              let [vx, vy] = velocityRef.current;
+              
+              if (Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01) {
+                inertiaRef.current = null;
+                return;
+              }
+
+              vx *= decay;
+              vy *= decay;
+              velocityRef.current = [vx, vy];
+
+              setRotation(prevRotation => {
+                let newLon = prevRotation[0] + vx;
+                let newLat = prevRotation[1] - vy;
+                newLat = Math.max(-90, Math.min(90, newLat));
+                return [newLon, newLat, prevRotation[2]];
+              });
+
+              inertiaRef.current = requestAnimationFrame(inertiaLoop);
+            };
+            inertiaRef.current = requestAnimationFrame(inertiaLoop);
+          }
+          
           if (totalMovement < 10) {
              let clientX, clientY;
              
-             // Handle Touch vs Mouse coordinates
              if (event.sourceEvent.type === 'touchend') {
-                // For touchend, we must use changedTouches as touches list is empty
                 const touch = event.sourceEvent.changedTouches[0];
-                if (touch) {
-                    clientX = touch.clientX;
-                    clientY = touch.clientY;
-                }
+                if (touch) { clientX = touch.clientX; clientY = touch.clientY; }
              } else {
                 clientX = event.sourceEvent.clientX;
                 clientY = event.sourceEvent.clientY;
@@ -151,19 +182,15 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
              if (clientX === undefined || clientY === undefined) return;
 
-             // Convert to container-relative coordinates for D3
              const rect = containerRef.current?.getBoundingClientRect();
              if (!rect) return;
              
              const relX = clientX - rect.left;
              const relY = clientY - rect.top;
 
-             // Reconstruct temporary projection to invert coordinates accurately using latest refs
-             const { width, height } = dimensions;
-             const baseScale = Math.min(width, height) / 2.2;
              const tempProjection = d3.geoOrthographic()
-                .scale(baseScale * globeZoomRef.current)
-                .translate([width / 2, height / 2])
+                .scale(projection.scale())
+                .translate(projection.translate() as [number, number])
                 .rotate(rotationRef.current)
                 .clipAngle(90);
 
@@ -181,7 +208,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.5, 8])
         .filter((event) => {
-           // STRICT FILTER: Only allow wheel or 2+ fingers.
            if (event.type === 'wheel') return true;
            if (event.type === 'touchstart' && event.touches.length >= 2) return true;
            return false;
@@ -192,13 +218,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
       svg.call(drag).style("cursor", "crosshair");
       svg.call(zoom).on("dblclick.zoom", null);
-
-      // Initialize zoom transform to match current state
       svg.call(zoom.transform, d3.zoomIdentity.scale(globeZoomRef.current));
       zoomBehaviorRef.current = zoom;
 
     } else {
-      // --- 2D MODE ---
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([1, 12])
         .translateExtent([[-100, -100], [dimensions.width + 100, dimensions.height + 100]])
@@ -211,22 +234,30 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.call(zoom).on("dblclick.zoom", null);
       svg.style("cursor", "move");
       
-      if (zoomLevel === 1) {
-         svg.call(zoom.transform, d3.zoomIdentity);
-      }
+      svg.call(zoom.transform, d3.zoomIdentity.scale(zoomLevel));
     }
 
-  }, [isGlobe, dimensions]); 
-
+  }, [isGlobe, dimensions, projection]);
+  
+  // --- NEW EFFECT for dynamic styles that depend on zoom level ---
+  useEffect(() => {
+    if (isGlobe || !mapGroupRef.current) return;
+    d3.select(mapGroupRef.current)
+      .selectAll("path.country")
+      .attr("stroke-width", 0.5 / zoomLevel);
+  }, [zoomLevel, isGlobe]);
 
   // --- Render Static Layers ---
   useEffect(() => {
     if (!mapData || !mapGroupRef.current) return;
 
     const group = d3.select(mapGroupRef.current);
-    let staticGroup = group.select<SVGGElement>(".static-map-layer");
     
-    // 1. Sphere Background
+    // FIX for tooltips: Use .select() to correctly target the React-rendered element,
+    // ensuring it's always rendered before the markers layer.
+    const staticGroup = group.select<SVGGElement>(".static-map-layer");
+    if (staticGroup.empty()) return;
+    
     const sphereData = isGlobe ? [{ type: "Sphere" }] : [];
     staticGroup.selectAll("path.sphere")
       .data(sphereData)
@@ -237,7 +268,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("stroke", "#27272a")
       .attr("stroke-width", 1.5);
 
-    // 2. Graticule
     const graticuleData = isGlobe ? [graticule] : [];
     staticGroup.selectAll("path.graticule")
       .data(graticuleData)
@@ -249,7 +279,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("stroke-width", 0.5)
       .attr("stroke-opacity", 0.3);
 
-    // 3. Land
     const fill = isGlobe ? "#27272a" : "#09090b"; 
     const hoverFill = isGlobe ? "#3f3f46" : "#18181b";
     const stroke = isGlobe ? "none" : "#3f3f46"; 
@@ -261,7 +290,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("d", pathGenerator as any)
       .attr("fill", fill)
       .attr("stroke", stroke) 
-      .attr("stroke-width", 0.5)
       .style("pointer-events", isGlobe ? "none" : "auto")
       .style("cursor", isGlobe ? "grab" : "crosshair")
       .on("click", (event) => {
@@ -280,8 +308,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .on("mouseleave", function() {
          if (!isGlobe) d3.select(this).attr("fill", fill);
       });
+      
+    // FIX for stroke width: Apply the scaled width on initial draw and mode switch.
+    d3.select(mapGroupRef.current).selectAll("path.country").attr("stroke-width", 0.5 / zoomLevel);
 
-    // 4. Borders (Mesh)
+
     const borderData = isGlobe ? [mapData.borders] : [];
     staticGroup.selectAll("path.borders")
       .data(borderData)
@@ -293,28 +324,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("stroke-width", 0.8)
       .style("pointer-events", "none");
 
-    // 5. Links
-    const links = [];
-    for(let i=0; i < MAJOR_CITIES.length - 1; i+=2) {
-       links.push({
-         type: "LineString",
-         coordinates: [
-           [MAJOR_CITIES[i].lng, MAJOR_CITIES[i].lat],
-           [MAJOR_CITIES[i+1].lng, MAJOR_CITIES[i+1].lat]
-         ]
-       });
-    }
-    staticGroup.selectAll("path.link")
-       .data(links)
-       .join("path")
-       .attr("class", "link")
-       .attr("d", (d: any) => pathGenerator(d))
-       .attr("fill", "none")
-       .attr("stroke", "#3b82f6")
-       .attr("stroke-width", 0.5)
-       .attr("stroke-opacity", 0.2)
-       .attr("stroke-dasharray", "4 4");
-
   }, [mapData, pathGenerator, projection, onMapClick, isGlobe, graticule]);
 
 
@@ -324,7 +333,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       setGlobeZoom(z => {
         const newZ = Math.min(8, z * 1.5);
         if (svgRef.current && zoomBehaviorRef.current) {
-           d3.select(svgRef.current).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(newZ));
+           d3.select(svgRef.current).transition().duration(250).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(newZ));
         }
         return newZ;
       });
@@ -342,7 +351,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       setGlobeZoom(z => {
         const newZ = Math.max(0.5, z * 0.66);
         if (svgRef.current && zoomBehaviorRef.current) {
-           d3.select(svgRef.current).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(newZ));
+           d3.select(svgRef.current).transition().duration(250).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(newZ));
         }
         return newZ;
       });
@@ -357,12 +366,14 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
   const handleResetView = () => {
     if (isGlobe) {
+      if (inertiaRef.current) cancelAnimationFrame(inertiaRef.current);
       setRotation([0,0,0]);
       setGlobeZoom(1);
       if (svgRef.current && zoomBehaviorRef.current) {
-         d3.select(svgRef.current).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(1));
+         d3.select(svgRef.current).transition().duration(500).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(1));
       }
     } else {
+      setZoomLevel(1);
       if (svgRef.current && zoomBehaviorRef.current) {
         d3.select(svgRef.current)
           .transition().duration(500)
@@ -395,12 +406,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       <div className="absolute inset-0 pointer-events-none dot-pattern opacity-20" />
       
       <svg ref={svgRef} width="100%" height="100%" className={`relative z-10 touch-none ${isGlobe ? 'cursor-crosshair' : 'cursor-move'}`}>
-         <defs>
-            <pattern id="dot-pattern" width="8" height="8" patternUnits="userSpaceOnUse">
-              <circle cx="2" cy="2" r="1" fill="#27272a" />
-            </pattern>
-         </defs>
-
          <g ref={mapGroupRef}>
             <g className="static-map-layer" />
 
@@ -411,7 +416,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                   
                   return (
                     <circle 
-                        key={city.name}
+                        key={`${city.name}-${city.country}`}
                         cx={pos[0]}
                         cy={pos[1]}
                         r={(isGlobe ? 2.5 : 2) * markerScale}
@@ -476,13 +481,16 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
          </g>
       </svg>
       
-      {/* Controls positioned higher on mobile (bottom-40) to avoid footer overlap */}
       <div className="absolute bottom-40 md:bottom-6 right-4 md:right-6 flex flex-col gap-2 z-40">
         <button 
           onClick={() => {
-            setIsGlobe(!isGlobe);
-            setRotation([0,0,0]);
-            setGlobeZoom(1);
+            const nextIsGlobe = !isGlobe;
+            setIsGlobe(nextIsGlobe);
+            if(nextIsGlobe) {
+              handleResetView();
+            } else {
+              setZoomLevel(1);
+            }
           }}
           className={`p-2 rounded-lg border transition-all shadow-lg ${isGlobe ? 'bg-blue-500 text-white border-blue-400' : 'bg-zinc-900/80 text-zinc-200 border-zinc-800 hover:bg-zinc-800'}`}
           title={isGlobe ? "Cambiar a Mapa 2D" : "Cambiar a Globo 3D"}
