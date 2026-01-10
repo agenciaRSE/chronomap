@@ -9,17 +9,17 @@ import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
 import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
-import { es } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2 } from 'lucide-react';
 
 // Configuration for time steps
 const TIME_STEPS = [
-  { label: '1 MINUTO', fn: addMinutes, amount: 1 },
+  { label: '1 MINUTE', fn: addMinutes, amount: 1 },
   { label: '15 MINS', fn: addMinutes, amount: 15 },
-  { label: '1 HORA', fn: addHours, amount: 1 },
-  { label: '1 DÍA', fn: addDays, amount: 1 },
-  { label: '1 SEMANA', fn: addWeeks, amount: 1 },
-  { label: '1 MES', fn: addMonths, amount: 1 },
+  { label: '1 HOUR', fn: addHours, amount: 1 },
+  { label: '1 DAY', fn: addDays, amount: 1 },
+  { label: '1 WEEK', fn: addWeeks, amount: 1 },
+  { label: '1 MONTH', fn: addMonths, amount: 1 },
 ];
 
 const App: React.FC = () => {
@@ -103,7 +103,7 @@ const App: React.FC = () => {
     setTimeState(prev => ({
       ...prev,
       formattedTime: format(prev.current, 'HH:mm:ss'),
-      formattedDate: format(prev.current, 'EEE, d MMM, yyyy', { locale: es })
+      formattedDate: format(prev.current, 'EEE, MMM d, yyyy', { locale: enUS })
     }));
   }, [timeState.current]);
 
@@ -226,11 +226,11 @@ const App: React.FC = () => {
   const formatLocationTime = (loc: SavedLocation, baseTime: Date, fmt: string) => {
     const time = getLocationTime(loc, baseTime);
     if (loc.timezone) {
-      return format(time, fmt, { locale: es });
+      return format(time, fmt, { locale: enUS });
     }
     // Arbitrary offset display hack using UTC
     const shifted = new Date(baseTime.getTime() + (loc.lngOffset * 3600 * 1000));
-    return format(shifted, fmt, { timeZone: 'UTC', locale: es });
+    return format(shifted, fmt, { timeZone: 'UTC', locale: enUS });
   };
 
   // Calculate offset for display in header
@@ -240,11 +240,11 @@ const App: React.FC = () => {
     const hours = Math.floor(absMins / 60);
     const mins = absMins % 60;
     
-    if (absMins < 1) return { text: 'EN VIVO', color: 'text-green-500', bg: 'bg-green-500/10' };
+    if (absMins < 1) return { text: 'LIVE', color: 'text-green-500', bg: 'bg-green-500/10' };
     
     const isFuture = diffMins > 0;
     const sign = isFuture ? '+' : '-';
-    const text = `${sign}${hours}h ${mins > 0 ? `${mins}m` : ''} (${isFuture ? 'Futuro' : 'Pasado'})`;
+    const text = `${sign}${hours}h ${mins > 0 ? `${mins}m` : ''} (${isFuture ? 'Future' : 'Past'})`;
     
     if (isFuture) return { text, color: 'text-blue-400', bg: 'bg-blue-500/10' };
     return { text, color: 'text-amber-500', bg: 'bg-amber-500/10' };
@@ -261,7 +261,7 @@ const App: React.FC = () => {
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] overflow-hidden group relative flex-none">
              <img 
                src="https://agenciarse.com/wp-content/uploads/2025/11/logo.jpg" 
-               alt="Logo de ChronoMap" 
+               alt="ChronoMap Logo" 
                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
              />
           </div>
@@ -271,8 +271,8 @@ const App: React.FC = () => {
              <button 
                 onClick={() => setShowAbout(true)}
                 className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
-                title="Acerca de y registro de cambios"
-                aria-label="Acerca de ChronoMap"
+                title="About & Changelog"
+                aria-label="About ChronoMap"
               >
                 <Info className="w-3 h-3" />
               </button>
@@ -282,15 +282,15 @@ const App: React.FC = () => {
                 className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${!isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
               >
                 {isMobileListOpen ? <MapIcon className="w-3 h-3" /> : <List className="w-3 h-3" />}
-                <span>{isMobileListOpen ? 'Mapa' : 'Lista'}</span>
+                <span>{isMobileListOpen ? 'Map' : 'List'}</span>
               </button>
           </div>
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.3.2</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.4.0</span>
             </h1>
-            <span className="text-xs text-muted-foreground">Geovisualización Temporal</span>
+            <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
         </div>
         
@@ -317,7 +317,7 @@ const App: React.FC = () => {
         <div className="flex flex-col items-end gap-1">
            <div className="flex items-center gap-2 mb-1 text-zinc-500">
               <Clock className="w-3 h-3" />
-              <span className="text-[10px] uppercase tracking-wider font-bold">Hora Local</span>
+              <span className="text-[10px] uppercase tracking-wider font-bold">Local Time</span>
            </div>
            <div className="text-sm font-mono text-zinc-400 tabular-nums">
              {format(realTime, 'HH:mm:ss')}
@@ -327,8 +327,8 @@ const App: React.FC = () => {
              <button 
                onClick={() => setShowAbout(true)}
                className="hidden md:flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
-               title="Acerca de y registro de cambios"
-               aria-label="Acerca de ChronoMap"
+               title="About & Changelog"
+               aria-label="About ChronoMap"
              >
                <Info className="w-3 h-3" />
              </button>
@@ -337,9 +337,7 @@ const App: React.FC = () => {
                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group h-auto"
              >
                <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0 hidden md:block" />
-               <span className="text-center leading-3">
-                  Compartir<br className="sm:hidden" /> Hora
-               </span>
+               <span className="text-center">Share Timestamp</span>
              </button>
            </div>
         </div>
@@ -356,14 +354,14 @@ const App: React.FC = () => {
              
              <div className="flex items-center justify-between mt-3 px-1">
                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">
-                 {locations.length} Ubicaciones
+                 {locations.length} Locations
                </span>
                {locations.some(l => !l.isPinned) && (
                  <button 
                    onClick={clearUnpinnedLocations} 
                    className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors px-1.5 py-0.5 rounded hover:bg-red-400/10"
                  >
-                   <Trash2 size={10} /> Limpiar no fijadas
+                   <Trash2 size={10} /> Clear unpinned
                  </button>
                )}
              </div>
@@ -373,8 +371,8 @@ const App: React.FC = () => {
              {locations.length === 0 && (
                <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
                   <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
-                  <h3 className="text-zinc-500 font-medium text-sm">No hay ubicaciones</h3>
-                  <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Busca una ciudad o haz clic en el mapa para comparar horas.</p>
+                  <h3 className="text-zinc-500 font-medium text-sm">No Locations</h3>
+                  <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Search for a city or click on the map to compare times.</p>
                </div>
              )}
 
@@ -384,8 +382,8 @@ const App: React.FC = () => {
                     <button 
                       onClick={() => togglePin(loc.id)}
                       className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-primary hover:text-primary/80 bg-primary/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
-                      title={loc.isPinned ? "Desfijar Ubicación" : "Fijar Ubicación"}
-                      aria-label={loc.isPinned ? "Desfijar Ubicación" : "Fijar Ubicación"}
+                      title={loc.isPinned ? "Unpin Location" : "Pin Location"}
+                      aria-label={loc.isPinned ? "Unpin Location" : "Pin Location"}
                     >
                       <Pin className={`w-3.5 h-3.5 ${loc.isPinned ? 'fill-current' : ''}`} />
                     </button>
@@ -393,8 +391,8 @@ const App: React.FC = () => {
                     <button 
                       onClick={() => removeLocation(loc.id)}
                       className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
-                      title="Eliminar Ubicación"
-                      aria-label="Eliminar Ubicación"
+                      title="Remove Location"
+                      aria-label="Remove Location"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -417,7 +415,7 @@ const App: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-[10px] text-zinc-600 mt-1 font-medium uppercase tracking-wide">
-                     {formatLocationTime(loc, timeState.current, 'd MMM, yyyy')}
+                     {formatLocationTime(loc, timeState.current, 'MMM d, yyyy')}
                   </div>
                </div>
              ))}
@@ -458,7 +456,7 @@ const App: React.FC = () => {
                   }`}
                >
                   <RotateCcw className="w-3 h-3" />
-                  <span>En Vivo</span>
+                  <span>Live</span>
                </button>
             </div>
 
@@ -466,8 +464,8 @@ const App: React.FC = () => {
               <button 
                 onClick={() => handleTimeShift(-1)} 
                 className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-                title="Retroceder en el tiempo"
-                aria-label="Retroceder en el tiempo"
+                title="Step Back in Time"
+                aria-label="Step Back in Time"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -477,7 +475,7 @@ const App: React.FC = () => {
                     onClick={() => changeStep(1)}
                     disabled={timeStepIndex >= TIME_STEPS.length - 1}
                     className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Aumentar paso de tiempo"
+                    aria-label="Increase time step"
                   >
                     <ChevronUp size={14} />
                   </button>
@@ -490,7 +488,7 @@ const App: React.FC = () => {
                     onClick={() => changeStep(-1)}
                     disabled={timeStepIndex <= 0}
                     className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                     aria-label="Disminuir paso de tiempo"
+                     aria-label="Decrease time step"
                   >
                     <ChevronDown size={14} />
                   </button>
@@ -499,8 +497,8 @@ const App: React.FC = () => {
               <button 
                 onClick={() => handleTimeShift(1)} 
                 className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-                title="Avanzar en el tiempo"
-                aria-label="Avanzar en el tiempo"
+                title="Step Forward in Time"
+                aria-label="Step Forward in Time"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -519,7 +517,7 @@ const App: React.FC = () => {
                   }`}
                >
                   <RotateCcw className="w-3 h-3" />
-                  <span>Volver al presente</span>
+                  <span>Back to Present</span>
                </button>
             </div>
           </div>
@@ -532,7 +530,7 @@ const App: React.FC = () => {
                   className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
                >
                   {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
-                  <span className="text-xs font-medium pr-1">{isPaused ? "Reanudar" : "Pausar"}</span>
+                  <span className="text-xs font-medium pr-1">{isPaused ? "Resume" : "Pause"}</span>
                </button>
 
                <div className="h-6 w-[1px] bg-zinc-800"></div>
@@ -552,8 +550,8 @@ const App: React.FC = () => {
                   </div>
                   <button 
                     className="p-1.5 rounded-md hover:bg-green-500/20 hover:text-green-500 text-zinc-600 transition-colors"
-                    title="Establecer Fecha y Hora"
-                    aria-label="Establecer Fecha y Hora"
+                    title="Set Date and Time"
+                    aria-label="Set Date and Time"
                     onClick={() => setIsPaused(true)}
                   >
                     <Check className="w-3.5 h-3.5" />

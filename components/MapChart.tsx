@@ -493,8 +493,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
             }
           }}
           className={`p-2 rounded-lg border transition-all shadow-lg ${isGlobe ? 'bg-blue-500 text-white border-blue-400' : 'bg-zinc-900/80 text-zinc-200 border-zinc-800 hover:bg-zinc-800'}`}
-          title={isGlobe ? "Cambiar a Mapa 2D" : "Cambiar a Globo 3D"}
-          aria-label={isGlobe ? "Cambiar a Mapa 2D" : "Cambiar a Globo 3D"}
+          title={isGlobe ? "Switch to 2D Map" : "Switch to 3D Globe"}
+          aria-label={isGlobe ? "Switch to 2D Map" : "Switch to 3D Globe"}
         >
           {isGlobe ? <MapIcon className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
         </button>
@@ -504,24 +504,24 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         <button 
           onClick={handleZoomIn}
           className="p-2 rounded-lg border border-zinc-800 shadow-lg transition-all bg-zinc-900/80 text-zinc-200 hover:bg-zinc-800 hover:text-white"
-          title="Acercar"
-          aria-label="Acercar"
+          title="Zoom In"
+          aria-label="Zoom In"
         >
           <Plus className="w-4 h-4" />
         </button>
         <button 
           onClick={handleZoomOut}
           className="p-2 rounded-lg border border-zinc-800 shadow-lg transition-all bg-zinc-900/80 text-zinc-200 hover:bg-zinc-800 hover:text-white"
-          title="Alejar"
-          aria-label="Alejar"
+          title="Zoom Out"
+          aria-label="Zoom Out"
         >
           <Minus className="w-4 h-4" />
         </button>
         <button 
           onClick={handleResetView}
           className="p-2 bg-zinc-900/80 backdrop-blur text-zinc-200 rounded-lg border border-zinc-800 hover:bg-zinc-800 hover:text-white transition-all shadow-lg"
-          title="Restablecer Vista"
-          aria-label="Restablecer Vista"
+          title="Reset View"
+          aria-label="Reset View"
         >
           <Maximize className="w-4 h-4" />
         </button>
@@ -529,10 +529,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
       <div className="absolute bottom-4 left-4 pointer-events-none hidden md:block">
         <h2 className="text-zinc-500 text-xs uppercase tracking-widest font-bold">
-          {isGlobe ? 'Vista de Globo 3D' : 'Vista Multi-Punto'}
+          {isGlobe ? '3D Globe View' : 'Multi-Point View'}
         </h2>
         <p className="text-zinc-700 text-[10px]">
-          {isGlobe ? 'Scroll para zoom • Arrastrar para rotar' : 'Scroll para zoom • Arrastrar para mover'}
+          {isGlobe ? 'Scroll to zoom • Drag to rotate' : 'Scroll to zoom • Drag to pan'}
         </p>
       </div>
     </div>
