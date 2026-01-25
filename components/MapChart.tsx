@@ -115,7 +115,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
            if (event.type === 'touchstart') return event.touches.length === 1;
            return !event.button; 
         })
-        .on("start", () => {
+        .on("start", (event) => {
+          event.sourceEvent.preventDefault();
           if (inertiaRef.current) {
             cancelAnimationFrame(inertiaRef.current);
             inertiaRef.current = null;
@@ -125,6 +126,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           svg.style("cursor", "grabbing");
         })
         .on("drag", (event) => {
+          event.sourceEvent.preventDefault();
           totalMovement += Math.hypot(event.dx, event.dy);
           
           const sensitivity = 80 / projection.scale();
