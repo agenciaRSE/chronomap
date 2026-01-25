@@ -53,8 +53,8 @@ const App: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
   
-  // Mobile View State: 'true' means Sidebar (List) is visible, 'false' means Map is visible
-  const [isMobileListOpen, setIsMobileListOpen] = useState(true);
+  // Mobile View State: Default to map view on mobile, list view on desktop
+  const [isMobileListOpen, setIsMobileListOpen] = useState(window.innerWidth < 768 ? false : true);
 
   // Persist pinned locations to localStorage whenever locations change
   useEffect(() => {
@@ -279,7 +279,7 @@ const App: React.FC = () => {
 
               <button
                 onClick={() => setIsMobileListOpen(!isMobileListOpen)}
-                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${!isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
+                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
               >
                 {isMobileListOpen ? <MapIcon className="w-3 h-3" /> : <List className="w-3 h-3" />}
                 <span>{isMobileListOpen ? 'Map' : 'List'}</span>
@@ -288,7 +288,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.4.0</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.5.0</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
@@ -346,88 +346,97 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className="flex-1 relative overflow-hidden flex flex-col md:flex-row">
         
-        {/* Sidebar */}
-        <div className={`absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg transition-transform duration-300 ease-in-out ${isMobileListOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-           
-           <div className="relative z-50 p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
-             <LocationSearch onSelectCity={handleCitySelect} />
-             
-             <div className="flex items-center justify-between mt-3 px-1">
-               <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">
-                 {locations.length} Locations
-               </span>
-               {locations.some(l => !l.isPinned) && (
-                 <button 
-                   onClick={clearUnpinnedLocations} 
-                   className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors px-1.5 py-0.5 rounded hover:bg-red-400/10"
-                 >
-                   <Trash2 size={10} /> Clear unpinned
-                 </button>
-               )}
-             </div>
-           </div>
-
-           <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4 bg-black/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none pointer-events-auto">
-             {locations.length === 0 && (
-               <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
-                  <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
-                  <h3 className="text-zinc-500 font-medium text-sm">No Locations</h3>
-                  <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Search for a city or click on the map to compare times.</p>
-               </div>
-             )}
-
-             {locations.map(loc => (
-               <div key={loc.id} className={`pointer-events-auto group bg-zinc-900/80 backdrop-blur-md border ${loc.isPinned ? 'border-primary/40 ring-1 ring-primary/20' : 'border-zinc-800'} hover:border-zinc-600 p-4 rounded-xl transition-all duration-200 relative shadow-lg`}>
-                  <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all bg-black/20 backdrop-blur-sm rounded-lg p-0.5">
-                    <button 
-                      onClick={() => togglePin(loc.id)}
-                      className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-primary hover:text-primary/80 bg-primary/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
-                      title={loc.isPinned ? "Unpin Location" : "Pin Location"}
-                      aria-label={loc.isPinned ? "Unpin Location" : "Pin Location"}
-                    >
-                      <Pin className={`w-3.5 h-3.5 ${loc.isPinned ? 'fill-current' : ''}`} />
-                    </button>
-                    <div className="w-[1px] h-4 bg-zinc-700/50 mx-0.5"></div>
-                    <button 
-                      onClick={() => removeLocation(loc.id)}
-                      className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
-                      title="Remove Location"
-                      aria-label="Remove Location"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mb-1 pr-16">
-                    <span className="text-[9px] font-bold text-primary/80 uppercase tracking-wider truncate max-w-[70%] bg-primary/5 px-1.5 py-0.5 rounded">
-                      {loc.timezone ? loc.timezone.split('/')[1].replace(/_/g, ' ') : `GMT${loc.lngOffset >= 0 ? '+' : ''}${Math.round(loc.lngOffset)}`}
-                    </span>
-                  </div>
-                  
-                  <h2 className="font-medium text-zinc-300 truncate pr-4 text-sm" title={loc.name}>{loc.name}</h2>
-                  
-                  <div className="flex items-end gap-2 mt-2">
-                    <div className="text-2xl font-mono font-bold text-white tabular-nums leading-none">
-                       {formatLocationTime(loc, timeState.current, 'HH:mm')}
-                    </div>
-                    <div className="text-xs text-zinc-500 font-medium pb-0.5">
-                       {formatLocationTime(loc, timeState.current, 'a')}
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-zinc-600 mt-1 font-medium uppercase tracking-wide">
-                     {formatLocationTime(loc, timeState.current, 'MMM d, yyyy')}
-                  </div>
-               </div>
-             ))}
-           </div>
+        {/* Mobile-only Search Header */}
+        <div className="md:hidden p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md z-20">
+          <LocationSearch onSelectCity={handleCitySelect} />
         </div>
+        
+        {/* Main content wrapper */}
+        <div className="flex-1 relative flex overflow-hidden">
+          {/* Sidebar */}
+          <div className={`absolute md:relative z-10 h-full w-full md:w-80 flex flex-col pointer-events-none md:pointer-events-auto md:border-r border-zinc-800/50 md:bg-black/20 md:backdrop-blur-lg transition-transform duration-300 ease-in-out ${isMobileListOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+            
+            {/* Desktop-only Search Header */}
+            <div className="hidden md:block relative z-50 p-4 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md pointer-events-auto">
+              <LocationSearch onSelectCity={handleCitySelect} />
+              
+              <div className="flex items-center justify-between mt-3 px-1">
+                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">
+                  {locations.length} Locations
+                </span>
+                {locations.some(l => !l.isPinned) && (
+                  <button 
+                    onClick={clearUnpinnedLocations} 
+                    className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors px-1.5 py-0.5 rounded hover:bg-red-400/10"
+                  >
+                    <Trash2 size={10} /> Clear unpinned
+                  </button>
+                )}
+              </div>
+            </div>
 
-        <div className="absolute inset-0 md:relative flex-1 bg-[#050505] z-0">
-          <MapChart 
-            currentTime={timeState.current} 
-            onMapClick={handleMapClick}
-            locations={locations}
-          />
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4 bg-black/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none pointer-events-auto">
+              {locations.length === 0 && (
+                <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
+                    <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+                    <h3 className="text-zinc-500 font-medium text-sm">No Locations</h3>
+                    <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Search for a city or click on the map to compare times.</p>
+                </div>
+              )}
+
+              {locations.map(loc => (
+                <div key={loc.id} className={`pointer-events-auto group bg-zinc-900/80 backdrop-blur-md border ${loc.isPinned ? 'border-primary/40 ring-1 ring-primary/20' : 'border-zinc-800'} hover:border-zinc-600 p-4 rounded-xl transition-all duration-200 relative shadow-lg`}>
+                    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all bg-black/20 backdrop-blur-sm rounded-lg p-0.5">
+                      <button 
+                        onClick={() => togglePin(loc.id)}
+                        className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-primary hover:text-primary/80 bg-primary/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
+                        title={loc.isPinned ? "Unpin Location" : "Pin Location"}
+                        aria-label={loc.isPinned ? "Unpin Location" : "Pin Location"}
+                      >
+                        <Pin className={`w-3.5 h-3.5 ${loc.isPinned ? 'fill-current' : ''}`} />
+                      </button>
+                      <div className="w-[1px] h-4 bg-zinc-700/50 mx-0.5"></div>
+                      <button 
+                        onClick={() => removeLocation(loc.id)}
+                        className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
+                        title="Remove Location"
+                        aria-label="Remove Location"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center justify-between mb-1 pr-16">
+                      <span className="text-[9px] font-bold text-primary/80 uppercase tracking-wider truncate max-w-[70%] bg-primary/5 px-1.5 py-0.5 rounded">
+                        {loc.timezone ? loc.timezone.split('/')[1].replace(/_/g, ' ') : `GMT${loc.lngOffset >= 0 ? '+' : ''}${Math.round(loc.lngOffset)}`}
+                      </span>
+                    </div>
+                    
+                    <h2 className="font-medium text-zinc-300 truncate pr-4 text-sm" title={loc.name}>{loc.name}</h2>
+                    
+                    <div className="flex items-end gap-2 mt-2">
+                      <div className="text-2xl font-mono font-bold text-white tabular-nums leading-none">
+                        {formatLocationTime(loc, timeState.current, 'HH:mm')}
+                      </div>
+                      <div className="text-xs text-zinc-500 font-medium pb-0.5">
+                        {formatLocationTime(loc, timeState.current, 'a')}
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-zinc-600 mt-1 font-medium uppercase tracking-wide">
+                      {formatLocationTime(loc, timeState.current, 'MMM d, yyyy')}
+                    </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="absolute inset-0 md:relative flex-1 bg-[#050505] z-0">
+            <MapChart 
+              currentTime={timeState.current} 
+              onMapClick={handleMapClick}
+              locations={locations}
+            />
+          </div>
         </div>
       </main>
 

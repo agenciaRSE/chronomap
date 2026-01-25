@@ -22,7 +22,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const [mapData, setMapData] = useState<{ features: any[], borders: any } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 960, height: 500 });
   
-  const [isGlobe, setIsGlobe] = useState(false);
+  const [isGlobe, setIsGlobe] = useState(window.innerWidth < 768);
   const [zoomLevel, setZoomLevel] = useState(1); 
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
   const [globeZoom, setGlobeZoom] = useState(1);
