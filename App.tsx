@@ -333,12 +333,12 @@ const App: React.FC = () => {
                <Info className="w-3 h-3" />
              </button>
              <button 
-               onClick={() => setShowDiscordGen(true)}
-               className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group h-auto"
-             >
-               <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0 hidden md:block" />
-               <span className="text-center">Share Timestamp</span>
-             </button>
+                onClick={() => setShowDiscordGen(true)}
+                className="flex items-center justify-center gap-2 px-2 md:px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group h-auto w-20 md:w-auto"
+              >
+                <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0 hidden md:block" />
+                <span className="text-center leading-tight">Share Timestamp</span>
+              </button>
            </div>
         </div>
       </header>

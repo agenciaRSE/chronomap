@@ -109,6 +109,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     if (isGlobe) {
       g.attr("transform", null);
       let totalMovement = 0;
+      const { width, height } = dimensions;
+      const baseScale = Math.min(width, height) / 2.2;
 
       const drag = d3.drag<SVGSVGElement, unknown>()
         .filter((event) => {
@@ -129,7 +131,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           event.sourceEvent.preventDefault();
           totalMovement += Math.hypot(event.dx, event.dy);
           
-          const sensitivity = 80 / projection.scale();
+          const currentScale = baseScale * globeZoomRef.current;
+          const sensitivity = 80 / currentScale;
           const dx = event.dx * sensitivity;
           const dy = event.dy * sensitivity;
           
@@ -191,8 +194,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
              const relY = clientY - rect.top;
 
              const tempProjection = d3.geoOrthographic()
-                .scale(projection.scale())
-                .translate(projection.translate() as [number, number])
+                .scale(baseScale * globeZoomRef.current)
+                .translate([width / 2, height / 2])
                 .rotate(rotationRef.current)
                 .clipAngle(90);
 
@@ -239,7 +242,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.call(zoom.transform, d3.zoomIdentity.scale(zoomLevel));
     }
 
-  }, [isGlobe, dimensions, projection]);
+  }, [isGlobe, dimensions, onMapClick]);
   
   // --- NEW EFFECT for dynamic styles that depend on zoom level ---
   useEffect(() => {
