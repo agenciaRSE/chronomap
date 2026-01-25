@@ -125,7 +125,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         .duration(1250)
         .ease(d3.easeCubicOut)
         .tween('rotate', () => t => {
-            setRotation(interpolator(t));
+            setRotation(interpolator(t) as [number, number, number]);
         })
         .on('end', onCenterComplete)
         .on('interrupt', onCenterComplete);
@@ -141,12 +141,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
     if (zoomBehaviorRef.current && projection.invert) {
         const [tx, ty] = projection([lng, lat]) as [number, number];
-        
+        const zoom = zoomBehaviorRef.current;
         svg
             .transition("centering")
             .duration(750)
             .ease(d3.easeCubicOut)
-            .call(zoomBehaviorRef.current.translateTo, tx, ty)
+            .call(transition => zoom.translateTo(transition, tx, ty))
             .on('end', onCenterComplete)
             .on('interrupt', onCenterComplete);
     } else {
@@ -408,23 +408,26 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   // --- Control Handlers ---
   const handleZoomIn = () => {
     if (svgRef.current && zoomBehaviorRef.current) {
+      const zoom = zoomBehaviorRef.current;
       d3.select(svgRef.current)
         .transition().duration(isGlobe ? 250 : 300)
-        .call(zoomBehaviorRef.current.scaleBy, 1.5);
+        .call(transition => zoom.scaleBy(transition, 1.5));
     }
   };
 
   const handleZoomOut = () => {
     if (svgRef.current && zoomBehaviorRef.current) {
+      const zoom = zoomBehaviorRef.current;
       d3.select(svgRef.current)
         .transition().duration(isGlobe ? 250 : 300)
-        .call(zoomBehaviorRef.current.scaleBy, 0.66);
+        .call(transition => zoom.scaleBy(transition, 0.66));
     }
   };
 
   const handleResetView = () => {
     const svg = d3.select(svgRef.current);
     if (!svg.node() || !zoomBehaviorRef.current) return;
+    const zoom = zoomBehaviorRef.current;
   
     svg.interrupt("centering").interrupt("resetting");
   
@@ -440,18 +443,17 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         .duration(750)
         .ease(d3.easeCubicOut)
         .tween('rotate', () => t => {
-          setRotation(interpolator(t));
+          setRotation(interpolator(t) as [number, number, number]);
         });
       
-      // Animate zoom back to origin. This will trigger the on("zoom") handler.
+      // Animate zoom back to origin.
       svg.transition("resetting")
         .duration(750)
         .ease(d3.easeCubicOut)
-        .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
+        .call(transition => zoom.transform(transition, d3.zoomIdentity));
     } else { // 2D Map
-      // This will trigger the on("zoom") handler.
       svg.transition().duration(500)
-        .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
+        .call(transition => zoom.transform(transition, d3.zoomIdentity));
     }
   };
 

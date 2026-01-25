@@ -94,7 +94,20 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.5.0</span>
+                      <span className="text-sm font-mono text-primary">v2.5.1</span>
+                      <span className="text-xs text-zinc-500 mb-1">Globe Interaction & Animation Fixes</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Globe Centering Fix:</strong> Resolved a critical bug causing the 3D globe animation to get stuck midway.</li>
+                        <li><strong>Smooth 3D Zoom:</strong> Eliminated the visual "jump" when using the zoom buttons in 3D globe mode.</li>
+                        <li><strong>Reliable Mobile Centering:</strong> Fixed map centering on mobile devices and implemented shortest-path rotation for the globe.</li>
+                      </ul>
+                   </div>
+                </div>
+                
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.5.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Interaction & Animation</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Auto-Centering:</strong> The map now automatically animates to center on newly added locations.</li>
