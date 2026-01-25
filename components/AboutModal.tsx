@@ -94,7 +94,20 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.4.0</span>
+                      <span className="text-sm font-mono text-primary">v2.5.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">Interaction & Animation</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Auto-Centering:</strong> The map now automatically animates to center on newly added locations.</li>
+                        <li><strong>Mobile Zoom Fix:</strong> Resolved a bug that prevented pinch-to-zoom on touch devices.</li>
+                        <li><strong>Smoother Transitions:</strong> Improved animation handling to prevent errors during user interaction.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.4.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Full English Localization</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>App-wide Translation:</strong> The entire application UI, including all text, labels, and metadata, has been translated to English.</li>

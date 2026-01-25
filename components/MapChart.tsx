@@ -256,9 +256,17 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.5, 8])
         .filter((event) => {
-           if (event.type === 'wheel') return true;
-           if (event.type === 'touchstart' && event.touches.length >= 2) return true;
-           return false;
+          // If the event has touch points, allow it only if there are more than one (for pinch-zoom).
+          if (event.touches) {
+              return event.touches.length > 1;
+          }
+          // Otherwise, for mouse, only allow wheel events.
+          // This correctly separates single-touch/drag from multi-touch/zoom and wheel/zoom.
+          if (event.type === 'wheel') {
+              return true;
+          }
+          // All other events are disallowed from initiating a zoom since dblclick is disabled.
+          return false;
         })
         .on("start", () => svg.interrupt("centering"))
         .on("zoom", (event) => {
