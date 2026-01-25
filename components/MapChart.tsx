@@ -94,55 +94,63 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const graticule = useMemo(() => d3.geoGraticule10(), []);
 
   // --- Centering Animation ---
+  // Globe Centering Effect - no 'projection' dependency to avoid animation loop
   useEffect(() => {
-    if (!centerTarget || !svgRef.current) return;
+    if (!isGlobe || !centerTarget || !svgRef.current) return;
 
     const [lng, lat] = centerTarget;
     const svg = d3.select(svgRef.current);
 
-    if (isGlobe) {
-      if (inertiaRef.current) {
+    svg.interrupt("centering");
+    if (inertiaRef.current) {
         cancelAnimationFrame(inertiaRef.current);
         inertiaRef.current = null;
-      }
-      
-      const currentRotation = rotationRef.current;
-      const targetRotationRaw: [number, number, number] = [-lng, -lat, currentRotation[2]];
-      const startRotation = [...currentRotation] as [number, number, number];
+    }
+    
+    const currentRotation = rotationRef.current;
+    const targetRotationRaw: [number, number, number] = [-lng, -lat, currentRotation[2]];
+    const startRotation = [...currentRotation] as [number, number, number];
 
-      // Normalize longitude for the shortest rotation path
-      let lonDiff = targetRotationRaw[0] - startRotation[0];
-      if (lonDiff > 180) {
+    // Normalize longitude for the shortest rotation path
+    let lonDiff = targetRotationRaw[0] - startRotation[0];
+    if (lonDiff > 180) {
         startRotation[0] += 360;
-      } else if (lonDiff < -180) {
+    } else if (lonDiff < -180) {
         startRotation[0] -= 360;
-      }
-      
-      const interpolator = d3.interpolate(startRotation, targetRotationRaw);
+    }
+    const interpolator = d3.interpolate(startRotation, targetRotationRaw);
 
-      svg
+    svg
         .transition("centering")
         .duration(1250)
         .ease(d3.easeCubicOut)
         .tween('rotate', () => t => {
-          setRotation(interpolator(t));
+            setRotation(interpolator(t));
         })
         .on('end', onCenterComplete)
         .on('interrupt', onCenterComplete);
-    } else {
-      if (zoomBehaviorRef.current && projection.invert) {
+
+  }, [centerTarget, onCenterComplete, isGlobe]);
+
+  // 2D Map Centering Effect - requires 'projection' to calculate target coordinates
+  useEffect(() => {
+    if (isGlobe || !centerTarget || !svgRef.current) return;
+
+    const [lng, lat] = centerTarget;
+    const svg = d3.select(svgRef.current);
+
+    if (zoomBehaviorRef.current && projection.invert) {
         const [tx, ty] = projection([lng, lat]) as [number, number];
         
         svg
-          .transition("centering")
-          .duration(750)
-          .ease(d3.easeCubicOut)
-          .call(zoomBehaviorRef.current.translateTo, tx, ty)
-          .on('end', onCenterComplete)
-          .on('interrupt', onCenterComplete);
-      } else {
+            .transition("centering")
+            .duration(750)
+            .ease(d3.easeCubicOut)
+            .call(zoomBehaviorRef.current.translateTo, tx, ty)
+            .on('end', onCenterComplete)
+            .on('interrupt', onCenterComplete);
+    } else {
         onCenterComplete();
-      }
     }
   }, [centerTarget, onCenterComplete, isGlobe, projection]);
 
