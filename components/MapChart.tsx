@@ -399,56 +399,51 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
   // --- Control Handlers ---
   const handleZoomIn = () => {
-    if (isGlobe) {
-      setGlobeZoom(z => {
-        const newZ = Math.min(8, z * 1.5);
-        if (svgRef.current && zoomBehaviorRef.current) {
-           d3.select(svgRef.current).transition().duration(250).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(newZ));
-        }
-        return newZ;
-      });
-    } else {
-      if (svgRef.current && zoomBehaviorRef.current) {
-        d3.select(svgRef.current)
-          .transition().duration(300)
-          .call(zoomBehaviorRef.current.scaleBy, 1.5);
-      }
+    if (svgRef.current && zoomBehaviorRef.current) {
+      d3.select(svgRef.current)
+        .transition().duration(isGlobe ? 250 : 300)
+        .call(zoomBehaviorRef.current.scaleBy, 1.5);
     }
   };
 
   const handleZoomOut = () => {
-    if (isGlobe) {
-      setGlobeZoom(z => {
-        const newZ = Math.max(0.5, z * 0.66);
-        if (svgRef.current && zoomBehaviorRef.current) {
-           d3.select(svgRef.current).transition().duration(250).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(newZ));
-        }
-        return newZ;
-      });
-    } else {
-      if (svgRef.current && zoomBehaviorRef.current) {
-        d3.select(svgRef.current)
-          .transition().duration(300)
-          .call(zoomBehaviorRef.current.scaleBy, 0.66);
-      }
+    if (svgRef.current && zoomBehaviorRef.current) {
+      d3.select(svgRef.current)
+        .transition().duration(isGlobe ? 250 : 300)
+        .call(zoomBehaviorRef.current.scaleBy, 0.66);
     }
   };
 
   const handleResetView = () => {
+    const svg = d3.select(svgRef.current);
+    if (!svg.node() || !zoomBehaviorRef.current) return;
+  
+    svg.interrupt("centering").interrupt("resetting");
+  
     if (isGlobe) {
-      if (inertiaRef.current) cancelAnimationFrame(inertiaRef.current);
-      setRotation([0,0,0]);
-      setGlobeZoom(1);
-      if (svgRef.current && zoomBehaviorRef.current) {
-         d3.select(svgRef.current).transition().duration(500).call(zoomBehaviorRef.current.transform, d3.zoomIdentity.scale(1));
+      if (inertiaRef.current) {
+        cancelAnimationFrame(inertiaRef.current);
+        inertiaRef.current = null;
       }
-    } else {
-      setZoomLevel(1);
-      if (svgRef.current && zoomBehaviorRef.current) {
-        d3.select(svgRef.current)
-          .transition().duration(500)
-          .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
-      }
+      
+      // Animate rotation back to origin
+      const interpolator = d3.interpolate(rotationRef.current, [0, 0, 0]);
+      svg.transition("resetting")
+        .duration(750)
+        .ease(d3.easeCubicOut)
+        .tween('rotate', () => t => {
+          setRotation(interpolator(t));
+        });
+      
+      // Animate zoom back to origin. This will trigger the on("zoom") handler.
+      svg.transition("resetting")
+        .duration(750)
+        .ease(d3.easeCubicOut)
+        .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
+    } else { // 2D Map
+      // This will trigger the on("zoom") handler.
+      svg.transition().duration(500)
+        .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
     }
   };
 
