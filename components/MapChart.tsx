@@ -409,7 +409,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const handleZoomIn = () => {
     if (svgRef.current && zoomBehaviorRef.current) {
       const zoom = zoomBehaviorRef.current;
-      d3.select(svgRef.current)
+      d3.select(svgRef.current!)
         .transition().duration(isGlobe ? 250 : 300)
         .call(transition => zoom.scaleBy(transition, 1.5));
     }
@@ -418,15 +418,15 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const handleZoomOut = () => {
     if (svgRef.current && zoomBehaviorRef.current) {
       const zoom = zoomBehaviorRef.current;
-      d3.select(svgRef.current)
+      d3.select(svgRef.current!)
         .transition().duration(isGlobe ? 250 : 300)
         .call(transition => zoom.scaleBy(transition, 0.66));
     }
   };
 
   const handleResetView = () => {
-    const svg = d3.select(svgRef.current);
-    if (!svg.node() || !zoomBehaviorRef.current) return;
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
+    const svg = d3.select(svgRef.current!);
     const zoom = zoomBehaviorRef.current;
   
     svg.interrupt("centering").interrupt("resetting");
