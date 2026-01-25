@@ -98,6 +98,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     if (!centerTarget || !svgRef.current) return;
 
     const [lng, lat] = centerTarget;
+    const svg = d3.select(svgRef.current);
 
     if (isGlobe) {
       if (inertiaRef.current) {
@@ -105,10 +106,21 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         inertiaRef.current = null;
       }
       
-      const targetRotation: [number, number, number] = [-lng, -lat, rotationRef.current[2]];
-      const interpolator = d3.interpolate(rotationRef.current, targetRotation);
+      const currentRotation = rotationRef.current;
+      const targetRotationRaw: [number, number, number] = [-lng, -lat, currentRotation[2]];
+      const startRotation = [...currentRotation] as [number, number, number];
+
+      // Normalize longitude for the shortest rotation path
+      let lonDiff = targetRotationRaw[0] - startRotation[0];
+      if (lonDiff > 180) {
+        startRotation[0] += 360;
+      } else if (lonDiff < -180) {
+        startRotation[0] -= 360;
+      }
       
-      d3.select(svgRef.current)
+      const interpolator = d3.interpolate(startRotation, targetRotationRaw);
+
+      svg
         .transition("centering")
         .duration(1250)
         .ease(d3.easeCubicOut)
@@ -121,7 +133,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       if (zoomBehaviorRef.current && projection.invert) {
         const [tx, ty] = projection([lng, lat]) as [number, number];
         
-        d3.select(svgRef.current)
+        svg
           .transition("centering")
           .duration(750)
           .ease(d3.easeCubicOut)
@@ -132,7 +144,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         onCenterComplete();
       }
     }
-  }, [centerTarget]);
+  }, [centerTarget, onCenterComplete, isGlobe, projection]);
 
 
   // --- Interaction Handling ---
@@ -141,7 +153,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
     const svg = d3.select(svgRef.current);
     const g = d3.select(mapGroupRef.current);
-
+    
+    svg.interrupt("centering");
     svg.on(".zoom", null);
     svg.on(".drag", null);
     
@@ -261,7 +274,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
               return event.touches.length > 1;
           }
           // Otherwise, for mouse, only allow wheel events.
-          // This correctly separates single-touch/drag from multi-touch/zoom and wheel/zoom.
           if (event.type === 'wheel') {
               return true;
           }
