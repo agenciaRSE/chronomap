@@ -11,9 +11,11 @@ interface MapChartProps {
   currentTime: Date;
   onMapClick: (data: MapClickEvent) => void;
   locations: SavedLocation[];
+  centerTarget: [number, number] | null;
+  onCenterComplete: () => void;
 }
 
-export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, locations }) => {
+export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, locations, centerTarget, onCenterComplete }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const mapGroupRef = useRef<SVGGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -91,6 +93,48 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const pathGenerator = useMemo(() => d3.geoPath().projection(projection), [projection]);
   const graticule = useMemo(() => d3.geoGraticule10(), []);
 
+  // --- Centering Animation ---
+  useEffect(() => {
+    if (!centerTarget || !svgRef.current) return;
+
+    const [lng, lat] = centerTarget;
+
+    if (isGlobe) {
+      if (inertiaRef.current) {
+        cancelAnimationFrame(inertiaRef.current);
+        inertiaRef.current = null;
+      }
+      
+      const targetRotation: [number, number, number] = [-lng, -lat, rotationRef.current[2]];
+      const interpolator = d3.interpolate(rotationRef.current, targetRotation);
+      
+      d3.select(svgRef.current)
+        .transition("centering")
+        .duration(1250)
+        .ease(d3.easeCubicOut)
+        .tween('rotate', () => t => {
+          setRotation(interpolator(t));
+        })
+        .on('end', onCenterComplete)
+        .on('interrupt', onCenterComplete);
+    } else {
+      if (zoomBehaviorRef.current && projection.invert) {
+        const [tx, ty] = projection([lng, lat]) as [number, number];
+        
+        d3.select(svgRef.current)
+          .transition("centering")
+          .duration(750)
+          .ease(d3.easeCubicOut)
+          .call(zoomBehaviorRef.current.translateTo, tx, ty)
+          .on('end', onCenterComplete)
+          .on('interrupt', onCenterComplete);
+      } else {
+        onCenterComplete();
+      }
+    }
+  }, [centerTarget]);
+
+
   // --- Interaction Handling ---
   useEffect(() => {
     if (!svgRef.current || !mapGroupRef.current) return;
@@ -118,7 +162,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
            return !event.button; 
         })
         .on("start", (event) => {
-          event.sourceEvent.preventDefault();
+          svg.interrupt("centering");
           if (inertiaRef.current) {
             cancelAnimationFrame(inertiaRef.current);
             inertiaRef.current = null;
@@ -128,7 +172,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           svg.style("cursor", "grabbing");
         })
         .on("drag", (event) => {
-          event.sourceEvent.preventDefault();
           totalMovement += Math.hypot(event.dx, event.dy);
           
           const currentScale = baseScale * globeZoomRef.current;
@@ -217,6 +260,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
            if (event.type === 'touchstart' && event.touches.length >= 2) return true;
            return false;
         })
+        .on("start", () => svg.interrupt("centering"))
         .on("zoom", (event) => {
            setGlobeZoom(event.transform.k);
         });
@@ -230,6 +274,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([1, 12])
         .translateExtent([[-100, -100], [dimensions.width + 100, dimensions.height + 100]])
+        .on("start", () => svg.interrupt("centering"))
         .on("zoom", (event) => {
           g.attr("transform", event.transform);
           setZoomLevel(event.transform.k);

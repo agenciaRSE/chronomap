@@ -52,6 +52,7 @@ const App: React.FC = () => {
   const [showAbout, setShowAbout] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  const [centerTarget, setCenterTarget] = useState<[number, number] | null>(null);
   
   // Mobile View State: Default to map view on mobile, list view on desktop
   const [isMobileListOpen, setIsMobileListOpen] = useState(window.innerWidth < 768 ? false : true);
@@ -137,6 +138,7 @@ const App: React.FC = () => {
     };
 
     setLocations(prev => [...prev, newLocation]);
+    setCenterTarget([newLocation.lng, newLocation.lat]);
   }, []);
 
   const handleCitySelect = (city: City) => {
@@ -150,6 +152,7 @@ const App: React.FC = () => {
       isPinned: false
     };
     setLocations(prev => [...prev, newLocation]);
+    setCenterTarget([newLocation.lng, newLocation.lat]);
   };
 
   const removeLocation = (id: string) => {
@@ -435,6 +438,8 @@ const App: React.FC = () => {
               currentTime={timeState.current} 
               onMapClick={handleMapClick}
               locations={locations}
+              centerTarget={centerTarget}
+              onCenterComplete={() => setCenterTarget(null)}
             />
           </div>
         </div>
