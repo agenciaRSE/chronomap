@@ -97,10 +97,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
   // --- Centering Animation ---
   useEffect(() => {
-    if (!isGlobe || !centerTarget || !svgRef.current) return;
+    if (!isGlobe || !centerTarget || !svgRef.current || !zoomBehaviorRef.current) return;
 
     const [lng, lat] = centerTarget;
     const svg = d3.select(svgRef.current);
+    const zoom = zoomBehaviorRef.current;
 
     svg.interrupt("centering");
     if (inertiaRef.current) {
@@ -118,6 +119,9 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     
     const interpolator = d3.interpolate(startRotation, targetRotationRaw);
     
+    const currentTransform = d3.zoomTransform(svg.node() as Element);
+    zoom.transform(svg, currentTransform);
+
     svg.transition("centering")
         .duration(1250)
         .ease(d3.easeCubicOut)
@@ -281,7 +285,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.call(zoom.transform, mapTransform);
     }
 
-  }, [isGlobe, dimensions, onMapClick, mapTransform]);
+  }, [isGlobe, dimensions, onMapClick]);
   
   useEffect(() => {
     if (isGlobe || !mapGroupRef.current) return;
