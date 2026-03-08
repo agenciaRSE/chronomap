@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI } from "@google/genai";
 import { Globe, ExternalLink, RefreshCw } from 'lucide-react';
 
 interface NewsItem {
@@ -19,44 +18,21 @@ export const NewsTicker: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("API Key missing. Please check environment variables.");
+      const response = await fetch('/api/news');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
       }
 
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: "Provide a list of 10 current, real-time geopolitical news headlines from around the world. Focus on major international events, conflicts, and diplomatic shifts. Return ONLY a JSON array of objects with 'title', 'url', and 'source' properties. Do not include markdown formatting.",
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
-      });
-
-      const text = response.text;
-      if (!text) {
-        throw new Error("Empty response from AI");
-      }
-      
-      console.log("Raw News Response:", text);
-      
-      const jsonStr = text.trim();
-      // More robust JSON cleaning
-      const cleanedJson = jsonStr.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
-      
-      try {
-        const data = JSON.parse(cleanedJson);
-        if (Array.isArray(data)) {
-          setNews(data);
-        } else {
-          throw new Error("Response is not an array");
-        }
-      } catch (parseErr) {
-        console.error("JSON Parse Error:", parseErr, "Cleaned JSON:", cleanedJson);
-        throw new Error("Failed to parse news data");
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setNews(data);
+      } else {
+        throw new Error("Invalid response format from server");
       }
     } catch (err) {
-      console.error("Detailed News Fetch Error:", err);
+      console.error("News Fetch Error:", err);
       setError(err instanceof Error ? err.message : "Failed to load news");
       
       // Fallback news

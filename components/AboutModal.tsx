@@ -93,7 +93,32 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.6.3</span>
+                      <span className="text-sm font-mono text-primary">v2.7.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">Security & Backend Architecture</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Full-Stack Transition:</strong> Migrated to an Express.js backend to secure API keys.</li>
+                        <li><strong>Server-Side News Fetching:</strong> The Gemini API is now called from the server, preventing API key exposure in the browser.</li>
+                        <li><strong>Enhanced Security:</strong> Removed all client-side references to sensitive environment variables.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.6.4</span>
+                      <span className="text-xs text-zinc-500 mb-1">Deployment Compatibility</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Vercel Support:</strong> Updated API key handling to support standard Vite environment variables (VITE_ prefix).</li>
+                        <li><strong>Error Messaging:</strong> Improved guidance when API keys are missing in production environments.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.6.3</span>
                       <span className="text-xs text-zinc-500 mb-1">Stability & Style Fixes</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>News Feed Reliability:</strong> Improved API error handling and added fallback mechanisms for the geopolitical feed.</li>
