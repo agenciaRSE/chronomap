@@ -19,13 +19,17 @@ export const NewsTicker: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("API Key missing. Please check environment variables.");
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: "Provide a list of 10 current, real-time geopolitical news headlines from around the world. Focus on major international events, conflicts, and diplomatic shifts. Return the data as a JSON array of objects with 'title', 'url', and 'source' properties.",
+        contents: "Provide a list of 10 current, real-time geopolitical news headlines from around the world. Focus on major international events, conflicts, and diplomatic shifts. Return ONLY a JSON array of objects with 'title', 'url', and 'source' properties. Do not include markdown formatting.",
         config: {
           tools: [{ googleSearch: {} }],
-          responseMimeType: "application/json",
         },
       });
 
@@ -33,24 +37,33 @@ export const NewsTicker: React.FC = () => {
       if (!text) {
         throw new Error("Empty response from AI");
       }
-      const jsonStr = text.trim();
-      // Remove potential markdown code blocks if present
-      const cleanedJson = jsonStr.replace(/^```json\n?/, '').replace(/\n?```$/, '');
-      const data = JSON.parse(cleanedJson);
       
-      if (Array.isArray(data)) {
-        setNews(data);
-      } else {
-        throw new Error("Invalid response format");
+      console.log("Raw News Response:", text);
+      
+      const jsonStr = text.trim();
+      // More robust JSON cleaning
+      const cleanedJson = jsonStr.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+      
+      try {
+        const data = JSON.parse(cleanedJson);
+        if (Array.isArray(data)) {
+          setNews(data);
+        } else {
+          throw new Error("Response is not an array");
+        }
+      } catch (parseErr) {
+        console.error("JSON Parse Error:", parseErr, "Cleaned JSON:", cleanedJson);
+        throw new Error("Failed to parse news data");
       }
     } catch (err) {
-      console.error("Failed to fetch news:", err);
-      setError("Failed to load news");
-      // Fallback news if API fails or for initial state
+      console.error("Detailed News Fetch Error:", err);
+      setError(err instanceof Error ? err.message : "Failed to load news");
+      
+      // Fallback news
       setNews([
-        { title: "Global geopolitical shifts continue to evolve.", url: "#", source: "ChronoMap Intelligence" },
-        { title: "Diplomatic discussions ongoing in major international forums.", url: "#", source: "ChronoMap Intelligence" },
-        { title: "Regional stability remains a key focus for international observers.", url: "#", source: "ChronoMap Intelligence" }
+        { title: "Global geopolitical shifts continue to evolve.", url: "#", source: "System" },
+        { title: "Diplomatic discussions ongoing in major international forums.", url: "#", source: "System" },
+        { title: "Regional stability remains a key focus for international observers.", url: "#", source: "System" }
       ]);
     } finally {
       setLoading(false);

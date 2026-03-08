@@ -289,7 +289,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.6.2</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.6.3</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
@@ -376,7 +376,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 no-scrollbar pb-20 md:pb-4 bg-black/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none pointer-events-auto">
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar pb-20 md:pb-4 bg-black/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none pointer-events-auto">
               {locations.length === 0 && (
                 <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
                     <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />

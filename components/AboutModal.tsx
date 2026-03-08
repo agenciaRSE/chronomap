@@ -93,7 +93,19 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.6.2</span>
+                      <span className="text-sm font-mono text-primary">v2.6.3</span>
+                      <span className="text-xs text-zinc-500 mb-1">Stability & Style Fixes</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>News Feed Reliability:</strong> Improved API error handling and added fallback mechanisms for the geopolitical feed.</li>
+                        <li><strong>Scrollbar Styling:</strong> Implemented custom, subtle scrollbars for the location sidebar to match the app aesthetic.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.6.2</span>
                       <span className="text-xs text-zinc-500 mb-1">Visual Identity & Map Precision</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>New Animated Logo:</strong> Replaced the static logo with a custom-designed, animated SVG representing time and space.</li>
