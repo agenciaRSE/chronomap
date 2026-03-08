@@ -289,7 +289,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.7.1</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.7.3</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>

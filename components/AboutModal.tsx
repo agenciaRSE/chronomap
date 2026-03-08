@@ -93,7 +93,31 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.7.1</span>
+                      <span className="text-sm font-mono text-primary">v2.7.3</span>
+                      <span className="text-xs text-zinc-500 mb-1">Layering & Z-Index Fixes</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Layering:</strong> Fixed an issue where the news ticker appeared on top of modals.</li>
+                        <li><strong>Z-Index:</strong> Adjusted stacking order to ensure popups and search results always stay on top.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.7.2</span>
+                      <span className="text-xs text-zinc-500 mb-1">Mobile UI Optimization</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>News Feed:</strong> Hidden "Geopolitical Feed" text on mobile to maximize space for news headlines.</li>
+                        <li><strong>Responsive Design:</strong> Improved ticker layout for small screens.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.7.1</span>
                       <span className="text-xs text-zinc-500 mb-1">Vercel Deployment Fixes</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Serverless Functions:</strong> Added Vercel-native API support to ensure backend routes work in production.</li>

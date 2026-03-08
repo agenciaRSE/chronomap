@@ -61,10 +61,10 @@ export const NewsTicker: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-zinc-900/90 backdrop-blur-md border-b border-white/10 h-10 flex items-center overflow-hidden z-[99999] flex-none">
+    <div className="fixed top-0 left-0 w-full bg-zinc-900/90 backdrop-blur-md border-b border-white/10 h-10 flex items-center overflow-hidden z-40 flex-none">
       <div className="flex-none bg-zinc-800 px-3 h-full flex items-center gap-2 border-r border-white/10 z-10">
         <Globe className={`w-4 h-4 text-blue-400 ${loading ? 'animate-spin' : ''}`} />
-        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 whitespace-nowrap">
+        <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-widest text-zinc-400 whitespace-nowrap">
           Geopolitical Feed
         </span>
       </div>
