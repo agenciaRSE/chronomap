@@ -23,6 +23,7 @@ export interface MapClickEvent {
   lat: number;
   lng: number;
   city?: City; // Optional: if a known city was clicked
+  country?: string; // Optional: country name
 }
 
 export type TimeMode = 'live' | 'custom';

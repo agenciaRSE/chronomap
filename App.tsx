@@ -112,22 +112,12 @@ const App: React.FC = () => {
   }, [timeState.current]);
 
   const handleMapClick = useCallback((data: MapClickEvent) => {
-    let name = `Lat: ${data.lat.toFixed(1)}, Lng: ${data.lng.toFixed(1)}`;
+    let name = data.country || `Lat: ${data.lat.toFixed(1)}, Lng: ${data.lng.toFixed(1)}`;
     let timezone = undefined;
     
     if (data.city) {
       name = `${data.city.name}, ${data.city.country}`;
       timezone = data.city.timezone;
-    } else {
-      const closest = MAJOR_CITIES.reduce((prev, curr) => {
-        const dist = Math.sqrt(Math.pow(curr.lat - data.lat, 2) + Math.pow(curr.lng - data.lng, 2));
-        return dist < 5 ? curr : prev;
-      }, null as any);
-      
-      if (closest) {
-        name = `${closest.name}, ${closest.country}`;
-        timezone = closest.timezone;
-      }
     }
 
     const newLocation: SavedLocation = {
@@ -289,7 +279,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.7.3</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.7.4</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>

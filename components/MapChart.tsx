@@ -154,6 +154,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   }, [centerTarget, onCenterComplete, isGlobe, projection]);
 
 
+  const findCountryAt = (lng: number, lat: number) => {
+    if (!mapData) return undefined;
+    const country = mapData.features.find(f => d3.geoContains(f, [lng, lat]));
+    return country?.properties?.name;
+  };
+
   // --- Interaction Handling ---
   useEffect(() => {
     if (!svgRef.current || !mapGroupRef.current) return;
@@ -246,7 +252,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
              const coords = tempProjection.invert?.([relX, relY]);
              if (coords) {
                const [lng, lat] = coords;
-               if (isFinite(lng) && isFinite(lat)) onMapClick({ x: clientX, y: clientY, lat, lng });
+               if (isFinite(lng) && isFinite(lat)) {
+                 const country = findCountryAt(lng, lat);
+                 onMapClick({ x: clientX, y: clientY, lat, lng, country });
+               }
              }
           }
         });
@@ -285,7 +294,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.call(zoom.transform, mapTransform);
     }
 
-  }, [isGlobe, dimensions, onMapClick]);
+  }, [isGlobe, dimensions, onMapClick, mapData]);
   
   useEffect(() => {
     if (isGlobe || !mapGroupRef.current) return;
@@ -320,13 +329,19 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("stroke", stroke) 
       .style("pointer-events", isGlobe ? "none" : "auto")
       .style("cursor", isGlobe ? "grab" : "crosshair")
-      .on("click", (event) => {
+      .on("click", (event, d: any) => {
          if (!isGlobe) {
            const [x, y] = d3.pointer(event, mapGroupRef.current);
            const coords = projection.invert?.([x, y]);
            if (coords) {
              const [lng, lat] = coords;
-             onMapClick({ x: event.clientX, y: event.clientY, lat, lng });
+             onMapClick({ 
+               x: event.clientX, 
+               y: event.clientY, 
+               lat, 
+               lng, 
+               country: d.properties?.name 
+             });
            }
          }
       })
