@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { NewsTicker } from './components/NewsTicker';
+import { AnimatedLogo } from './components/AnimatedLogo';
 import { MapChart } from './components/MapChart';
 import { DiscordGenerator } from './components/DiscordGenerator';
 import { AboutModal } from './components/AboutModal';
@@ -23,6 +25,7 @@ const TIME_STEPS = [
 ];
 
 const App: React.FC = () => {
+  console.log("APP RENDERING...");
   // Real-world wall clock time
   const [realTime, setRealTime] = useState(new Date());
   
@@ -256,18 +259,13 @@ const App: React.FC = () => {
   const offsetInfo = getOffsetDisplay();
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-black text-foreground font-sans overflow-hidden selection:bg-primary/30">
+    <div className="flex flex-col h-[100dvh] text-foreground font-sans overflow-hidden selection:bg-primary/30 relative bg-black pt-10">
+      <NewsTicker />
       
       {/* Header */}
       <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-6 bg-black/80 backdrop-blur-md z-20">
         <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3">
-          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)] overflow-hidden group relative flex-none">
-             <img 
-               src="https://agenciarse.com/wp-content/uploads/2025/11/logo.jpg" 
-               alt="ChronoMap Logo" 
-               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-             />
-          </div>
+          <AnimatedLogo className="w-10 h-10 md:w-12 md:h-12" />
           
           {/* Mobile Left Actions Row */}
           <div className="flex md:hidden items-center gap-3">
@@ -291,7 +289,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.5.0</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.6.2</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
@@ -337,9 +335,9 @@ const App: React.FC = () => {
              </button>
              <button 
                 onClick={() => setShowDiscordGen(true)}
-                className="flex items-center justify-center gap-2 px-2 md:px-3 py-1.5 text-xs font-medium bg-zinc-900 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-md transition-all group h-auto w-20 md:w-auto"
+                className="flex items-center justify-center gap-2 px-2 md:px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/30 rounded-md transition-all group h-auto w-20 md:w-auto shadow-[0_0_15px_rgba(59,130,246,0.2)]"
               >
-                <Share2 className="w-3 h-3 group-hover:text-primary transition-colors shrink-0 hidden md:block" />
+                <Share2 className="w-3 h-3 transition-colors shrink-0 hidden md:block" />
                 <span className="text-center leading-tight">Share Timestamp</span>
               </button>
            </div>

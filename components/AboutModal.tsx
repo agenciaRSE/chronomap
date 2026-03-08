@@ -19,7 +19,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
           <button 
             onClick={onClose}
             aria-label="Close"
-            className="text-muted-foreground hover:text-foreground transition-colors p-1 hover:bg-white/10 rounded-md"
+            className="text-white/70 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-md"
           >
             <X className="w-5 h-5" />
           </button>
@@ -88,13 +88,38 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                <GitCommit className="w-3 h-3" />
                Changelog
              </h3>
-             
-             <div className="relative pl-4 space-y-6 border-l border-zinc-800">
+                          <div className="relative pl-4 space-y-6 border-l border-zinc-800">
 
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.5.1</span>
+                      <span className="text-sm font-mono text-primary">v2.6.2</span>
+                      <span className="text-xs text-zinc-500 mb-1">Visual Identity & Map Precision</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>New Animated Logo:</strong> Replaced the static logo with a custom-designed, animated SVG representing time and space.</li>
+                        <li><strong>Fixed Zoom Scaling:</strong> Map tooltips and markers now maintain a constant visual size during zoom operations for better clarity.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.6.1</span>
+                      <span className="text-xs text-zinc-500 mb-1">News Feed & UI Polish</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>News Feed Optimization:</strong> Adjusted scrolling speed and added pause on hover for better readability.</li>
+                        <li><strong>UI Layout Fixes:</strong> Resolved header overlap issues with the news ticker.</li>
+                        <li><strong>Visual Improvements:</strong> Restored original branding colors to the Share Timestamp button and improved modal close button visibility.</li>
+                        <li><strong>Security Audit:</strong> Verified API key safety and removed legacy caching mechanisms.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.5.1</span>
                       <span className="text-xs text-zinc-500 mb-1">Globe Interaction & Animation Fixes</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Globe Centering Fix:</strong> Resolved a critical bug causing the 3D globe animation to get stuck midway.</li>

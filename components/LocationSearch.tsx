@@ -65,7 +65,7 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
         />
         {query && (
           <button 
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 hover:text-zinc-300"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-white transition-colors"
             onClick={() => setQuery('')}
             aria-label="Clear search"
           >

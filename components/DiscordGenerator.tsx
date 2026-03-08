@@ -43,7 +43,7 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
           <button 
             onClick={onClose}
             aria-label="Close"
-            className="text-muted-foreground hover:text-foreground transition-colors text-2xl leading-none"
+            className="text-white/70 hover:text-white transition-colors text-2xl leading-none p-1 hover:bg-white/10 rounded-md"
           >
             &times;
           </button>
