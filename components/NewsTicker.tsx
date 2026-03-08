@@ -20,16 +20,23 @@ export const NewsTicker: React.FC = () => {
     try {
       const response = await fetch('/api/news');
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Verificar si la respuesta es JSON antes de intentar parsearla
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text);
+        throw new Error("El servidor no respondió con JSON. Revisa la configuración de las rutas en el deploy.");
       }
 
       const data = await response.json();
-      if (Array.isArray(data)) {
-        setNews(data);
+      if (response.ok) {
+        if (Array.isArray(data)) {
+          setNews(data);
+        } else {
+          throw new Error("Formato de respuesta inválido");
+        }
       } else {
-        throw new Error("Invalid response format from server");
+        throw new Error(data.error || `Error del servidor: ${response.status}`);
       }
     } catch (err) {
       console.error("News Fetch Error:", err);
