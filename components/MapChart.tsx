@@ -354,11 +354,17 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   }, [zoomLevel, isGlobe]);
 
   useLayoutEffect(() => {
-    if (!mapData || !mapGroupRef.current || isGlobe) return;
+    if (!mapData || !mapGroupRef.current) return;
 
     const group = d3.select(mapGroupRef.current);
     const staticGroup = group.select<SVGGElement>(".static-map-layer");
     if (staticGroup.empty()) return;
+
+    // If globe mode, clear the SVG static layer as we use Canvas
+    if (isGlobe) {
+      staticGroup.selectAll("*").remove();
+      return;
+    }
     
     const sphereData: any[] = []; // No sphere in 2D
     staticGroup.selectAll("path.sphere").data(sphereData).join("path").attr("class", "sphere").attr("d", pathGenerator as any).attr("fill", "#050505").attr("stroke", "#27272a").attr("stroke-width", 1.5);

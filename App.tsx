@@ -11,6 +11,7 @@ import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
 import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
+import tzlookup from 'tz-lookup';
 import { enUS } from 'date-fns/locale';
 import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2 } from 'lucide-react';
 
@@ -115,9 +116,15 @@ const App: React.FC = () => {
     let name = data.country || `Lat: ${data.lat.toFixed(1)}, Lng: ${data.lng.toFixed(1)}`;
     let timezone = undefined;
     
+    try {
+      timezone = tzlookup(data.lat, data.lng);
+    } catch (e) {
+      console.warn('Could not find timezone for coordinates', e);
+    }
+
     if (data.city) {
       name = `${data.city.name}, ${data.city.country}`;
-      timezone = data.city.timezone;
+      timezone = data.city.timezone || timezone;
     }
 
     const newLocation: SavedLocation = {
@@ -136,12 +143,21 @@ const App: React.FC = () => {
   }, []);
 
   const handleCitySelect = (city: City) => {
+    let timezone = city.timezone;
+    if (!timezone) {
+      try {
+        timezone = tzlookup(city.lat, city.lng);
+      } catch (e) {
+        console.warn('Could not find timezone for city', e);
+      }
+    }
+
     const newLocation: SavedLocation = {
       id: crypto.randomUUID(),
       lat: city.lat,
       lng: city.lng,
       name: `${city.name}, ${city.country}`,
-      timezone: city.timezone,
+      timezone,
       country: city.country,
       lngOffset: city.lng / 15,
       isPinned: false
@@ -281,7 +297,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.7.9</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.8.1</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
