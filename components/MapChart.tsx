@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { MAJOR_CITIES } from '../constants';
@@ -262,13 +262,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.5, 8])
-        .filter((event) => {
-          if (event.touches) return event.touches.length > 1;
-          if (event.type === 'wheel') return true;
-          return false;
-        })
         .on("start", () => svg.interrupt("centering"))
-        .on("zoom", (event) => setGlobeZoom(event.transform.k));
+        .on("zoom", (event) => {
+          setGlobeZoom(event.transform.k);
+        });
 
       svg.call(drag).style("cursor", "crosshair");
       svg.call(zoom).on("dblclick.zoom", null);
@@ -303,7 +300,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("stroke-width", 0.5 / zoomLevel);
   }, [zoomLevel, isGlobe]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!mapData || !mapGroupRef.current) return;
 
     const group = d3.select(mapGroupRef.current);
@@ -353,7 +350,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     const borderData = isGlobe ? [mapData.borders] : [];
     staticGroup.selectAll("path.borders").data(borderData).join("path").attr("class", "borders").attr("d", pathGenerator as any).attr("fill", "none").attr("stroke", "#a1a1aa").attr("stroke-width", 0.8).style("pointer-events", "none");
 
-  }, [mapData, pathGenerator, projection, onMapClick, isGlobe, graticule]);
+  }, [mapData, pathGenerator, projection, onMapClick, isGlobe, graticule, zoomLevel]);
 
 
   // --- Control Handlers ---
