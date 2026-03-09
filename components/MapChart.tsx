@@ -83,7 +83,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         .scale(baseScale * globeZoom)
         .translate([width / 2, height / 2])
         .rotate(rotation)
-        .precision(0.1)
+        .precision(0.5) // Reduced precision for better performance
         .clipAngle(90);
     } else {
       return d3.geoEquirectangular()
@@ -109,24 +109,19 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         inertiaRef.current = null;
     }
     
-    const currentRotation = rotationRef.current;
-    const targetRotationRaw: [number, number, number] = [-lng, -lat, currentRotation[2]];
-    const startRotation = [...currentRotation] as [number, number, number];
-
-    let lonDiff = targetRotationRaw[0] - startRotation[0];
-    if (lonDiff > 180) startRotation[0] += 360;
-    else if (lonDiff < -180) startRotation[0] -= 360;
-    
-    const interpolator = d3.interpolate(startRotation, targetRotationRaw);
+    const p1: [number, number] = [-rotationRef.current[0], -rotationRef.current[1]];
+    const p2: [number, number] = [lng, lat];
+    const interpolator = d3.geoInterpolate(p1, p2);
     
     const currentTransform = d3.zoomTransform(svg.node() as Element);
     zoom.transform(svg, currentTransform);
 
     svg.transition("centering")
-        .duration(1250)
+        .duration(1000)
         .ease(d3.easeCubicOut)
         .tween('rotate', () => t => {
-            setRotation(interpolator(t) as [number, number, number]);
+            const [l, a] = interpolator(t);
+            setRotation([-l, -a, rotationRef.current[2]]);
         })
         .on('end', onCenterComplete)
         .on('interrupt', onCenterComplete);

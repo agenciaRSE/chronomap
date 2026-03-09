@@ -93,7 +93,20 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.7.6</span>
+                      <span className="text-sm font-mono text-primary">v2.7.7</span>
+                      <span className="text-xs text-zinc-500 mb-1">3D Globe Smoothness</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Spherical Centering:</strong> Implemented <code>geoInterpolate</code> for the 3D globe, ensuring the camera follows the shortest path on the sphere when centering on a city.</li>
+                        <li><strong>Optimized Rendering:</strong> Adjusted projection precision to improve frame rates during zoom and rotation gestures.</li>
+                        <li><strong>Snappier Transitions:</strong> Reduced animation duration for a more responsive feel when switching locations.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.7.6</span>
                       <span className="text-xs text-zinc-500 mb-1">Mobile Zoom Optimization</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Real-time Zoom:</strong> Fixed an issue where pinch-to-zoom on mobile only updated after releasing. Now it scales smoothly in real-time.</li>
