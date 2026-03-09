@@ -93,7 +93,20 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.7.7</span>
+                      <span className="text-sm font-mono text-primary">v2.7.8</span>
+                      <span className="text-xs text-zinc-500 mb-1">High-Performance Globe</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Canvas Rendering:</strong> Switched 3D globe rendering to HTML5 Canvas for ultra-smooth rotation and zoom on mobile devices.</li>
+                        <li><strong>Tooltip Fix:</strong> Corrected an issue where tooltips showed the capital city instead of the searched/selected city.</li>
+                        <li><strong>Optimized Transitions:</strong> Improved the centering animation for better responsiveness.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.7.7</span>
                       <span className="text-xs text-zinc-500 mb-1">3D Globe Smoothness</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Spherical Centering:</strong> Implemented <code>geoInterpolate</code> for the 3D globe, ensuring the camera follows the shortest path on the sphere when centering on a city.</li>

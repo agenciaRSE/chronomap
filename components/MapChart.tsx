@@ -17,6 +17,7 @@ interface MapChartProps {
 
 export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, locations, centerTarget, onCenterComplete }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const mapGroupRef = useRef<SVGGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
@@ -93,6 +94,55 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   }, [dimensions, mapData, isGlobe, rotation, globeZoom]);
 
   const pathGenerator = useMemo(() => d3.geoPath().projection(projection), [projection]);
+
+  // --- Canvas Rendering for Globe ---
+  useLayoutEffect(() => {
+    if (!isGlobe || !canvasRef.current || !mapData || !dimensions.width) return;
+    
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const { width, height } = dimensions;
+    const canvasPath = d3.geoPath(projection, context);
+
+    context.clearRect(0, 0, width, height);
+
+    // Draw Sphere
+    context.beginPath();
+    canvasPath({ type: "Sphere" });
+    context.fillStyle = "#050505";
+    context.fill();
+    context.strokeStyle = "#27272a";
+    context.lineWidth = 1.5;
+    context.stroke();
+
+    // Draw Graticule
+    context.beginPath();
+    canvasPath(d3.geoGraticule10());
+    context.strokeStyle = "#27272a";
+    context.lineWidth = 0.5;
+    context.globalAlpha = 0.3;
+    context.stroke();
+    context.globalAlpha = 1.0;
+
+    // Draw Countries
+    context.beginPath();
+    mapData.features.forEach(feature => {
+      canvasPath(feature);
+    });
+    context.fillStyle = "#27272a";
+    context.fill();
+    
+    // Draw Borders
+    context.beginPath();
+    canvasPath(mapData.borders);
+    context.strokeStyle = "#a1a1aa";
+    context.lineWidth = 0.8;
+    context.stroke();
+
+  }, [isGlobe, projection, mapData, dimensions]);
+
   const graticule = useMemo(() => d3.geoGraticule10(), []);
 
   // --- Centering Animation ---
@@ -296,21 +346,21 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   }, [zoomLevel, isGlobe]);
 
   useLayoutEffect(() => {
-    if (!mapData || !mapGroupRef.current) return;
+    if (!mapData || !mapGroupRef.current || isGlobe) return;
 
     const group = d3.select(mapGroupRef.current);
     const staticGroup = group.select<SVGGElement>(".static-map-layer");
     if (staticGroup.empty()) return;
     
-    const sphereData = isGlobe ? [{ type: "Sphere" }] : [];
+    const sphereData: any[] = []; // No sphere in 2D
     staticGroup.selectAll("path.sphere").data(sphereData).join("path").attr("class", "sphere").attr("d", pathGenerator as any).attr("fill", "#050505").attr("stroke", "#27272a").attr("stroke-width", 1.5);
 
-    const graticuleData = isGlobe ? [graticule] : [];
+    const graticuleData: any[] = []; // No graticule in 2D
     staticGroup.selectAll("path.graticule").data(graticuleData).join("path").attr("class", "graticule").attr("d", pathGenerator as any).attr("fill", "none").attr("stroke", "#27272a").attr("stroke-width", 0.5).attr("stroke-opacity", 0.3);
 
-    const fill = isGlobe ? "#27272a" : "#09090b"; 
-    const hoverFill = isGlobe ? "#3f3f46" : "#18181b";
-    const stroke = isGlobe ? "none" : "#3f3f46"; 
+    const fill = "#09090b"; 
+    const hoverFill = "#18181b";
+    const stroke = "#3f3f46"; 
 
     staticGroup.selectAll("path.country")
       .data(mapData.features)
@@ -319,30 +369,28 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       .attr("d", pathGenerator as any)
       .attr("fill", fill)
       .attr("stroke", stroke) 
-      .style("pointer-events", isGlobe ? "none" : "auto")
-      .style("cursor", isGlobe ? "grab" : "crosshair")
+      .style("pointer-events", "auto")
+      .style("cursor", "crosshair")
       .on("click", (event, d: any) => {
-         if (!isGlobe) {
-           const [x, y] = d3.pointer(event, mapGroupRef.current);
-           const coords = projection.invert?.([x, y]);
-           if (coords) {
-             const [lng, lat] = coords;
-             onMapClick({ 
-               x: event.clientX, 
-               y: event.clientY, 
-               lat, 
-               lng, 
-               country: d.properties?.name 
-             });
-           }
+         const [x, y] = d3.pointer(event, mapGroupRef.current);
+         const coords = projection.invert?.([x, y]);
+         if (coords) {
+           const [lng, lat] = coords;
+           onMapClick({ 
+             x: event.clientX, 
+             y: event.clientY, 
+             lat, 
+             lng, 
+             country: d.properties?.name 
+           });
          }
       })
-      .on("mouseenter", function() { if (!isGlobe) d3.select(this).attr("fill", hoverFill); })
-      .on("mouseleave", function() { if (!isGlobe) d3.select(this).attr("fill", fill); });
+      .on("mouseenter", function() { d3.select(this).attr("fill", hoverFill); })
+      .on("mouseleave", function() { d3.select(this).attr("fill", fill); });
       
     d3.select(mapGroupRef.current).selectAll("path.country").attr("stroke-width", 0.5 / zoomLevel);
 
-    const borderData = isGlobe ? [mapData.borders] : [];
+    const borderData: any[] = []; // No extra borders in 2D
     staticGroup.selectAll("path.borders").data(borderData).join("path").attr("class", "borders").attr("d", pathGenerator as any).attr("fill", "none").attr("stroke", "#a1a1aa").attr("stroke-width", 0.8).style("pointer-events", "none");
 
   }, [mapData, pathGenerator, projection, onMapClick, isGlobe, graticule, zoomLevel]);
@@ -401,6 +449,15 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     <div ref={containerRef} className="w-full h-full min-h-[400px] relative overflow-hidden bg-black shadow-inner">
       <div className="absolute inset-0 pointer-events-none dot-pattern opacity-20" />
       
+      {isGlobe && (
+        <canvas 
+          ref={canvasRef} 
+          width={dimensions.width} 
+          height={dimensions.height} 
+          className="absolute inset-0 pointer-events-none"
+        />
+      )}
+
       <svg ref={svgRef} width="100%" height="100%" className={`relative z-10 touch-none ${isGlobe ? 'cursor-crosshair' : 'cursor-move'}`}>
          <g ref={mapGroupRef}>
             <g className="static-map-layer" />
@@ -437,9 +494,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                           <rect x="-35" y="0" width="70" height="32" rx="4" className="fill-black/80 stroke-zinc-700 stroke-1" />
                           <text x="0" y="14" className="text-[12px] font-mono font-bold fill-white pointer-events-none" textAnchor="middle" dominantBaseline="middle">{timeStr}</text>
                           <text x="0" y="26" className="text-[8px] fill-zinc-400 pointer-events-none uppercase" textAnchor="middle" dominantBaseline="middle">
-                            {loc.timezone 
-                              ? loc.timezone.split('/').pop()?.replace(/_/g, ' ') 
-                              : (loc.country || 'Local')}
+                            {loc.name.split(',')[0]}
                           </text>
                         </g>
                     </g>
