@@ -444,7 +444,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                         <g transform={`translate(0, ${-45 * markerScale}) scale(${textScale})`}>
                           <rect x="-35" y="0" width="70" height="32" rx="4" className="fill-black/80 stroke-zinc-700 stroke-1" />
                           <text x="0" y="14" className="text-[12px] font-mono font-bold fill-white pointer-events-none" textAnchor="middle" dominantBaseline="middle">{timeStr}</text>
-                          <text x="0" y="26" className="text-[8px] fill-zinc-400 pointer-events-none uppercase" textAnchor="middle" dominantBaseline="middle">{loc.timezone ? loc.timezone.split('/')[1].replace(/_/g, ' ') : 'Local'}</text>
+                          <text x="0" y="26" className="text-[8px] fill-zinc-400 pointer-events-none uppercase" textAnchor="middle" dominantBaseline="middle">
+                            {loc.timezone 
+                              ? loc.timezone.split('/').pop()?.replace(/_/g, ' ') 
+                              : (loc.country || 'Local')}
+                          </text>
                         </g>
                     </g>
                   )

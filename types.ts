@@ -15,6 +15,7 @@ export interface SavedLocation {
   timezone?: string; // IANA timezone if available (e.g. "Europe/London")
   lngOffset: number; // Longitude based offset in hours (for arbitrary clicks)
   isPinned?: boolean;
+  country?: string; // Country name for arbitrary clicks
 }
 
 export interface MapClickEvent {
