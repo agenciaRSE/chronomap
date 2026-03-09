@@ -229,7 +229,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
       const drag = d3.drag<SVGSVGElement, unknown>()
         .filter((event) => {
-           if (event.type === 'touchstart') return event.touches.length === 1;
+           // Only allow single-touch for drag (rotation)
+           if (event.touches) return event.touches.length === 1;
            return !event.button; 
         })
         .on("start", (event) => {
@@ -307,6 +308,13 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([0.5, 8])
+        .filter((event) => {
+          // Allow wheel and multi-touch zoom
+          if (event.type === 'wheel') return true;
+          if (event.touches && event.touches.length > 1) return true;
+          // Don't allow single-touch zoom (panning) on globe
+          return false;
+        })
         .on("start", () => svg.interrupt("centering"))
         .on("zoom", (event) => {
           setGlobeZoom(event.transform.k);
