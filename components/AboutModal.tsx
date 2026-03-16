@@ -93,7 +93,93 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.9.0</span>
+                      <span className="text-sm font-mono text-primary">v2.9.7</span>
+                      <span className="text-xs text-zinc-500 mb-1">Enhanced Controls Visibility</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Arrow Visibility:</strong> Significantly increased the visibility of the time-shift arrows by adding a persistent background and a stronger border.</li>
+                        <li><strong>Improved Contrast:</strong> Refined the color palette for these controls to ensure they are easily identifiable against the map.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.6</span>
+                      <span className="text-xs text-zinc-500 mb-1">Visibility & Theme Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Button Visibility:</strong> Fixed an issue where the "Live" button text was too dark to read. It now uses a high-contrast blue with a subtle glow.</li>
+                        <li><strong>Theme Definition:</strong> Properly defined the primary color in the global CSS to ensure consistent rendering across all components.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.5</span>
+                      <span className="text-xs text-zinc-500 mb-1">UI Polish</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Arrow Styling:</strong> Added a subtle persistent border to the time-shift arrows for better definition.</li>
+                        <li><strong>Hover Feedback:</strong> Refined the hover state to be more distinct against the new persistent border.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.4</span>
+                      <span className="text-xs text-zinc-500 mb-1">Control Bar Consolidation</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Unified Controls:</strong> Integrated the "Back to Present" (Live) button directly into the central control bar.</li>
+                        <li><strong>Improved Accessibility:</strong> All temporal controls (Play/Pause, Calendar, and Return to Live) are now grouped together in a single, centered floating bar.</li>
+                        <li><strong>Visual Balance:</strong> Restored the clean, centered look of the footer by consolidating the right-side action into the main control group.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.3</span>
+                      <span className="text-xs text-zinc-500 mb-1">Header Centering Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Clock Centering:</strong> Removed the secondary "Present" button from the header that was causing the main clock to shift off-center.</li>
+                        <li><strong>Visual Symmetry:</strong> Restored perfect horizontal centering for the central time display.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.2</span>
+                      <span className="text-xs text-zinc-500 mb-1">Layout Restoration</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Footer Layout Fix:</strong> Restored the balanced 3-column layout in the footer.</li>
+                        <li><strong>Back to Present:</strong> Returned the "Back to Present" button to the right side of the footer for better accessibility and visual balance.</li>
+                        <li><strong>Always Visible:</strong> The button is now always visible in the footer (disabled when already in live mode) to maintain UI consistency.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.1</span>
+                      <span className="text-xs text-zinc-500 mb-1">UI Accessibility Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Present Button Relocation:</strong> Moved the "Back to Present" button from the footer to the central header for better visibility.</li>
+                        <li><strong>Dynamic Visibility:</strong> The button now only appears when you are viewing past or future time, providing a clear way to return to live mode.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Time Sync & Accuracy Fix</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Real-time Hover Sync:</strong> Fixed an issue where the hover tooltip time would become stale. It now updates every second to stay perfectly synchronized with the global clock.</li>

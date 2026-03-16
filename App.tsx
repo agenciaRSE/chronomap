@@ -297,7 +297,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.9.0</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.9.7</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
@@ -461,125 +461,107 @@ const App: React.FC = () => {
           onInteractionEnd={() => setIsScrubbing(false)}
         />
 
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 p-2 md:p-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 items-center gap-4 p-4">
           
-          <div className="w-full md:w-auto grid grid-cols-[1fr_auto_1fr] items-center md:flex md:gap-3">
+          {/* Left: Time Stepping */}
+          <div className="flex items-center justify-center md:justify-start gap-3">
+            <button 
+              onClick={() => handleTimeShift(-1)} 
+              className="p-2.5 bg-zinc-900/50 hover:bg-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-all border border-zinc-800 hover:border-zinc-700 shadow-sm"
+              title="Step Back in Time"
+              aria-label="Step Back in Time"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
             
-            <div className="justify-self-end md:hidden pr-4">
-               <button 
-                  onClick={resetToLive}
-                  disabled={timeState.mode === 'live'}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                    timeState.mode === 'live' 
-                      ? 'text-zinc-600 cursor-not-allowed opacity-50' 
-                      : 'text-primary hover:bg-primary/10 border border-primary/20'
-                  }`}
-               >
-                  <RotateCcw className="w-3 h-3" />
-                  <span>Live</span>
-               </button>
+            <div className="flex flex-col items-center gap-0.5">
+                <button 
+                  onClick={() => changeStep(1)}
+                  disabled={timeStepIndex >= TIME_STEPS.length - 1}
+                  className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label="Increase time step"
+                >
+                  <ChevronUp size={14} />
+                </button>
+                
+                <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-20 text-center select-none">
+                  {TIME_STEPS[timeStepIndex].label}
+                </span>
+                
+                <button 
+                  onClick={() => changeStep(-1)}
+                  disabled={timeStepIndex <= 0}
+                  className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label="Decrease time step"
+                >
+                  <ChevronDown size={14} />
+                </button>
             </div>
 
-            <div className="flex items-center gap-3 justify-self-center">
-              <button 
-                onClick={() => handleTimeShift(-1)} 
-                className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-                title="Step Back in Time"
-                aria-label="Step Back in Time"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              
-              <div className="flex flex-col items-center gap-0.5">
-                  <button 
-                    onClick={() => changeStep(1)}
-                    disabled={timeStepIndex >= TIME_STEPS.length - 1}
-                    className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Increase time step"
-                  >
-                    <ChevronUp size={14} />
-                  </button>
-                  
-                  <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-20 text-center select-none">
-                    {TIME_STEPS[timeStepIndex].label}
-                  </span>
-                  
-                  <button 
-                    onClick={() => changeStep(-1)}
-                    disabled={timeStepIndex <= 0}
-                    className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                     aria-label="Decrease time step"
-                  >
-                    <ChevronDown size={14} />
-                  </button>
-              </div>
-
-              <button 
-                onClick={() => handleTimeShift(1)} 
-                className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors border border-transparent hover:border-zinc-800"
-                title="Step Forward in Time"
-                aria-label="Step Forward in Time"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="md:hidden"></div>
-            
-            <div className="hidden md:block">
-               <button 
-                  onClick={resetToLive}
-                  disabled={timeState.mode === 'live'}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                    timeState.mode === 'live' 
-                      ? 'text-zinc-600 cursor-not-allowed opacity-50' 
-                      : 'text-primary hover:bg-primary/10 border border-primary/20'
-                  }`}
-               >
-                  <RotateCcw className="w-3 h-3" />
-                  <span>Back to Present</span>
-               </button>
-            </div>
+            <button 
+              onClick={() => handleTimeShift(1)} 
+              className="p-2.5 bg-zinc-900/50 hover:bg-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-all border border-zinc-800 hover:border-zinc-700 shadow-sm"
+              title="Step Forward in Time"
+              aria-label="Step Forward in Time"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
 
-          <div className="flex items-center justify-center w-full md:w-auto gap-2">
-            <div className="flex items-center gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg">
-               
-               <button 
-                  onClick={() => setIsPaused(!isPaused)}
-                  className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
-               >
-                  {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
-                  <span className="text-xs font-medium pr-1">{isPaused ? "Resume" : "Pause"}</span>
-               </button>
+          {/* Center: Play/Pause, Calendar & Back to Present */}
+          <div className="flex items-center justify-center gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg w-fit mx-auto md:col-span-1">
+             <button 
+                onClick={() => setIsPaused(!isPaused)}
+                className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
+             >
+                {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
+                <span className="text-xs font-medium pr-1">{isPaused ? "Resume" : "Pause"}</span>
+             </button>
 
-               <div className="h-6 w-[1px] bg-zinc-800"></div>
+             <div className="h-6 w-[1px] bg-zinc-800"></div>
 
-               <div className="flex items-center gap-1">
-                  <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                        <Calendar className="h-3 w-3 text-zinc-500" />
-                      </div>
-                      <input 
-                        type="datetime-local"
-                        value={format(timeState.current, "yyyy-MM-dd'T'HH:mm")}
-                        onChange={handleCustomDateChange}
-                        className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[240px] font-mono cursor-pointer"
-                        style={{ colorScheme: 'dark' }}
-                      />
-                  </div>
-                  <button 
-                    className="p-1.5 rounded-md hover:bg-green-500/20 hover:text-green-500 text-zinc-600 transition-colors"
-                    title="Set Date and Time"
-                    aria-label="Set Date and Time"
-                    onClick={() => setIsPaused(true)}
-                  >
-                    <Check className="w-3.5 h-3.5" />
-                  </button>
-               </div>
-            </div>
+             <div className="flex items-center gap-1">
+                <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                      <Calendar className="h-3 w-3 text-zinc-500" />
+                    </div>
+                    <input 
+                      type="datetime-local"
+                      value={format(timeState.current, "yyyy-MM-dd'T'HH:mm")}
+                      onChange={handleCustomDateChange}
+                      className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[220px] font-mono cursor-pointer"
+                      style={{ colorScheme: 'dark' }}
+                    />
+                </div>
+                <button 
+                  className="p-1.5 rounded-md hover:bg-green-500/20 hover:text-green-500 text-zinc-600 transition-colors"
+                  title="Set Date and Time"
+                  aria-label="Set Date and Time"
+                  onClick={() => setIsPaused(true)}
+                >
+                  <Check className="w-3.5 h-3.5" />
+                </button>
+             </div>
+
+             <div className="h-6 w-[1px] bg-zinc-800"></div>
+
+             <button 
+                onClick={resetToLive}
+                className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${
+                  timeState.mode === 'live' 
+                    ? 'text-zinc-600 cursor-default' 
+                    : 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]'
+                }`}
+                disabled={timeState.mode === 'live'}
+                title="Back to Present"
+             >
+                <RotateCcw className={`w-4 h-4 ${timeState.mode !== 'live' ? 'animate-spin-slow' : ''}`} />
+                <span className="text-xs font-medium">Live</span>
+             </button>
           </div>
 
+          {/* Right: Empty spacer for grid balance */}
+          <div className="hidden md:block"></div>
         </div>
       </footer>
 
