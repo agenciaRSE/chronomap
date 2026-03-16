@@ -123,7 +123,7 @@ const App: React.FC = () => {
     }
 
     if (data.city) {
-      const country = data.city.country === "Israel" ? "Israel's occupied territories" : data.city.country;
+      const country = data.city.country === "Israel" ? "Occupied territories" : data.city.country;
       name = `${data.city.name}, ${country}`;
       timezone = data.city.timezone || timezone;
     }

@@ -96,7 +96,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                       <span className="text-sm font-mono text-primary">v3.0.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Geopolitical Update</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
-                        <li><strong>Naming Update:</strong> Renamed 'Israel' to "Israel's occupied territories" across the map and tooltips to reflect the requested geopolitical terminology.</li>
+                        <li><strong>Naming Update:</strong> Renamed 'Israel' to "Occupied territories" across the map and tooltips to reflect the requested geopolitical terminology.</li>
                       </ul>
                    </div>
                 </div>
