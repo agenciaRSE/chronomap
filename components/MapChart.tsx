@@ -605,7 +605,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                         <circle r={3 * markerScale} className="fill-blue-500 stroke-blue-400/20" strokeWidth={0.5 * markerScale} />
                         <line x1="0" y1={-3 * markerScale} x2="0" y2={-25 * markerScale} className="stroke-blue-500/30" strokeWidth={1 * markerScale} />
                         <g transform={`translate(0, ${-45 * markerScale}) scale(${textScale})`}>
-                          <rect x="-35" y="0" width="70" height="32" rx="4" className="fill-black/80 stroke-zinc-800/40 stroke-[0.5]" />
+                          <rect x="-35" y="0" width="70" height="32" rx="4" className="fill-black/80 stroke-zinc-700 stroke-1" />
                           <text x="0" y="14" className="text-[12px] font-mono font-bold fill-white pointer-events-none" textAnchor="middle" dominantBaseline="middle">{timeStr}</text>
                           <text x="0" y="26" className="text-[8px] fill-zinc-400 pointer-events-none uppercase" textAnchor="middle" dominantBaseline="middle">
                             {shortenName(loc.name.split(',')[0])}
@@ -650,7 +650,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
       {hoveredInfo && (
         <div 
-          className="fixed pointer-events-none z-[100] bg-black/90 border border-zinc-800 rounded-lg px-3 py-2 shadow-2xl backdrop-blur-sm flex flex-col gap-0.5 min-w-[140px]"
+          className="fixed pointer-events-none z-[100] bg-black/90 border border-zinc-700 rounded-lg px-3 py-2 shadow-2xl backdrop-blur-sm flex flex-col gap-0.5 min-w-[140px]"
           style={{ 
             left: hoveredInfo.x + 15, 
             top: hoveredInfo.y + 15,

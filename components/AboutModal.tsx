@@ -93,7 +93,32 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.8.3</span>
+                      <span className="text-sm font-mono text-primary">v2.8.5</span>
+                      <span className="text-xs text-zinc-500 mb-1">Tooltip Border Refinement</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Enhanced Borders:</strong> Restored and refined borders for all map tooltips and pinned labels to ensure they stand out clearly against the dark background.</li>
+                        <li><strong>Improved Legibility:</strong> Increased the contrast of tooltip borders for better definition in both 2D and 3D views.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.4</span>
+                      <span className="text-xs text-zinc-500 mb-1">Sidebar UI Refinement</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Finer Card Borders:</strong> Reduced the thickness and intensity of pinned location card borders in the sidebar for a cleaner look.</li>
+                        <li><strong>Persistent Blue Pin:</strong> Pinned locations now always display their blue pin icon, ensuring you can immediately identify them without hovering.</li>
+                        <li><strong>Optimized Visual Hierarchy:</strong> Adjusted colors and opacity to ensure the most important information stands out without overwhelming the interface.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.3</span>
                       <span className="text-xs text-zinc-500 mb-1">UI Refinement & Abbreviations</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Smart Abbreviations:</strong> Tooltips now use abbreviations for long names (e.g., "USA" instead of "United States of America") to ensure clean layout.</li>

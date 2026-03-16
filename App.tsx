@@ -297,7 +297,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.8.3</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.8.5</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
@@ -394,11 +394,11 @@ const App: React.FC = () => {
               )}
 
               {locations.map(loc => (
-                <div key={loc.id} className={`pointer-events-auto group bg-zinc-900/80 backdrop-blur-md border ${loc.isPinned ? 'border-primary/40 ring-1 ring-primary/20' : 'border-zinc-800'} hover:border-zinc-600 p-4 rounded-xl transition-all duration-200 relative shadow-lg`}>
-                    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all bg-black/20 backdrop-blur-sm rounded-lg p-0.5">
+                <div key={loc.id} className={`pointer-events-auto group bg-zinc-900/80 backdrop-blur-md border ${loc.isPinned ? 'border-blue-500/30' : 'border-zinc-800/50'} hover:border-zinc-700 p-4 rounded-xl transition-all duration-200 relative shadow-lg`}>
+                    <div className={`absolute top-2 right-2 flex items-center gap-1 transition-all bg-black/20 backdrop-blur-sm rounded-lg p-0.5 ${loc.isPinned ? 'opacity-100' : 'opacity-100 md:opacity-0 group-hover:opacity-100'}`}>
                       <button 
                         onClick={() => togglePin(loc.id)}
-                        className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-primary hover:text-primary/80 bg-primary/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
+                        className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-blue-500 hover:text-blue-400 bg-blue-500/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
                         title={loc.isPinned ? "Unpin Location" : "Pin Location"}
                         aria-label={loc.isPinned ? "Unpin Location" : "Pin Location"}
                       >
