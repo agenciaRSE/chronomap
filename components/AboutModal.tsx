@@ -93,7 +93,31 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.8.5</span>
+                      <span className="text-sm font-mono text-primary">v2.8.7</span>
+                      <span className="text-xs text-zinc-500 mb-1">Button Visibility Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>High-Visibility Buttons:</strong> Fixed an issue where copy buttons were too dark. They now use a clear zinc-based theme for maximum legibility.</li>
+                        <li><strong>Enhanced Contrast:</strong> Improved the contrast of all interactive elements in the Discord Generator modal.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.6</span>
+                      <span className="text-xs text-zinc-500 mb-1">Discord Generator UX</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Improved Copy Flow:</strong> Replaced raw code display with a dedicated "Copy" button in the Discord Timestamp Generator.</li>
+                        <li><strong>Visual Feedback:</strong> Added a clear "Copied" state with color changes to confirm successful clipboard actions.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.5</span>
                       <span className="text-xs text-zinc-500 mb-1">Tooltip Border Refinement</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Enhanced Borders:</strong> Restored and refined borders for all map tooltips and pinned labels to ensure they stand out clearly against the dark background.</li>

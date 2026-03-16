@@ -67,12 +67,25 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
                   <span className="text-xs text-muted-foreground mt-1 bg-black/20 px-1.5 py-0.5 rounded inline-block">{fmt.preview}</span>
                 </div>
                 
-                <div className="flex items-center gap-3">
-                  <code className="hidden sm:block px-2 py-1 rounded bg-black/30 text-xs font-mono text-primary/80">
-                    {`<t:${unixTimestamp}:${fmt.code}>`}
-                  </code>
-                  <button className="p-2 rounded-md hover:bg-primary/20 text-primary transition-colors">
-                    {copied === fmt.code ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                <div className="flex items-center gap-2">
+                  <button 
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-all text-xs font-medium border ${
+                      copied === fmt.code 
+                        ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' 
+                        : 'bg-zinc-800 text-zinc-200 border-zinc-700 hover:bg-zinc-700 hover:text-white'
+                    }`}
+                  >
+                    {copied === fmt.code ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
