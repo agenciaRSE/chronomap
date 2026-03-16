@@ -241,6 +241,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
   const shortenName = (name: string) => {
     const mapping: Record<string, string> = {
+      "Israel": "Israel's occupied territories",
       "United States of America": "USA",
       "United Kingdom": "UK",
       "Russian Federation": "Russia",
@@ -392,7 +393,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                const [lng, lat] = coords;
                if (isFinite(lng) && isFinite(lat)) {
                  const country = findCountryAt(lng, lat);
-                 onMapClick({ x: clientX, y: clientY, lat, lng, country });
+                 const finalCountry = country === "Israel" ? "Israel's occupied territories" : country;
+                 onMapClick({ x: clientX, y: clientY, lat, lng, country: finalCountry });
                }
              }
           }
@@ -428,20 +430,21 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         if (coords) {
           const [lng, lat] = coords;
           if (isFinite(lng) && isFinite(lat)) {
-            const country = findCountryAt(lng, lat);
-            if (country) {
-              const time = getTimeAt(lat, lng);
-              setHoveredInfo({
-                x: event.clientX,
-                y: event.clientY,
-                name: shortenName(country),
-                time,
-                lat,
-                lng
-              });
-              setHoveredCountry(country);
-              return;
-            }
+             const country = findCountryAt(lng, lat);
+             const finalCountry = country === "Israel" ? "Israel's occupied territories" : country;
+             if (country) {
+               const time = getTimeAt(lat, lng);
+               setHoveredInfo({
+                 x: event.clientX,
+                 y: event.clientY,
+                 name: shortenName(finalCountry),
+                 time,
+                 lat,
+                 lng
+               });
+               setHoveredCountry(country);
+               return;
+             }
           }
         }
         setHoveredInfo(null);
@@ -521,7 +524,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
              y: event.clientY, 
              lat, 
              lng, 
-             country: d.properties?.name 
+             country: d.properties?.name === "Israel" ? "Israel's occupied territories" : d.properties?.name 
            });
          }
       })
@@ -535,7 +538,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
             setHoveredInfo({
               x: event.clientX,
               y: event.clientY,
-              name: shortenName(d.properties?.name || "Unknown"),
+              name: shortenName(d.properties?.name === "Israel" ? "Israel's occupied territories" : (d.properties?.name || "Unknown")),
               time,
               lat,
               lng
