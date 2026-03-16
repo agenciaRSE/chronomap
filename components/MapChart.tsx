@@ -375,6 +375,13 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                 clientY = event.sourceEvent.clientY;
              }
              if (clientX === undefined || clientY === undefined) return;
+
+             // Check if the click was on a marker to avoid double trigger
+             const target = event.sourceEvent.target as Element;
+             if (target && target.tagName === 'circle' && target.classList.contains('cursor-pointer')) {
+                return;
+             }
+
              const rect = containerRef.current?.getBoundingClientRect();
              if (!rect) return;
              const relX = clientX - rect.left;

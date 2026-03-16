@@ -127,6 +127,23 @@ const App: React.FC = () => {
       timezone = data.city.timezone || timezone;
     }
 
+    // Deduplication check
+    const isDuplicate = locations.some(loc => 
+      loc.name === name || 
+      (Math.abs(loc.lat - data.lat) < 0.01 && Math.abs(loc.lng - data.lng) < 0.01)
+    );
+
+    if (isDuplicate) {
+      const existing = locations.find(loc => 
+        loc.name === name || 
+        (Math.abs(loc.lat - data.lat) < 0.01 && Math.abs(loc.lng - data.lng) < 0.01)
+      );
+      if (existing) {
+        setCenterTarget([existing.lng, existing.lat]);
+      }
+      return;
+    }
+
     const newLocation: SavedLocation = {
       id: crypto.randomUUID(),
       lat: data.lat,
@@ -152,11 +169,20 @@ const App: React.FC = () => {
       }
     }
 
+    const name = `${city.name}, ${city.country}`;
+    
+    // Deduplication check
+    const existing = locations.find(loc => loc.name === name);
+    if (existing) {
+      setCenterTarget([existing.lng, existing.lat]);
+      return;
+    }
+
     const newLocation: SavedLocation = {
       id: crypto.randomUUID(),
       lat: city.lat,
       lng: city.lng,
-      name: `${city.name}, ${city.country}`,
+      name,
       timezone,
       country: city.country,
       lngOffset: city.lng / 15,
@@ -297,7 +323,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.9.8</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v2.9.9</span>
             </h1>
             <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
           </div>
