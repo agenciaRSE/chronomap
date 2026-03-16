@@ -5,6 +5,7 @@ import * as topojson from 'topojson-client';
 import { MAJOR_CITIES } from '../constants';
 import { SavedLocation, MapClickEvent } from '../types';
 import { format, toZonedTime } from 'date-fns-tz';
+import tzlookup from 'tz-lookup';
 import { Plus, Minus, Maximize, Globe, Map as MapIcon } from 'lucide-react';
 
 interface MapChartProps {
@@ -26,6 +27,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const [dimensions, setDimensions] = useState({ width: 960, height: 500 });
   
   const [isGlobe, setIsGlobe] = useState(window.innerWidth < 768);
+  const [hoveredInfo, setHoveredInfo] = useState<{
+    x: number;
+    y: number;
+    name: string;
+    time: string;
+  } | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1); 
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
   const [globeZoom, setGlobeZoom] = useState(1);
@@ -205,6 +212,21 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     return country?.properties?.name;
   };
 
+  const getTimeAt = React.useCallback((lat: number, lng: number, timezone?: string) => {
+    let tz = timezone;
+    if (!tz) {
+      try {
+        tz = tzlookup(lat, lng);
+      } catch (e) {
+        const offset = lng / 15;
+        const shifted = new Date(currentTime.getTime() + (offset * 3600 * 1000));
+        return format(shifted, 'HH:mm', { timeZone: 'UTC' });
+      }
+    }
+    const date = toZonedTime(currentTime, tz);
+    return format(date, 'HH:mm');
+  }, [currentTime]);
+
   // --- Interaction Handling ---
   useEffect(() => {
     if (!svgRef.current || !mapGroupRef.current) return;
@@ -325,6 +347,33 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       svg.call(zoom.transform, d3.zoomIdentity.scale(globeZoomRef.current));
       zoomBehaviorRef.current = zoom;
 
+      svg.on("mousemove", (event) => {
+        const [relX, relY] = d3.pointer(event);
+        const tempProjection = d3.geoOrthographic()
+          .scale(baseScale * globeZoomRef.current)
+          .translate([width / 2, height / 2])
+          .rotate(rotationRef.current)
+          .clipAngle(90);
+        const coords = tempProjection.invert?.([relX, relY]);
+        if (coords) {
+          const [lng, lat] = coords;
+          if (isFinite(lng) && isFinite(lat)) {
+            const country = findCountryAt(lng, lat);
+            if (country) {
+              const time = getTimeAt(lat, lng);
+              setHoveredInfo({
+                x: event.clientX,
+                y: event.clientY,
+                name: country,
+                time
+              });
+              return;
+            }
+          }
+        }
+        setHoveredInfo(null);
+      }).on("mouseleave", () => setHoveredInfo(null));
+
     } else { // 2D Map Logic
       const handle2DZoom = (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
         g.attr("transform", event.transform.toString());
@@ -400,7 +449,24 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
          }
       })
       .on("mouseenter", function() { d3.select(this).attr("fill", hoverFill); })
-      .on("mouseleave", function() { d3.select(this).attr("fill", fill); });
+      .on("mousemove", (event, d: any) => {
+          const [x, y] = d3.pointer(event, mapGroupRef.current);
+          const coords = projection.invert?.([x, y]);
+          if (coords) {
+            const [lng, lat] = coords;
+            const time = getTimeAt(lat, lng);
+            setHoveredInfo({
+              x: event.clientX,
+              y: event.clientY,
+              name: d.properties?.name || "Unknown",
+              time
+            });
+          }
+      })
+      .on("mouseleave", function() { 
+        d3.select(this).attr("fill", fill);
+        setHoveredInfo(null);
+      });
       
     d3.select(mapGroupRef.current).selectAll("path.country").attr("stroke-width", 0.5 / zoomLevel);
 
@@ -485,12 +551,21 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                         cx={pos[0]}
                         cy={pos[1]}
                         r={(isGlobe ? 2.5 : 2) * markerScale}
-                        className={`fill-zinc-700 hover:fill-blue-500 transition-colors ${isGlobe ? 'pointer-events-none' : 'cursor-pointer'}`}
+                        className={`fill-zinc-700 hover:fill-blue-500 transition-colors cursor-pointer`}
+                        onMouseMove={(e) => {
+                          e.stopPropagation();
+                          const time = getTimeAt(city.lat, city.lng, city.timezone);
+                          setHoveredInfo({
+                            x: e.clientX,
+                            y: e.clientY,
+                            name: `${city.name}, ${city.country}`,
+                            time
+                          });
+                        }}
+                        onMouseLeave={() => setHoveredInfo(null)}
                         onClick={(e) => {
-                          if(!isGlobe) {
-                            e.stopPropagation(); 
-                            onMapClick({ x: e.clientX, y: e.clientY, lat: city.lat, lng: city.lng, city: city });
-                          }
+                          e.stopPropagation(); 
+                          onMapClick({ x: e.clientX, y: e.clientY, lat: city.lat, lng: city.lng, city: city });
                         }}
                     />
                   )
@@ -547,6 +622,27 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         <h2 className="text-zinc-500 text-xs uppercase tracking-widest font-bold">{isGlobe ? '3D Globe View' : 'Multi-Point View'}</h2>
         <p className="text-zinc-700 text-[10px]">{isGlobe ? 'Scroll to zoom • Drag to rotate' : 'Scroll to zoom • Drag to pan'}</p>
       </div>
+
+      {hoveredInfo && (
+        <div 
+          className="fixed pointer-events-none z-[100] bg-black/90 border border-zinc-800 rounded-lg px-3 py-2 shadow-2xl backdrop-blur-sm flex flex-col gap-0.5 min-w-[140px]"
+          style={{ 
+            left: hoveredInfo.x + 15, 
+            top: hoveredInfo.y + 15,
+            transform: 'translate(0, 0)' 
+          }}
+        >
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Local Time</span>
+            <span className="text-[10px] font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">
+              {hoveredInfo.time}
+            </span>
+          </div>
+          <div className="text-sm font-medium text-zinc-200 truncate">
+            {hoveredInfo.name}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
