@@ -93,7 +93,44 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.8.7</span>
+                      <span className="text-sm font-mono text-primary">v2.9.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">Time Sync & Accuracy Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Real-time Hover Sync:</strong> Fixed an issue where the hover tooltip time would become stale. It now updates every second to stay perfectly synchronized with the global clock.</li>
+                        <li><strong>Closure Fix:</strong> Resolved a technical debt where map event handlers were using outdated time data due to stale closures.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.9</span>
+                      <span className="text-xs text-zinc-500 mb-1">Globe Visual Refinement</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Monochrome Hover:</strong> Updated the 3D Globe hover effect to use a transparent white highlight, matching the aesthetic of the 2D map mode.</li>
+                        <li><strong>Subtle Interaction:</strong> Refined the highlight intensity for a more professional and integrated look.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.8</span>
+                      <span className="text-xs text-zinc-500 mb-1">3D Globe Enhancements</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Interactive Globe:</strong> Added a hover effect to the 3D Globe view, highlighting countries as you move your cursor over them.</li>
+                        <li><strong>Refined Transparency:</strong> Adjusted the globe's country colors to be more transparent, creating a more sophisticated and layered visual effect.</li>
+                        <li><strong>Visual Feedback:</strong> Hovered countries now feature a subtle blue highlight and border for better geographic context.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.7</span>
                       <span className="text-xs text-zinc-500 mb-1">Button Visibility Fix</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>High-Visibility Buttons:</strong> Fixed an issue where copy buttons were too dark. They now use a clear zinc-based theme for maximum legibility.</li>

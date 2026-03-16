@@ -22,6 +22,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const mapGroupRef = useRef<SVGGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+  const currentTimeRef = useRef(currentTime);
+
+  useEffect(() => {
+    currentTimeRef.current = currentTime;
+  }, [currentTime]);
   
   const [mapData, setMapData] = useState<{ features: any[], borders: any } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 960, height: 500 });
@@ -32,7 +37,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     y: number;
     name: string;
     time: string;
+    lat?: number;
+    lng?: number;
+    timezone?: string;
   } | null>(null);
+  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1); 
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
   const [globeZoom, setGlobeZoom] = useState(1);
@@ -136,19 +145,37 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     // Draw Countries
     context.beginPath();
     mapData.features.forEach(feature => {
-      canvasPath(feature);
+      if (hoveredCountry !== feature.properties?.name) {
+        canvasPath(feature);
+      }
     });
-    context.fillStyle = "#27272a";
+    context.fillStyle = "rgba(39, 39, 42, 0.4)";
     context.fill();
+
+    // Draw hovered country with highlight
+    if (hoveredCountry) {
+      const feature = mapData.features.find(f => f.properties?.name === hoveredCountry);
+      if (feature) {
+        context.beginPath();
+        canvasPath(feature);
+        context.fillStyle = "rgba(255, 255, 255, 0.15)"; // Transparent white highlight
+        context.fill();
+        context.strokeStyle = "rgba(255, 255, 255, 0.4)";
+        context.lineWidth = 1;
+        context.stroke();
+      }
+    }
     
     // Draw Borders
     context.beginPath();
     canvasPath(mapData.borders);
     context.strokeStyle = "#a1a1aa";
     context.lineWidth = 0.8;
+    context.globalAlpha = 0.5;
     context.stroke();
+    context.globalAlpha = 1.0;
 
-  }, [isGlobe, projection, mapData, dimensions]);
+  }, [isGlobe, projection, mapData, dimensions, hoveredCountry]);
 
   const graticule = useMemo(() => d3.geoGraticule10(), []);
 
@@ -239,18 +266,29 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
   const getTimeAt = React.useCallback((lat: number, lng: number, timezone?: string) => {
     let tz = timezone;
+    const time = currentTimeRef.current;
     if (!tz) {
       try {
         tz = tzlookup(lat, lng);
       } catch (e) {
         const offset = lng / 15;
-        const shifted = new Date(currentTime.getTime() + (offset * 3600 * 1000));
+        const shifted = new Date(time.getTime() + (offset * 3600 * 1000));
         return format(shifted, 'HH:mm', { timeZone: 'UTC' });
       }
     }
-    const date = toZonedTime(currentTime, tz);
+    const date = toZonedTime(time, tz);
     return format(date, 'HH:mm');
-  }, [currentTime]);
+  }, []);
+
+  // Update hovered info time when currentTime changes
+  useEffect(() => {
+    if (hoveredInfo && hoveredInfo.lat !== undefined && hoveredInfo.lng !== undefined) {
+      setHoveredInfo(prev => prev ? {
+        ...prev,
+        time: getTimeAt(prev.lat!, prev.lng!, prev.timezone)
+      } : null);
+    }
+  }, [currentTime, getTimeAt]);
 
   // --- Interaction Handling ---
   useEffect(() => {
@@ -390,14 +428,21 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                 x: event.clientX,
                 y: event.clientY,
                 name: shortenName(country),
-                time
+                time,
+                lat,
+                lng
               });
+              setHoveredCountry(country);
               return;
             }
           }
         }
         setHoveredInfo(null);
-      }).on("mouseleave", () => setHoveredInfo(null));
+        setHoveredCountry(null);
+      }).on("mouseleave", () => {
+        setHoveredInfo(null);
+        setHoveredCountry(null);
+      });
 
     } else { // 2D Map Logic
       const handle2DZoom = (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
@@ -484,7 +529,9 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
               x: event.clientX,
               y: event.clientY,
               name: shortenName(d.properties?.name || "Unknown"),
-              time
+              time,
+              lat,
+              lng
             });
           }
       })
@@ -584,7 +631,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                             x: e.clientX,
                             y: e.clientY,
                             name: `${city.name}, ${shortenName(city.country)}`,
-                            time
+                            time,
+                            lat: city.lat,
+                            lng: city.lng,
+                            timezone: city.timezone
                           });
                         }}
                         onMouseLeave={() => setHoveredInfo(null)}
