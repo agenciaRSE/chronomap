@@ -597,6 +597,15 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const markerScale = isGlobe ? 1 : 1 / zoomLevel; 
   const textScale = isGlobe ? 1 : 1 / zoomLevel;
 
+  // Helper to check if a coordinate is on the visible hemisphere of the globe
+  const isPointVisible = (lng: number, lat: number) => {
+    if (!isGlobe) return true;
+    // The center of the visible hemisphere in geoOrthographic is [-rotation[0], -rotation[1]]
+    const center: [number, number] = [-rotation[0], -rotation[1]];
+    const distance = d3.geoDistance([lng, lat], center);
+    return distance < Math.PI / 2;
+  };
+
   return (
     <div ref={containerRef} className="w-full h-full min-h-[400px] relative overflow-hidden bg-black shadow-inner">
       <div className="absolute inset-0 pointer-events-none dot-pattern opacity-20" />
@@ -615,6 +624,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
             <g className="static-map-layer" />
             <g className="markers-layer">
                 {MAJOR_CITIES.map(city => {
+                  if (!isPointVisible(city.lng, city.lat)) return null;
                   const pos = projection([city.lng, city.lat]);
                   if (!pos) return null; 
                   return (
@@ -646,6 +656,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                   )
                 })}
                 {locations.map(loc => {
+                  if (!isPointVisible(loc.lng, loc.lat)) return null;
                   const pos = projection([loc.lng, loc.lat]);
                   if (!pos) return null;
                   const timeStr = getTimeString(loc);

@@ -93,7 +93,19 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.9.7</span>
+                      <span className="text-sm font-mono text-primary">v2.9.8</span>
+                      <span className="text-xs text-zinc-500 mb-1">Globe Visibility Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Occlusion Culling:</strong> Implemented a visibility check for cities and markers on the 3D globe. Points on the back hemisphere are now correctly hidden and non-interactive.</li>
+                        <li><strong>Improved Interaction:</strong> Fixed an issue where cities on the far side of the globe could still be hovered and selected.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.9.7</span>
                       <span className="text-xs text-zinc-500 mb-1">Enhanced Controls Visibility</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Arrow Visibility:</strong> Significantly increased the visibility of the time-shift arrows by adding a persistent background and a stronger border.</li>
