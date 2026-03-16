@@ -212,6 +212,31 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     return country?.properties?.name;
   };
 
+  const shortenName = (name: string) => {
+    const mapping: Record<string, string> = {
+      "United States of America": "USA",
+      "United Kingdom": "UK",
+      "Russian Federation": "Russia",
+      "United Arab Emirates": "UAE",
+      "Democratic Republic of the Congo": "DR Congo",
+      "Central African Republic": "CAR",
+      "Dominican Republic": "Dom. Rep.",
+      "Equatorial Guinea": "Eq. Guinea",
+      "Papua New Guinea": "PNG",
+      "Solomon Islands": "Solomon Is.",
+      "Marshall Islands": "Marshall Is.",
+      "Federated States of Micronesia": "Micronesia",
+      "Saint Vincent and the Grenadines": "St. Vincent",
+      "Trinidad and Tobago": "Trinidad",
+      "Antigua and Barbuda": "Antigua",
+      "Saint Kitts and Nevis": "St. Kitts",
+      "Bosnia and Herzegovina": "Bosnia",
+      "North Macedonia": "N. Macedonia",
+      "Czech Republic": "Czechia",
+    };
+    return mapping[name] || name;
+  };
+
   const getTimeAt = React.useCallback((lat: number, lng: number, timezone?: string) => {
     let tz = timezone;
     if (!tz) {
@@ -364,7 +389,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
               setHoveredInfo({
                 x: event.clientX,
                 y: event.clientY,
-                name: country,
+                name: shortenName(country),
                 time
               });
               return;
@@ -458,7 +483,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
             setHoveredInfo({
               x: event.clientX,
               y: event.clientY,
-              name: d.properties?.name || "Unknown",
+              name: shortenName(d.properties?.name || "Unknown"),
               time
             });
           }
@@ -558,7 +583,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                           setHoveredInfo({
                             x: e.clientX,
                             y: e.clientY,
-                            name: `${city.name}, ${city.country}`,
+                            name: `${city.name}, ${shortenName(city.country)}`,
                             time
                           });
                         }}
@@ -576,14 +601,14 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                   const timeStr = getTimeString(loc);
                   return (
                     <g key={loc.id} transform={`translate(${pos[0]}, ${pos[1]})`} className={isGlobe ? 'pointer-events-none' : ''}>
-                        <circle r={8 * markerScale} className="fill-blue-500/20 animate-ping" />
-                        <circle r={3 * markerScale} className="fill-blue-500 stroke-black" strokeWidth={1 * markerScale} />
-                        <line x1="0" y1={-3 * markerScale} x2="0" y2={-25 * markerScale} className="stroke-blue-500/50" strokeWidth={1 * markerScale} />
+                        <circle r={8 * markerScale} className="fill-blue-500/10 animate-ping" />
+                        <circle r={3 * markerScale} className="fill-blue-500 stroke-blue-400/20" strokeWidth={0.5 * markerScale} />
+                        <line x1="0" y1={-3 * markerScale} x2="0" y2={-25 * markerScale} className="stroke-blue-500/30" strokeWidth={1 * markerScale} />
                         <g transform={`translate(0, ${-45 * markerScale}) scale(${textScale})`}>
-                          <rect x="-35" y="0" width="70" height="32" rx="4" className="fill-black/80 stroke-zinc-700 stroke-1" />
+                          <rect x="-35" y="0" width="70" height="32" rx="4" className="fill-black/80 stroke-zinc-800/40 stroke-[0.5]" />
                           <text x="0" y="14" className="text-[12px] font-mono font-bold fill-white pointer-events-none" textAnchor="middle" dominantBaseline="middle">{timeStr}</text>
                           <text x="0" y="26" className="text-[8px] fill-zinc-400 pointer-events-none uppercase" textAnchor="middle" dominantBaseline="middle">
-                            {loc.name.split(',')[0]}
+                            {shortenName(loc.name.split(',')[0])}
                           </text>
                         </g>
                     </g>

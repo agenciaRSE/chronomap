@@ -93,7 +93,20 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v2.8.2</span>
+                      <span className="text-sm font-mono text-primary">v2.8.3</span>
+                      <span className="text-xs text-zinc-500 mb-1">UI Refinement & Abbreviations</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Smart Abbreviations:</strong> Tooltips now use abbreviations for long names (e.g., "USA" instead of "United States of America") to ensure clean layout.</li>
+                        <li><strong>Subtle Pinned Markers:</strong> Refined the visual style of pinned locations with thinner borders and softer colors to reduce visual noise.</li>
+                        <li><strong>Blue Pin Head:</strong> Restored the classic blue pin head for pinned locations for better consistency.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v2.8.2</span>
                       <span className="text-xs text-zinc-500 mb-1">Interactive Hover Tooltips</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Dynamic Tooltips:</strong> Added real-time hover tooltips that show the location name and local time as you move your cursor across the map or globe.</li>
