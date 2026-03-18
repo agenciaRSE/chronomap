@@ -456,7 +456,6 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
     } else { // 2D Map Logic
       const handle2DZoom = (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
-        g.attr("transform", event.transform.toString());
         setMapTransform(event.transform);
         setZoomLevel(event.transform.k);
       };
@@ -630,7 +629,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       )}
 
       <svg ref={svgRef} width="100%" height="100%" className={`relative z-10 touch-none ${isGlobe ? 'cursor-crosshair' : 'cursor-move'}`}>
-         <g ref={mapGroupRef}>
+         <g ref={mapGroupRef} transform={isGlobe ? undefined : mapTransform.toString()}>
             <g className="static-map-layer" />
             <g className="markers-layer">
                 {MAJOR_CITIES.map(city => {
