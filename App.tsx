@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { NewsTicker } from './components/NewsTicker';
 import { AnimatedLogo } from './components/AnimatedLogo';
 import { MapChart } from './components/MapChart';
@@ -13,6 +13,7 @@ import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks,
 import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
 import { enUS } from 'date-fns/locale';
+import { animate } from 'motion/react';
 import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2 } from 'lucide-react';
 
 // Configuration for time steps
@@ -57,6 +58,8 @@ const App: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [centerTarget, setCenterTarget] = useState<[number, number] | null>(null);
+  const timeAnimationRef = useRef<any>(null);
+  const targetTimeRef = useRef<Date | null>(null);
   
   // Mobile View State: Default to map view on mobile, list view on desktop
   const [isMobileListOpen, setIsMobileListOpen] = useState(window.innerWidth < 768 ? false : true);
@@ -211,11 +214,36 @@ const App: React.FC = () => {
     setIsPaused(true); // Auto-pause when manually shifting
     const step = TIME_STEPS[timeStepIndex];
     
-    setTimeState(prev => ({
-      ...prev,
-      mode: 'custom',
-      current: step.fn(prev.current, step.amount * direction)
-    }));
+    // If we're already animating, start from the intended target to allow stacking
+    const baseTime = (timeAnimationRef.current && targetTimeRef.current) 
+      ? targetTimeRef.current 
+      : timeState.current;
+      
+    const targetTime = step.fn(baseTime, step.amount * direction);
+    targetTimeRef.current = targetTime;
+    
+    if (timeAnimationRef.current) {
+      timeAnimationRef.current.stop();
+    }
+
+    const startMs = timeState.current.getTime();
+    const targetMs = targetTime.getTime();
+
+    timeAnimationRef.current = animate(startMs, targetMs, {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1], // quintic bezier
+      onUpdate: (latest) => {
+        setTimeState(prev => ({
+          ...prev,
+          mode: 'custom',
+          current: new Date(latest)
+        }));
+      },
+      onComplete: () => {
+        timeAnimationRef.current = null;
+        targetTimeRef.current = null;
+      }
+    });
   };
 
   const changeStep = (direction: 1 | -1) => {
@@ -226,6 +254,10 @@ const App: React.FC = () => {
   };
 
   const handleScrubberChange = (newTime: Date) => {
+    if (timeAnimationRef.current) {
+      timeAnimationRef.current.stop();
+      timeAnimationRef.current = null;
+    }
     setIsPaused(true); // Auto-pause when scrubbing
     setTimeState(prev => ({
       ...prev,
@@ -235,6 +267,10 @@ const App: React.FC = () => {
   };
 
   const handleCustomDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (timeAnimationRef.current) {
+      timeAnimationRef.current.stop();
+      timeAnimationRef.current = null;
+    }
     setIsPaused(true); // Auto-pause when picking a date
     const newDate = new Date(e.target.value);
     if (!isNaN(newDate.getTime())) {
@@ -247,6 +283,10 @@ const App: React.FC = () => {
   };
 
   const resetToLive = () => {
+    if (timeAnimationRef.current) {
+      timeAnimationRef.current.stop();
+      timeAnimationRef.current = null;
+    }
     setTimeState(prev => ({
       ...prev,
       mode: 'live',

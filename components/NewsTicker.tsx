@@ -8,7 +8,7 @@ interface NewsItem {
   source: string;
 }
 
-export const NewsTicker: React.FC = () => {
+export const NewsTicker: React.FC = React.memo(() => {
   console.log("NewsTicker rendering...");
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -121,4 +121,4 @@ export const NewsTicker: React.FC = () => {
       </div>
     </div>
   );
-};
+});

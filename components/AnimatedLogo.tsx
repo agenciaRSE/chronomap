@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 
-export const AnimatedLogo: React.FC<{ className?: string }> = ({ className = "w-12 h-12" }) => {
+export const AnimatedLogo: React.FC<{ className?: string }> = memo(({ className = "w-12 h-12" }) => {
   return (
     <div className={`${className} relative flex items-center justify-center group`}>
       <svg 
@@ -83,4 +83,4 @@ export const AnimatedLogo: React.FC<{ className?: string }> = ({ className = "w-
       <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-colors duration-500" />
     </div>
   );
-};
+});
