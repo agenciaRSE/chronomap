@@ -47,7 +47,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
             </a>
 
             <a 
-              href="https://agenciarse.com/stripe"
+              href="https://www.paypal.com/paypalme/dmeijide"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between p-3 rounded-lg border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-700 transition-all group"
