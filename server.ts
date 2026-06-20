@@ -1,9 +1,8 @@
-
 import express from "express";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
 import path from "path";
 import { fileURLToPath } from "url";
+import { fetchCommonsNews } from "./lib/commonsFeed";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,36 +11,14 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // API Routes
-  app.get("/api/news", async (req, res) => {
+  // API: same-origin proxy for The Commons public JSON Feed.
+  app.get("/api/news", async (_req, res) => {
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({ error: "Server configuration error: API Key missing" });
-      }
-
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: "Provide a list of 10 current, real-time geopolitical news headlines from around the world. Focus on major international events, conflicts, and diplomatic shifts. Return ONLY a JSON array of objects with 'title', 'url', and 'source' properties. Do not include markdown formatting.",
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
-      });
-
-      const text = response.text;
-      if (!text) {
-        throw new Error("Empty response from AI");
-      }
-      
-      const jsonStr = text.trim();
-      const cleanedJson = jsonStr.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
-      
-      const data = JSON.parse(cleanedJson);
-      res.json(data);
+      const news = await fetchCommonsNews();
+      res.json(news);
     } catch (error) {
-      console.error("Backend News Fetch Error:", error);
-      res.status(500).json({ error: "Failed to fetch news from server" });
+      console.error("News proxy error:", error);
+      res.status(502).json({ error: "Failed to fetch The Commons feed" });
     }
   });
 

@@ -1,20 +1,28 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="ChronoMap" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# ChronoMap
 
-This contains everything you need to run your app locally.
+World time map + Discord timestamp generator. Live at https://www.chronomap.top
 
-View your app in AI Studio: https://ai.studio/apps/56e3c4c0-841d-44eb-8f62-fa736e6f49d3
+## Run locally
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
+**Prerequisites:** Node.js 22+
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+2. Run the app:
+   `npm run dev` → http://localhost:3000
+
+No environment variables required.
+
+## News ticker
+
+The top **The Commons** ticker pulls the latest items from The Commons public JSON Feed
+(`https://commons.now/feed.json`) through the `/api/news` same-origin proxy — no API key needed.
+Override the source with the optional `COMMONS_FEED_URL` env var.
+
+## Deploy
+
+Hosted on Vercel, connected to this repo. Pushing to `main` triggers a production deploy.

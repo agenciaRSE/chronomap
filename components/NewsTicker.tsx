@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Globe, ExternalLink, RefreshCw } from 'lucide-react';
 
@@ -8,8 +7,9 @@ interface NewsItem {
   source: string;
 }
 
+const COMMONS_URL = 'https://commons.now';
+
 export const NewsTicker: React.FC = React.memo(() => {
-  console.log("NewsTicker rendering...");
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,19 +19,21 @@ export const NewsTicker: React.FC = React.memo(() => {
     setError(null);
     try {
       const response = await fetch('/api/news');
-      
+
       // Verificar si la respuesta es JSON antes de intentar parsearla
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
         console.error("Non-JSON response received:", text);
-        throw new Error("El servidor no respondió con JSON. Revisa la configuración de las rutas en el deploy.");
+        throw new Error("El servidor no respondió con JSON.");
       }
 
       const data = await response.json();
       if (response.ok) {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           setNews(data);
+        } else if (Array.isArray(data)) {
+          throw new Error("No hay noticias disponibles ahora mismo");
         } else {
           throw new Error("Formato de respuesta inválido");
         }
@@ -40,13 +42,12 @@ export const NewsTicker: React.FC = React.memo(() => {
       }
     } catch (err) {
       console.error("News Fetch Error:", err);
-      setError(err instanceof Error ? err.message : "Failed to load news");
-      
-      // Fallback news
+      setError(err instanceof Error ? err.message : "No se pudieron cargar las noticias");
+
+      // Fallback: enlazar a The Commons
       setNews([
-        { title: "Global geopolitical shifts continue to evolve.", url: "#", source: "System" },
-        { title: "Diplomatic discussions ongoing in major international forums.", url: "#", source: "System" },
-        { title: "Regional stability remains a key focus for international observers.", url: "#", source: "System" }
+        { title: "The Commons — medio, agregador y archivo público. La portada la decidís vosotr@s.", url: COMMONS_URL, source: "The Commons" },
+        { title: "Una voz, un voto. Entra y participa.", url: COMMONS_URL, source: "The Commons" },
       ]);
     } finally {
       setLoading(false);
@@ -62,12 +63,18 @@ export const NewsTicker: React.FC = React.memo(() => {
 
   return (
     <div className="fixed top-0 left-0 w-full bg-zinc-900/90 backdrop-blur-md border-b border-white/10 h-10 flex items-center overflow-hidden z-40 flex-none">
-      <div className="flex-none bg-zinc-800 px-3 h-full flex items-center gap-2 border-r border-white/10 z-10">
+      <a
+        href={COMMONS_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex-none bg-zinc-800 px-3 h-full flex items-center gap-2 border-r border-white/10 z-10 hover:bg-zinc-700 transition-colors"
+        title="Noticias de The Commons"
+      >
         <Globe className={`w-4 h-4 text-blue-400 ${loading ? 'animate-spin' : ''}`} />
         <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-widest text-zinc-400 whitespace-nowrap">
-          Geopolitical Feed
+          The Commons
         </span>
-      </div>
+      </a>
 
       <div className="flex-1 overflow-hidden relative h-full flex items-center">
         {error ? (
@@ -87,9 +94,9 @@ export const NewsTicker: React.FC = React.memo(() => {
                 <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-tighter bg-zinc-800 px-1.5 py-0.5 rounded">
                   {item.source}
                 </span>
-                <a 
-                  href={item.url} 
-                  target="_blank" 
+                <a
+                  href={item.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-zinc-600 hover:text-white transition-colors"
                 >
@@ -106,9 +113,9 @@ export const NewsTicker: React.FC = React.memo(() => {
                 <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-tighter bg-zinc-800 px-1.5 py-0.5 rounded">
                   {item.source}
                 </span>
-                <a 
-                  href={item.url} 
-                  target="_blank" 
+                <a
+                  href={item.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-zinc-600 hover:text-white transition-colors"
                 >
