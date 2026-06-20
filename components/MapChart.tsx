@@ -68,13 +68,18 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   }, []);
 
   useEffect(() => {
-    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-      .then(response => response.json())
+    // Self-hosted (was jsdelivr) to drop the third-party runtime dependency.
+    fetch('/countries-110m.json')
+      .then(response => {
+        if (!response.ok) throw new Error(`Map data responded ${response.status}`);
+        return response.json();
+      })
       .then(data => {
         const features = (topojson.feature(data, data.objects.countries) as any).features;
         const borders = topojson.mesh(data, data.objects.countries);
         setMapData({ features, borders });
-      });
+      })
+      .catch(err => console.error('Failed to load map data', err));
 
     const handleResize = () => {
       if (containerRef.current) {

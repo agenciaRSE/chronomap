@@ -9,6 +9,10 @@ interface NewsItem {
 
 const COMMONS_URL = 'https://commons.now';
 
+// Only allow http(s) links as hrefs — defends against javascript:/data: URLs
+// if the upstream feed is ever compromised.
+const safeUrl = (url: string): string => (/^https?:\/\//i.test(url) ? url : '#');
+
 export const NewsTicker: React.FC = React.memo(() => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +99,7 @@ export const NewsTicker: React.FC = React.memo(() => {
                   {item.source}
                 </span>
                 <a
-                  href={item.url}
+                  href={safeUrl(item.url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-zinc-600 hover:text-white transition-colors"
@@ -114,7 +118,7 @@ export const NewsTicker: React.FC = React.memo(() => {
                   {item.source}
                 </span>
                 <a
-                  href={item.url}
+                  href={safeUrl(item.url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-zinc-600 hover:text-white transition-colors"

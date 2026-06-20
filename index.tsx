@@ -3,7 +3,12 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './src/index.css';
 
-console.log("INDEX.TSX LOADING...");
+// Unregister any stale service workers (avoids serving cached old assets).
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => registration.unregister());
+  });
+}
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

@@ -14,6 +14,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false
+    sourcemap: false,
+    // No inline modulepreload polyfill → keeps a strict `script-src 'self'` CSP
+    // working without 'unsafe-inline'. Modern browsers support modulepreload.
+    modulePreload: { polyfill: false }
   }
 });

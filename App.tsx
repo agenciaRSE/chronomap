@@ -27,7 +27,6 @@ const TIME_STEPS = [
 ];
 
 const App: React.FC = () => {
-  console.log("APP RENDERING...");
   // Real-world wall clock time
   const [realTime, setRealTime] = useState(new Date());
   
