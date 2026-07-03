@@ -195,6 +195,12 @@ const App: React.FC = () => {
     setCenterTarget([newLocation.lng, newLocation.lat]);
   };
 
+  // Stable identity: the MapChart centering effect depends on this callback,
+  // and App re-renders every second (clock tick). An inline arrow gave a fresh
+  // identity each render, re-running the effect mid-animation → it interrupted
+  // its own rotation transition, so the globe never finished centering.
+  const handleCenterComplete = useCallback(() => setCenterTarget(null), []);
+
   const removeLocation = (id: string) => {
     setLocations(prev => prev.filter(l => l.id !== id));
   };
@@ -511,7 +517,7 @@ const App: React.FC = () => {
               onMapClick={handleMapClick}
               locations={locations}
               centerTarget={centerTarget}
-              onCenterComplete={() => setCenterTarget(null)}
+              onCenterComplete={handleCenterComplete}
             />
           </div>
         </div>
