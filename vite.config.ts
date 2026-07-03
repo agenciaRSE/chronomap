@@ -25,6 +25,7 @@ export default defineConfig({
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         discord: fileURLToPath(new URL('./discord-timestamp-generator.html', import.meta.url)),
+        tzmap: fileURLToPath(new URL('./time-zone-map.html', import.meta.url)),
       },
     },
   }

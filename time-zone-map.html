@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+
+    <title>Interactive Time Zone Map — Current Time in Every Zone | ChronoMap</title>
+    <meta name="description" content="An interactive time zone map with the current time in every UTC offset from UTC−12 to UTC+14. See live local times for major cities and compare time zones across the world." />
+    <meta name="keywords" content="time zone map, interactive time zone map, world time zone map, utc offset map, current time by time zone, world clock map, time zone converter" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/time-zone-map" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/time-zone-map" />
+    <meta property="og:title" content="Interactive Time Zone Map — Current Time in Every Zone" />
+    <meta property="og:description" content="The current time in every UTC offset, live local times for major cities, and an interactive world map and 3D globe." />
+    <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Interactive Time Zone Map — Current Time in Every Zone" />
+    <meta property="twitter:description" content="The current time in every UTC offset, live local times for major cities, and an interactive world map." />
+    <meta property="twitter:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Interactive Time Zone Map",
+        "url": "https://www.chronomap.top/time-zone-map",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "description": "Interactive time zone map showing the current time in every UTC offset and for major cities worldwide.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@type": "Organization", "name": "Agenciarse", "url": "https://agenciarse.com" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a time zone map?",
+            "acceptedAnswer": { "@type": "Answer", "text": "A time zone map shows how the world is divided into regions that share the same standard time, expressed as an offset from Coordinated Universal Time (UTC). It lets you see the current local time in any part of the world at a glance." }
+          },
+          {
+            "@type": "Question",
+            "name": "How many time zones are there?",
+            "acceptedAnswer": { "@type": "Answer", "text": "There are 24 main hourly time zones from UTC−12 to UTC+14, but including half-hour and 45-minute offsets (such as India at UTC+5:30 or Nepal at UTC+5:45) there are around 38 distinct offsets in use." }
+          },
+          {
+            "@type": "Question",
+            "name": "What is UTC?",
+            "acceptedAnswer": { "@type": "Answer", "text": "UTC (Coordinated Universal Time) is the global time standard against which all time zones are defined. A time zone is written as an offset from UTC, for example UTC−5 (New York) or UTC+9 (Tokyo)." }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the map account for daylight saving time?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. The live times use each location's current IANA time zone, which automatically reflects daylight saving time where it applies, so the times shown are always the real local time." }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased selection:bg-blue-500/30">
+    <div class="max-w-3xl mx-auto px-5 pt-8 pb-16">
+      <a href="/" class="inline-flex items-center gap-2.5 mb-8 group/brand">
+        <span class="w-9 h-9 relative flex items-center justify-center group">
+          <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="4 8" class="text-blue-500/30 animate-[spin_20s_linear_infinite]" />
+            <circle cx="50" cy="50" r="38" stroke="currentColor" stroke-width="1" stroke-dasharray="1 4" class="text-zinc-500 animate-[spin_10s_linear_infinite_reverse]" />
+            <path d="M50 12C29.0132 12 12 29.0132 12 50C12 70.9868 29.0132 88 50 88C70.9868 88 88 70.9868 88 50C88 29.0132 70.9868 12 50 12Z" stroke="currentColor" stroke-width="1" class="text-blue-500/20" />
+            <path d="M12 50H88M50 12V88M18 30H82M18 70H82M30 18V82M70 18V82" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.3" class="text-blue-400" />
+            <circle cx="50" cy="50" r="6" class="fill-blue-500 animate-pulse" />
+            <g class="animate-[spin_4s_linear_infinite]">
+              <circle cx="50" cy="20" r="3" class="fill-white" />
+              <path d="M50 20L50 50" stroke="white" stroke-width="0.5" stroke-dasharray="2 2" class="opacity-50" />
+            </g>
+            <path d="M50 5L52 10H48L50 5Z" fill="currentColor" class="text-zinc-400" />
+            <path d="M50 95L48 90H52L50 95Z" fill="currentColor" class="text-zinc-600" />
+            <path d="M95 50L90 48V52L95 50Z" fill="currentColor" class="text-zinc-600" />
+            <path d="M5 50L10 52V48L5 50Z" fill="currentColor" class="text-zinc-600" />
+          </svg>
+          <span class="absolute inset-0 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-colors duration-500"></span>
+        </span>
+        <span class="font-bold tracking-tight text-zinc-200 group-hover/brand:text-white transition-colors">ChronoMap</span>
+      </a>
+
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-3">Interactive Time Zone Map</h1>
+      <p class="text-lg text-zinc-400 mb-8">See the current time in every time zone, from UTC−12 to UTC+14. Live local times for major cities below, and a full interactive world map and 3D globe on the <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap home page</a>.</p>
+
+      <!-- Interactive island: live current time in major zones. Static reference table below is always crawlable. -->
+      <div class="bg-zinc-900/60 backdrop-blur-md border border-zinc-800 rounded-2xl p-5 mb-2" id="tzmap-app">
+        <p class="text-zinc-500 m-0">Loading live times… The full UTC offset reference is below.</p>
+      </div>
+
+      <h2 class="text-2xl font-bold tracking-tight text-white mt-10 mb-3">Time zones by UTC offset</h2>
+      <p class="mb-3.5 text-zinc-300">Every time zone is defined as an offset from <strong class="text-zinc-100">UTC</strong> (Coordinated Universal Time). This reference lists each offset with example locations, from the earliest to the latest zone on Earth.</p>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-sm my-4">
+          <thead>
+            <tr class="border-b border-zinc-800">
+              <th class="text-left py-2.5 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">UTC offset</th>
+              <th class="text-left py-2.5 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">Example locations</th>
+            </tr>
+          </thead>
+          <tbody class="text-zinc-300">
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−12</code></td><td class="py-2 px-3">Baker Island</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−11</code></td><td class="py-2 px-3">American Samoa, Niue</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−10</code></td><td class="py-2 px-3">Hawaii, Tahiti</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−09</code></td><td class="py-2 px-3">Alaska</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−08</code></td><td class="py-2 px-3">Los Angeles, Vancouver (PST)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−07</code></td><td class="py-2 px-3">Denver, Phoenix (MST)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−06</code></td><td class="py-2 px-3">Chicago, Mexico City (CST)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−05</code></td><td class="py-2 px-3">New York, Toronto, Lima (EST)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−04</code></td><td class="py-2 px-3">Santiago, Caracas, Halifax</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−03</code></td><td class="py-2 px-3">São Paulo, Buenos Aires</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−02</code></td><td class="py-2 px-3">South Georgia</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC−01</code></td><td class="py-2 px-3">Azores, Cape Verde</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+00</code></td><td class="py-2 px-3">London, Lisbon, Accra (GMT)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+01</code></td><td class="py-2 px-3">Paris, Berlin, Madrid, Lagos (CET)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+02</code></td><td class="py-2 px-3">Cairo, Athens, Johannesburg (EET)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+03</code></td><td class="py-2 px-3">Moscow, Istanbul, Nairobi, Riyadh</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+04</code></td><td class="py-2 px-3">Dubai, Baku, Tbilisi</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+05</code></td><td class="py-2 px-3">Karachi, Tashkent</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+05:30</code></td><td class="py-2 px-3">Mumbai, New Delhi (IST)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+06</code></td><td class="py-2 px-3">Dhaka, Almaty</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+07</code></td><td class="py-2 px-3">Bangkok, Jakarta, Hanoi</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+08</code></td><td class="py-2 px-3">Beijing, Singapore, Perth</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+09</code></td><td class="py-2 px-3">Tokyo, Seoul</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+09:30</code></td><td class="py-2 px-3">Adelaide, Darwin</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+10</code></td><td class="py-2 px-3">Sydney, Brisbane</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+11</code></td><td class="py-2 px-3">Nouméa, Solomon Islands</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+12</code></td><td class="py-2 px-3">Auckland, Fiji</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+13</code></td><td class="py-2 px-3">Samoa, Tonga</td></tr>
+            <tr><td class="py-2 px-3"><code class="font-mono text-blue-300">UTC+14</code></td><td class="py-2 px-3">Kiritimati (Line Islands)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="text-2xl font-bold tracking-tight text-white mt-10 mb-3">How time zones work</h2>
+      <p class="mb-3.5 text-zinc-300">The Earth rotates 360° every 24 hours, so local solar time shifts by roughly one hour for every 15° of longitude. To keep clocks practical, the world is divided into time zones — regions that share a single standard time expressed as an offset from UTC. Most offsets are whole hours, but a few regions use 30- or 45-minute offsets, and many observe daylight saving time for part of the year.</p>
+      <p class="mb-3.5 text-zinc-300">On the <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">interactive map</a> you can hover any country to read its live local time, pin several cities to compare them side by side, and even scrub forwards or backwards in time. Building an event across zones? The <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a> turns any moment into a code that shows in each person's own time zone.</p>
+
+      <h2 class="text-2xl font-bold tracking-tight text-white mt-10 mb-3">Frequently asked questions</h2>
+      <div class="space-y-1">
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">What is a time zone map?</h3>
+        <p class="mb-3.5 text-zinc-300">A time zone map shows how the world is divided into regions that share the same standard time, expressed as an offset from UTC. It lets you see the current local time anywhere at a glance.</p>
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">How many time zones are there?</h3>
+        <p class="mb-3.5 text-zinc-300">There are 24 main hourly zones from UTC−12 to UTC+14, but including half-hour and 45-minute offsets (like India at UTC+5:30 or Nepal at UTC+5:45) there are around 38 distinct offsets in use.</p>
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">What is UTC?</h3>
+        <p class="mb-3.5 text-zinc-300">UTC (Coordinated Universal Time) is the global time standard all zones are defined against — for example UTC−5 (New York) or UTC+9 (Tokyo).</p>
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">Does the map account for daylight saving time?</h3>
+        <p class="mb-3.5 text-zinc-300">Yes. The live times use each location's current IANA time zone, which reflects daylight saving automatically, so the times shown are always the real local time.</p>
+      </div>
+
+      <footer class="mt-12 pt-6 border-t border-zinc-800 text-sm text-zinc-500">
+        Built with <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap</a> — the interactive world clock map. Explore time zones on a 2D map or 3D globe, or generate a <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp</a>.
+      </footer>
+    </div>
+
+    <script type="module" src="/src/time-zone-map-page.tsx"></script>
+  </body>
+</html>

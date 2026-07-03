@@ -63,7 +63,25 @@
     </script>
 </head>
   <body>
-    <div id="root"></div>
+    <!--
+      #root holds crawlable SEO content for the world-clock-map keyword cluster.
+      index.tsx mounts the React app with createRoot(), which REPLACES these
+      children on hydration — so users get the interactive app and the app code
+      is untouched, while crawlers (and the initial HTML) get real content.
+    -->
+    <div id="root">
+      <main style="max-width:820px;margin:0 auto;padding:32px 20px;font-family:Inter,system-ui,sans-serif;color:#e4e4e7;line-height:1.6">
+        <h1 style="font-size:32px;color:#fafafa;margin:0 0 12px;letter-spacing:-0.02em">Interactive World Clock Map</h1>
+        <p style="font-size:17px;color:#a1a1aa;margin:0 0 16px">ChronoMap is a free interactive world clock and time zone map. See the current local time anywhere on a 2D world map or a 3D globe, hover any country to read its live time, pin and compare multiple cities side by side, and travel forwards or backwards through time.</p>
+        <p style="margin:0 0 16px">Every location shows its real local time using its IANA time zone, so daylight saving time is always handled correctly. Click the map or search for a city to add it, and the globe smoothly rotates to centre on your selection.</p>
+        <h2 style="font-size:20px;color:#fafafa;margin:24px 0 10px">Explore ChronoMap</h2>
+        <ul style="margin:0 0 16px;padding-left:20px">
+          <li style="margin-bottom:6px"><a href="/time-zone-map" style="color:#60a5fa">Interactive time zone map</a> — the current time in every UTC offset, from UTC−12 to UTC+14, with live clocks for major cities.</li>
+          <li style="margin-bottom:6px"><a href="/discord-timestamp-generator" style="color:#60a5fa">Discord timestamp generator</a> — turn any date and time into a code that renders in each user's own time zone.</li>
+        </ul>
+        <p style="color:#71717a;margin:0">Loading the interactive world clock map…</p>
+      </main>
+    </div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
