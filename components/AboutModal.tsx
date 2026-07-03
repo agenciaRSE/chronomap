@@ -93,7 +93,18 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v3.0.0</span>
+                      <span className="text-sm font-mono text-primary">v3.0.1</span>
+                      <span className="text-xs text-zinc-500 mb-1">Globe Centering Fix</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>City Centering:</strong> Selecting or searching a city in 3D Globe mode now rotates the globe until the location is perfectly centered. Previously the animation stopped halfway and never finished. The 2D map centering benefits from the same fix.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v3.0.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Geopolitical Update</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Naming Update:</strong> Renamed 'Israel' to "Occupied territories" across the map and tooltips to reflect the requested geopolitical terminology.</li>
