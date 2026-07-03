@@ -62,7 +62,9 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     // Serve static files in production
-    app.use(express.static(path.join(__dirname, "dist")));
+    // `extensions: ['html']` serves /discord-timestamp-generator from the built
+    // .html file (clean URL), matching how Vercel serves it in production.
+    app.use(express.static(path.join(__dirname, "dist"), { extensions: ["html"] }));
     // SPA fallback — middleware form (no wildcard pattern) is express 5 /
     // path-to-regexp 8 safe; `app.get("*")` throws "Missing parameter name".
     app.use((_req, res) => {

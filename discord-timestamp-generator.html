@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+
+    <title>Discord Timestamp Generator — Every Format, Live Preview | ChronoMap</title>
+    <meta name="description" content="Free Discord timestamp generator. Pick any date and time, copy the code, and it shows in every user's own time zone. All formats (short, long, relative) with a live preview." />
+    <meta name="keywords" content="discord timestamp generator, discord timestamp, discord time format, discord unix timestamp, discord timestamp codes, discord relative time" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/discord-timestamp-generator" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/discord-timestamp-generator" />
+    <meta property="og:title" content="Discord Timestamp Generator — Every Format, Live Preview" />
+    <meta property="og:description" content="Pick a date and time, copy the code, and Discord renders it in every user's own time zone. Every format with a live preview." />
+    <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Discord Timestamp Generator — Every Format, Live Preview" />
+    <meta property="twitter:description" content="Pick a date and time, copy the code, and Discord renders it in every user's own time zone." />
+    <meta property="twitter:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Discord Timestamp Generator",
+        "url": "https://www.chronomap.top/discord-timestamp-generator",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "description": "Generate Discord timestamps in every format with a live preview. Timestamps render in each viewer's local time zone.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@type": "Organization", "name": "Agenciarse", "url": "https://agenciarse.com" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a Discord timestamp?",
+            "acceptedAnswer": { "@type": "Answer", "text": "A Discord timestamp is a special code, written as <t:UNIX:style>, that Discord renders as a date or time. Because it is based on a Unix timestamp, every member sees it converted to their own time zone automatically." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I use a Discord timestamp?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Pick a date and time in the generator, copy the generated code (for example <t:1751600000:F>), and paste it into any Discord message, embed, or event description. Discord replaces the code with a formatted date." }
+          },
+          {
+            "@type": "Question",
+            "name": "Why do Discord timestamps show a different time for each user?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Timestamps store an absolute moment in time (a Unix timestamp in UTC). Discord converts that moment to each viewer's local time zone, so a single code shows the correct local time for everyone." }
+          },
+          {
+            "@type": "Question",
+            "name": "What does the R (relative) format do?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The relative format, <t:UNIX:R>, shows a live countdown or count-up such as 'in 3 hours' or '2 days ago', and it updates automatically as time passes." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is the Discord timestamp generator free?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. The ChronoMap Discord timestamp generator is completely free, requires no login, and runs entirely in your browser." }
+          }
+        ]
+      }
+    </script>
+
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; background: #09090b; color: #e4e4e7;
+        font-family: 'Inter', system-ui, sans-serif; line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: #60a5fa; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .wrap { max-width: 780px; margin: 0 auto; padding: 32px 20px 64px; }
+      .brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: #a1a1aa; font-size: 14px; margin-bottom: 28px; }
+      .brand svg { width: 20px; height: 20px; color: #3b82f6; }
+      h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin: 0 0 12px; color: #fafafa; letter-spacing: -0.02em; }
+      .lede { font-size: 18px; color: #a1a1aa; margin: 0 0 32px; }
+      h2 { font-size: 22px; margin: 40px 0 12px; color: #fafafa; letter-spacing: -0.01em; }
+      h3 { font-size: 16px; margin: 24px 0 6px; color: #e4e4e7; }
+      p { margin: 0 0 14px; }
+      code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+      code { background: #18181b; border: 1px solid #27272a; border-radius: 5px; padding: 2px 6px; font-size: 0.9em; color: #93c5fd; }
+      table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #27272a; vertical-align: top; }
+      th { color: #a1a1aa; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+      td code { white-space: nowrap; }
+      .tool { background: #0c0c0e; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin: 8px 0 8px; }
+      .faq h3 { color: #fafafa; }
+      footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #27272a; color: #71717a; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        ChronoMap
+      </a>
+
+      <h1>Discord Timestamp Generator</h1>
+      <p class="lede">Pick any date and time, copy the code, and paste it into Discord. It renders in every member's own time zone — one code, correct for everyone.</p>
+
+      <!-- Interactive island (hydrated by React). Static fallback below is always crawlable. -->
+      <div class="tool" id="discord-app">
+        <p style="color:#71717a;margin:0">Loading the generator… You can also read every format and how they work below.</p>
+      </div>
+
+      <h2>Discord timestamp formats</h2>
+      <p>A Discord timestamp is written as <code>&lt;t:UNIX:style&gt;</code>, where <code>UNIX</code> is the Unix time (seconds since 1 January 1970 UTC) and <code>style</code> is one of the letters below. Leaving out the style is the same as using <code>f</code>.</p>
+      <table>
+        <thead>
+          <tr><th>Style</th><th>Syntax</th><th>Example output</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>t</code></td><td><code>&lt;t:UNIX:t&gt;</code></td><td>4:08 PM</td><td>Short time</td></tr>
+          <tr><td><code>T</code></td><td><code>&lt;t:UNIX:T&gt;</code></td><td>4:08:32 PM</td><td>Long time (with seconds)</td></tr>
+          <tr><td><code>d</code></td><td><code>&lt;t:UNIX:d&gt;</code></td><td>07/04/2026</td><td>Short date</td></tr>
+          <tr><td><code>D</code></td><td><code>&lt;t:UNIX:D&gt;</code></td><td>July 4, 2026</td><td>Long date</td></tr>
+          <tr><td><code>f</code></td><td><code>&lt;t:UNIX:f&gt;</code></td><td>July 4, 2026 4:08 PM</td><td>Short date &amp; time (default)</td></tr>
+          <tr><td><code>F</code></td><td><code>&lt;t:UNIX:F&gt;</code></td><td>Saturday, July 4, 2026 4:08 PM</td><td>Long date &amp; time</td></tr>
+          <tr><td><code>R</code></td><td><code>&lt;t:UNIX:R&gt;</code></td><td>in 3 hours</td><td>Relative time (auto-updates)</td></tr>
+        </tbody>
+      </table>
+
+      <h2>How Discord timestamps work</h2>
+      <p>Discord timestamps solve a common problem in international communities: a time written as plain text ("the event starts at 20:00 CET") forces everyone to do the maths for their own zone. A timestamp stores one absolute moment and lets Discord convert it, so each person sees their own correct local time and the relative format even counts down live.</p>
+      <p>To use one, generate the code above, copy it, and paste it anywhere Discord accepts text: messages, embeds, channel topics, or scheduled event descriptions. The code only renders inside Discord — elsewhere it stays as raw text.</p>
+
+      <h2 class="faq">Frequently asked questions</h2>
+      <div class="faq">
+        <h3>What is a Discord timestamp?</h3>
+        <p>A special code, <code>&lt;t:UNIX:style&gt;</code>, that Discord renders as a date or time. Because it is based on a Unix timestamp, every member sees it in their own time zone automatically.</p>
+        <h3>How do I use a Discord timestamp?</h3>
+        <p>Pick a date and time above, copy the generated code (for example <code>&lt;t:1751600000:F&gt;</code>), and paste it into any Discord message or event description.</p>
+        <h3>Why do timestamps show a different time for each user?</h3>
+        <p>The code stores an absolute moment in UTC. Discord converts it to each viewer's local time zone, so one code is correct for everyone.</p>
+        <h3>What does the R (relative) format do?</h3>
+        <p><code>&lt;t:UNIX:R&gt;</code> shows a live "in 3 hours" or "2 days ago" and updates automatically as time passes.</p>
+        <h3>Is the generator free?</h3>
+        <p>Yes — free, no login, and it runs entirely in your browser.</p>
+      </div>
+
+      <footer>
+        Built with <a href="/">ChronoMap</a> — the interactive world clock map. Compare time zones across the globe and travel through time on a 2D map or 3D globe.
+      </footer>
+    </div>
+
+    <script type="module" src="/src/discord-page.tsx"></script>
+  </body>
+</html>
