@@ -60,7 +60,7 @@ const ZoneClocks: React.FC = () => {
           return (
             <div
               key={z.tz}
-              className="flex items-center justify-between gap-3 bg-black/20 border border-zinc-800 rounded-xl px-3 py-2.5"
+              className="card-hover flex items-center justify-between gap-3 bg-black/20 border border-zinc-800 rounded-xl px-3 py-2.5"
             >
               <span className="flex flex-col gap-0.5 min-w-0">
                 <span className="text-sm font-medium text-zinc-100 truncate">{z.city}</span>

@@ -1,7 +1,9 @@
-/* Shared stylesheet for standalone SEO/content pages (e.g. the Discord
- * timestamp generator). Same Tailwind theme as the app (src/index.css) —
- * Inter/JetBrains Mono + primary blue — but WITHOUT the app-shell
- * `body { overflow: hidden }`, so these pages scroll normally. */
+/* Shared stylesheet for standalone SEO/content pages (Discord generator,
+ * time zone map, and future pages). Same Tailwind theme as the app
+ * (src/index.css) — Inter/JetBrains Mono + primary blue — WITHOUT the app-shell
+ * `body { overflow: hidden }`, so these pages scroll. Plus a small,
+ * platform-consistent motion/effects layer (moving gradients, animated thin
+ * borders, shimmer, reveals). All CSS — CSP-safe, no inline scripts. */
 @import "tailwindcss";
 
 @theme {
@@ -11,7 +13,123 @@
 }
 
 body {
+  position: relative;
   background-color: #09090b; /* zinc-950 */
   color: #e4e4e7; /* zinc-200 */
   font-family: var(--font-sans);
+}
+
+/* ── Moving-gradient backdrop ─────────────────────────────────────────────
+ * Slowly drifting blue/violet auroras behind everything, plus a masked dot
+ * grid. Fixed layers, pointer-events off, sit at z-index -1 under content. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 42% at 18% 8%, rgba(59, 130, 246, 0.18), transparent 60%),
+    radial-gradient(34% 38% at 88% 14%, rgba(139, 92, 246, 0.14), transparent 58%),
+    radial-gradient(46% 44% at 60% 100%, rgba(37, 99, 235, 0.12), transparent 60%);
+  filter: blur(10px);
+  animation: bg-drift 26s ease-in-out infinite alternate;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 78%);
+}
+@keyframes bg-drift {
+  0% { transform: translate3d(-1.5%, 0, 0) scale(1); }
+  100% { transform: translate3d(1.5%, -3%, 0) scale(1.08); }
+}
+
+/* ── Animated thin gradient border ────────────────────────────────────────
+ * A rotating conic gradient masked to a 1px ring. Base zinc edge is always
+ * visible; a blue→violet highlight sweeps around. Apply `.gradient-border`
+ * to an element WITHOUT its own border. */
+@property --brd-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--brd-angle),
+    rgba(63, 63, 70, 0.7) 0deg,
+    rgba(59, 130, 246, 0.9) 45deg,
+    rgba(139, 92, 246, 0.65) 95deg,
+    rgba(63, 63, 70, 0.7) 165deg,
+    rgba(63, 63, 70, 0.7) 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: brd-spin 7s linear infinite;
+  pointer-events: none;
+}
+@keyframes brd-spin {
+  to { --brd-angle: 360deg; }
+}
+
+/* ── Shimmering gradient text (for headings) ──────────────────────────────*/
+.text-shimmer {
+  background: linear-gradient(100deg, #fafafa 32%, #93c5fd 50%, #fafafa 68%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: text-shimmer 7s linear infinite;
+}
+@keyframes text-shimmer {
+  to { background-position: -220% 0; }
+}
+
+/* ── Entrance reveal (on load) ────────────────────────────────────────────*/
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.reveal {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Hover lift + glow for interactive cards ──────────────────────────────*/
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px -18px rgba(59, 130, 246, 0.45);
+}
+
+/* ── Respect reduced-motion ───────────────────────────────────────────────*/
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  .gradient-border::before,
+  .text-shimmer,
+  .reveal {
+    animation: none !important;
+  }
+  .text-shimmer {
+    color: #fafafa;
+    -webkit-text-fill-color: #fafafa;
+  }
+  .card-hover:hover {
+    transform: none;
+  }
 }

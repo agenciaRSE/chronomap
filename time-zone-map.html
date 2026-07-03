@@ -70,7 +70,7 @@
   </head>
   <body class="min-h-screen antialiased selection:bg-blue-500/30">
     <div class="max-w-3xl mx-auto px-5 pt-8 pb-16">
-      <a href="/" class="inline-flex items-center gap-2.5 mb-8 group/brand">
+      <a href="/" class="inline-flex items-center gap-2.5 mb-8 group/brand reveal">
         <span class="w-9 h-9 relative flex items-center justify-center group">
           <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="4 8" class="text-blue-500/30 animate-[spin_20s_linear_infinite]" />
@@ -92,11 +92,11 @@
         <span class="font-bold tracking-tight text-zinc-200 group-hover/brand:text-white transition-colors">ChronoMap</span>
       </a>
 
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-3">Interactive Time Zone Map</h1>
-      <p class="text-lg text-zinc-400 mb-8">See the current time in every time zone, from UTC−12 to UTC+14. Live local times for major cities below, and a full interactive world map and 3D globe on the <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap home page</a>.</p>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-shimmer leading-tight mb-3 reveal" style="animation-delay:.05s">Interactive Time Zone Map</h1>
+      <p class="text-lg text-zinc-400 mb-8 reveal" style="animation-delay:.1s">See the current time in every time zone, from UTC−12 to UTC+14. Live local times for major cities below, and a full interactive world map and 3D globe on the <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap home page</a>.</p>
 
       <!-- Interactive island: live current time in major zones. Static reference table below is always crawlable. -->
-      <div class="bg-zinc-900/60 backdrop-blur-md border border-zinc-800 rounded-2xl p-5 mb-2" id="tzmap-app">
+      <div class="bg-zinc-900/60 backdrop-blur-md rounded-2xl p-5 mb-2 gradient-border reveal" style="animation-delay:.15s" id="tzmap-app">
         <p class="text-zinc-500 m-0">Loading live times… The full UTC offset reference is below.</p>
       </div>
 

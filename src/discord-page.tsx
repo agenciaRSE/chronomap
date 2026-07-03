@@ -69,7 +69,7 @@ const DiscordTool: React.FC = () => {
             key={f.code}
             onClick={() => copy(f.code)}
             title="Copy code"
-            className="group flex items-center justify-between gap-3 text-left w-full bg-black/20 hover:bg-zinc-800/60 border border-zinc-800 hover:border-zinc-700 rounded-xl px-3 py-2.5 transition-all"
+            className="card-hover group flex items-center justify-between gap-3 text-left w-full bg-black/20 hover:bg-zinc-800/60 border border-zinc-800 hover:border-zinc-700 rounded-xl px-3 py-2.5"
           >
             <span className="flex flex-col gap-0.5 min-w-0">
               <span className="text-sm font-medium text-zinc-100">{f.label}</span>

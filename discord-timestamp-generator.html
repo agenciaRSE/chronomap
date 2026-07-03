@@ -76,7 +76,7 @@
   <body class="min-h-screen antialiased selection:bg-blue-500/30">
     <div class="max-w-3xl mx-auto px-5 pt-8 pb-16">
       <!-- Brand: the app's animated logo (inlined so it renders + animates before hydration) -->
-      <a href="/" class="inline-flex items-center gap-2.5 mb-8 group/brand">
+      <a href="/" class="inline-flex items-center gap-2.5 mb-8 group/brand reveal">
         <span class="w-9 h-9 relative flex items-center justify-center group">
           <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="4 8" class="text-blue-500/30 animate-[spin_20s_linear_infinite]" />
@@ -98,11 +98,11 @@
         <span class="font-bold tracking-tight text-zinc-200 group-hover/brand:text-white transition-colors">ChronoMap</span>
       </a>
 
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-3">Discord Timestamp Generator</h1>
-      <p class="text-lg text-zinc-400 mb-8">Pick any date and time, copy the code, and paste it into Discord. It renders in every member's own time zone — one code, correct for everyone.</p>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-shimmer leading-tight mb-3 reveal" style="animation-delay:.05s">Discord Timestamp Generator</h1>
+      <p class="text-lg text-zinc-400 mb-8 reveal" style="animation-delay:.1s">Pick any date and time, copy the code, and paste it into Discord. It renders in every member's own time zone — one code, correct for everyone.</p>
 
       <!-- Interactive island (hydrated by React). Static fallback below is always crawlable. -->
-      <div class="bg-zinc-900/60 backdrop-blur-md border border-zinc-800 rounded-2xl p-5 mb-2" id="discord-app">
+      <div class="bg-zinc-900/60 backdrop-blur-md rounded-2xl p-5 mb-2 gradient-border reveal" style="animation-delay:.15s" id="discord-app">
         <p class="text-zinc-500 m-0">Loading the generator… You can also read every format and how they work below.</p>
       </div>
 
