@@ -2,10 +2,12 @@ import React, { useMemo, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { format, formatDistanceToNow } from 'date-fns';
 import { enUS } from 'date-fns/locale';
+import { Copy, Check } from 'lucide-react';
+import './page.css';
 
 // Standalone interactive island for /discord-timestamp-generator.
 // The page's SEO content is static HTML; this only enhances the tool box.
-// Inline styles keep it self-contained (no Tailwind) and CSP-safe.
+// Styled with the app's Tailwind design system (zinc/blue) for consistency.
 
 interface FmtRow {
   code: string;
@@ -47,63 +49,42 @@ const DiscordTool: React.FC = () => {
 
   return (
     <div>
-      <label style={{ display: 'block', fontSize: 13, color: '#a1a1aa', marginBottom: 6, fontWeight: 600 }}>
-        Date &amp; time
-      </label>
+      <label className="block text-xs font-semibold text-zinc-400 mb-1.5">Date &amp; time</label>
       <input
         type="datetime-local"
         value={inputValue}
         onChange={onPick}
-        style={{
-          width: '100%', background: '#18181b', color: '#fafafa',
-          border: '1px solid #3f3f46', borderRadius: 8, padding: '10px 12px',
-          fontFamily: "'JetBrains Mono', monospace", fontSize: 14, marginBottom: 4,
-          colorScheme: 'dark',
-        }}
+        className="w-full bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-lg px-3 py-2.5 font-mono text-sm [color-scheme:dark] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
       />
       <button
         onClick={() => setDate(new Date())}
-        style={{
-          background: 'transparent', color: '#60a5fa', border: 'none',
-          cursor: 'pointer', fontSize: 13, padding: '4px 0', marginBottom: 12,
-        }}
+        className="text-sm text-blue-400 hover:text-blue-300 transition-colors py-1 mb-3"
       >
         Reset to now
       </button>
 
-      <div style={{ display: 'grid', gap: 8 }}>
+      <div className="grid gap-2">
         {formats.map((f) => (
           <button
             key={f.code}
             onClick={() => copy(f.code)}
             title="Copy code"
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              gap: 12, textAlign: 'left', width: '100%', cursor: 'pointer',
-              background: '#0f0f12', border: '1px solid #27272a', borderRadius: 10,
-              padding: '10px 12px', color: '#e4e4e7',
-            }}
+            className="group flex items-center justify-between gap-3 text-left w-full bg-black/20 hover:bg-zinc-800/60 border border-zinc-800 hover:border-zinc-700 rounded-xl px-3 py-2.5 transition-all"
           >
-            <span style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
-              <span style={{ fontSize: 13, fontWeight: 600 }}>{f.label}</span>
-              <span style={{ fontSize: 13, color: '#a1a1aa' }}>{f.preview}</span>
+            <span className="flex flex-col gap-0.5 min-w-0">
+              <span className="text-sm font-medium text-zinc-100">{f.label}</span>
+              <span className="text-[13px] text-zinc-400 truncate">{f.preview}</span>
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-              <code
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
-                  color: '#93c5fd', background: '#18181b', border: '1px solid #27272a',
-                  borderRadius: 5, padding: '2px 6px', whiteSpace: 'nowrap',
-                }}
-              >
+            <span className="flex items-center gap-2.5 shrink-0">
+              <code className="font-mono text-xs text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5 whitespace-nowrap">
                 {`<t:${unix}:${f.code}>`}
               </code>
               <span
-                style={{
-                  fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap',
-                  color: copied === f.code ? '#34d399' : '#a1a1aa',
-                }}
+                className={`flex items-center gap-1 text-xs font-semibold whitespace-nowrap transition-colors ${
+                  copied === f.code ? 'text-emerald-400' : 'text-zinc-400 group-hover:text-zinc-200'
+                }`}
               >
+                {copied === f.code ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied === f.code ? 'Copied' : 'Copy'}
               </span>
             </span>

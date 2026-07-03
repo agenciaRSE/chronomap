@@ -72,88 +72,84 @@
         ]
       }
     </script>
-
-    <style>
-      :root { color-scheme: dark; }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0; background: #09090b; color: #e4e4e7;
-        font-family: 'Inter', system-ui, sans-serif; line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-      }
-      a { color: #60a5fa; text-decoration: none; }
-      a:hover { text-decoration: underline; }
-      .wrap { max-width: 780px; margin: 0 auto; padding: 32px 20px 64px; }
-      .brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: #a1a1aa; font-size: 14px; margin-bottom: 28px; }
-      .brand svg { width: 20px; height: 20px; color: #3b82f6; }
-      h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin: 0 0 12px; color: #fafafa; letter-spacing: -0.02em; }
-      .lede { font-size: 18px; color: #a1a1aa; margin: 0 0 32px; }
-      h2 { font-size: 22px; margin: 40px 0 12px; color: #fafafa; letter-spacing: -0.01em; }
-      h3 { font-size: 16px; margin: 24px 0 6px; color: #e4e4e7; }
-      p { margin: 0 0 14px; }
-      code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
-      code { background: #18181b; border: 1px solid #27272a; border-radius: 5px; padding: 2px 6px; font-size: 0.9em; color: #93c5fd; }
-      table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
-      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #27272a; vertical-align: top; }
-      th { color: #a1a1aa; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
-      td code { white-space: nowrap; }
-      .tool { background: #0c0c0e; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin: 8px 0 8px; }
-      .faq h3 { color: #fafafa; }
-      footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #27272a; color: #71717a; font-size: 13px; }
-    </style>
   </head>
-  <body>
-    <div class="wrap">
-      <a class="brand" href="/">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        ChronoMap
+  <body class="min-h-screen antialiased selection:bg-blue-500/30">
+    <div class="max-w-3xl mx-auto px-5 pt-8 pb-16">
+      <!-- Brand: the app's animated logo (inlined so it renders + animates before hydration) -->
+      <a href="/" class="inline-flex items-center gap-2.5 mb-8 group/brand">
+        <span class="w-9 h-9 relative flex items-center justify-center group">
+          <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="4 8" class="text-blue-500/30 animate-[spin_20s_linear_infinite]" />
+            <circle cx="50" cy="50" r="38" stroke="currentColor" stroke-width="1" stroke-dasharray="1 4" class="text-zinc-500 animate-[spin_10s_linear_infinite_reverse]" />
+            <path d="M50 12C29.0132 12 12 29.0132 12 50C12 70.9868 29.0132 88 50 88C70.9868 88 88 70.9868 88 50C88 29.0132 70.9868 12 50 12Z" stroke="currentColor" stroke-width="1" class="text-blue-500/20" />
+            <path d="M12 50H88M50 12V88M18 30H82M18 70H82M30 18V82M70 18V82" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.3" class="text-blue-400" />
+            <circle cx="50" cy="50" r="6" class="fill-blue-500 animate-pulse" />
+            <g class="animate-[spin_4s_linear_infinite]">
+              <circle cx="50" cy="20" r="3" class="fill-white" />
+              <path d="M50 20L50 50" stroke="white" stroke-width="0.5" stroke-dasharray="2 2" class="opacity-50" />
+            </g>
+            <path d="M50 5L52 10H48L50 5Z" fill="currentColor" class="text-zinc-400" />
+            <path d="M50 95L48 90H52L50 95Z" fill="currentColor" class="text-zinc-600" />
+            <path d="M95 50L90 48V52L95 50Z" fill="currentColor" class="text-zinc-600" />
+            <path d="M5 50L10 52V48L5 50Z" fill="currentColor" class="text-zinc-600" />
+          </svg>
+          <span class="absolute inset-0 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-colors duration-500"></span>
+        </span>
+        <span class="font-bold tracking-tight text-zinc-200 group-hover/brand:text-white transition-colors">ChronoMap</span>
       </a>
 
-      <h1>Discord Timestamp Generator</h1>
-      <p class="lede">Pick any date and time, copy the code, and paste it into Discord. It renders in every member's own time zone — one code, correct for everyone.</p>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-3">Discord Timestamp Generator</h1>
+      <p class="text-lg text-zinc-400 mb-8">Pick any date and time, copy the code, and paste it into Discord. It renders in every member's own time zone — one code, correct for everyone.</p>
 
       <!-- Interactive island (hydrated by React). Static fallback below is always crawlable. -->
-      <div class="tool" id="discord-app">
-        <p style="color:#71717a;margin:0">Loading the generator… You can also read every format and how they work below.</p>
+      <div class="bg-zinc-900/60 backdrop-blur-md border border-zinc-800 rounded-2xl p-5 mb-2" id="discord-app">
+        <p class="text-zinc-500 m-0">Loading the generator… You can also read every format and how they work below.</p>
       </div>
 
-      <h2>Discord timestamp formats</h2>
-      <p>A Discord timestamp is written as <code>&lt;t:UNIX:style&gt;</code>, where <code>UNIX</code> is the Unix time (seconds since 1 January 1970 UTC) and <code>style</code> is one of the letters below. Leaving out the style is the same as using <code>f</code>.</p>
-      <table>
-        <thead>
-          <tr><th>Style</th><th>Syntax</th><th>Example output</th><th>Description</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><code>t</code></td><td><code>&lt;t:UNIX:t&gt;</code></td><td>4:08 PM</td><td>Short time</td></tr>
-          <tr><td><code>T</code></td><td><code>&lt;t:UNIX:T&gt;</code></td><td>4:08:32 PM</td><td>Long time (with seconds)</td></tr>
-          <tr><td><code>d</code></td><td><code>&lt;t:UNIX:d&gt;</code></td><td>07/04/2026</td><td>Short date</td></tr>
-          <tr><td><code>D</code></td><td><code>&lt;t:UNIX:D&gt;</code></td><td>July 4, 2026</td><td>Long date</td></tr>
-          <tr><td><code>f</code></td><td><code>&lt;t:UNIX:f&gt;</code></td><td>July 4, 2026 4:08 PM</td><td>Short date &amp; time (default)</td></tr>
-          <tr><td><code>F</code></td><td><code>&lt;t:UNIX:F&gt;</code></td><td>Saturday, July 4, 2026 4:08 PM</td><td>Long date &amp; time</td></tr>
-          <tr><td><code>R</code></td><td><code>&lt;t:UNIX:R&gt;</code></td><td>in 3 hours</td><td>Relative time (auto-updates)</td></tr>
-        </tbody>
-      </table>
-
-      <h2>How Discord timestamps work</h2>
-      <p>Discord timestamps solve a common problem in international communities: a time written as plain text ("the event starts at 20:00 CET") forces everyone to do the maths for their own zone. A timestamp stores one absolute moment and lets Discord convert it, so each person sees their own correct local time and the relative format even counts down live.</p>
-      <p>To use one, generate the code above, copy it, and paste it anywhere Discord accepts text: messages, embeds, channel topics, or scheduled event descriptions. The code only renders inside Discord — elsewhere it stays as raw text.</p>
-
-      <h2 class="faq">Frequently asked questions</h2>
-      <div class="faq">
-        <h3>What is a Discord timestamp?</h3>
-        <p>A special code, <code>&lt;t:UNIX:style&gt;</code>, that Discord renders as a date or time. Because it is based on a Unix timestamp, every member sees it in their own time zone automatically.</p>
-        <h3>How do I use a Discord timestamp?</h3>
-        <p>Pick a date and time above, copy the generated code (for example <code>&lt;t:1751600000:F&gt;</code>), and paste it into any Discord message or event description.</p>
-        <h3>Why do timestamps show a different time for each user?</h3>
-        <p>The code stores an absolute moment in UTC. Discord converts it to each viewer's local time zone, so one code is correct for everyone.</p>
-        <h3>What does the R (relative) format do?</h3>
-        <p><code>&lt;t:UNIX:R&gt;</code> shows a live "in 3 hours" or "2 days ago" and updates automatically as time passes.</p>
-        <h3>Is the generator free?</h3>
-        <p>Yes — free, no login, and it runs entirely in your browser.</p>
+      <h2 class="text-2xl font-bold tracking-tight text-white mt-10 mb-3">Discord timestamp formats</h2>
+      <p class="mb-3.5 text-zinc-300">A Discord timestamp is written as <code class="font-mono text-[0.9em] text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5">&lt;t:UNIX:style&gt;</code>, where <code class="font-mono text-[0.9em] text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5">UNIX</code> is the Unix time (seconds since 1 January 1970 UTC) and <code class="font-mono text-[0.9em] text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5">style</code> is one of the letters below. Leaving out the style is the same as using <code class="font-mono text-[0.9em] text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5">f</code>.</p>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-sm my-4">
+          <thead>
+            <tr class="border-b border-zinc-800">
+              <th class="text-left py-2.5 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">Style</th>
+              <th class="text-left py-2.5 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">Syntax</th>
+              <th class="text-left py-2.5 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">Example output</th>
+              <th class="text-left py-2.5 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">Description</th>
+            </tr>
+          </thead>
+          <tbody class="text-zinc-300">
+            <tr class="border-b border-zinc-800/70"><td class="py-2.5 px-3"><code class="font-mono text-blue-300">t</code></td><td class="py-2.5 px-3"><code class="font-mono text-blue-300 whitespace-nowrap">&lt;t:UNIX:t&gt;</code></td><td class="py-2.5 px-3">4:08 PM</td><td class="py-2.5 px-3">Short time</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2.5 px-3"><code class="font-mono text-blue-300">T</code></td><td class="py-2.5 px-3"><code class="font-mono text-blue-300 whitespace-nowrap">&lt;t:UNIX:T&gt;</code></td><td class="py-2.5 px-3">4:08:32 PM</td><td class="py-2.5 px-3">Long time (with seconds)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2.5 px-3"><code class="font-mono text-blue-300">d</code></td><td class="py-2.5 px-3"><code class="font-mono text-blue-300 whitespace-nowrap">&lt;t:UNIX:d&gt;</code></td><td class="py-2.5 px-3">07/04/2026</td><td class="py-2.5 px-3">Short date</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2.5 px-3"><code class="font-mono text-blue-300">D</code></td><td class="py-2.5 px-3"><code class="font-mono text-blue-300 whitespace-nowrap">&lt;t:UNIX:D&gt;</code></td><td class="py-2.5 px-3">July 4, 2026</td><td class="py-2.5 px-3">Long date</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2.5 px-3"><code class="font-mono text-blue-300">f</code></td><td class="py-2.5 px-3"><code class="font-mono text-blue-300 whitespace-nowrap">&lt;t:UNIX:f&gt;</code></td><td class="py-2.5 px-3">July 4, 2026 4:08 PM</td><td class="py-2.5 px-3">Short date &amp; time (default)</td></tr>
+            <tr class="border-b border-zinc-800/70"><td class="py-2.5 px-3"><code class="font-mono text-blue-300">F</code></td><td class="py-2.5 px-3"><code class="font-mono text-blue-300 whitespace-nowrap">&lt;t:UNIX:F&gt;</code></td><td class="py-2.5 px-3">Saturday, July 4, 2026 4:08 PM</td><td class="py-2.5 px-3">Long date &amp; time</td></tr>
+            <tr><td class="py-2.5 px-3"><code class="font-mono text-blue-300">R</code></td><td class="py-2.5 px-3"><code class="font-mono text-blue-300 whitespace-nowrap">&lt;t:UNIX:R&gt;</code></td><td class="py-2.5 px-3">in 3 hours</td><td class="py-2.5 px-3">Relative time (auto-updates)</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <footer>
-        Built with <a href="/">ChronoMap</a> — the interactive world clock map. Compare time zones across the globe and travel through time on a 2D map or 3D globe.
+      <h2 class="text-2xl font-bold tracking-tight text-white mt-10 mb-3">How Discord timestamps work</h2>
+      <p class="mb-3.5 text-zinc-300">Discord timestamps solve a common problem in international communities: a time written as plain text ("the event starts at 20:00 CET") forces everyone to do the maths for their own zone. A timestamp stores one absolute moment and lets Discord convert it, so each person sees their own correct local time and the relative format even counts down live.</p>
+      <p class="mb-3.5 text-zinc-300">To use one, generate the code above, copy it, and paste it anywhere Discord accepts text: messages, embeds, channel topics, or scheduled event descriptions. The code only renders inside Discord — elsewhere it stays as raw text.</p>
+
+      <h2 class="text-2xl font-bold tracking-tight text-white mt-10 mb-3">Frequently asked questions</h2>
+      <div class="space-y-1">
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">What is a Discord timestamp?</h3>
+        <p class="mb-3.5 text-zinc-300">A special code, <code class="font-mono text-[0.9em] text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5">&lt;t:UNIX:style&gt;</code>, that Discord renders as a date or time. Because it is based on a Unix timestamp, every member sees it in their own time zone automatically.</p>
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">How do I use a Discord timestamp?</h3>
+        <p class="mb-3.5 text-zinc-300">Pick a date and time above, copy the generated code (for example <code class="font-mono text-[0.9em] text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5">&lt;t:1751600000:F&gt;</code>), and paste it into any Discord message or event description.</p>
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">Why do timestamps show a different time for each user?</h3>
+        <p class="mb-3.5 text-zinc-300">The code stores an absolute moment in UTC. Discord converts it to each viewer's local time zone, so one code is correct for everyone.</p>
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">What does the R (relative) format do?</h3>
+        <p class="mb-3.5 text-zinc-300"><code class="font-mono text-[0.9em] text-blue-300 bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5">&lt;t:UNIX:R&gt;</code> shows a live "in 3 hours" or "2 days ago" and updates automatically as time passes.</p>
+        <h3 class="text-base font-semibold text-white mt-6 mb-1.5">Is the generator free?</h3>
+        <p class="mb-3.5 text-zinc-300">Yes — free, no login, and it runs entirely in your browser.</p>
+      </div>
+
+      <footer class="mt-12 pt-6 border-t border-zinc-800 text-sm text-zinc-500">
+        Built with <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap</a> — the interactive world clock map. Compare time zones across the globe and travel through time on a 2D map or 3D globe.
       </footer>
     </div>
 
