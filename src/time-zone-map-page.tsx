@@ -7,21 +7,21 @@ import './page.css';
 // The page's SEO content (UTC table, text, FAQ) is static HTML; this widget is
 // the live layer. App Tailwind design system + shared glass classes.
 
-interface Zone { city: string; tz: string; }
+interface Zone { city: string; tz: string; slug: string; }
 
 const ZONES: Zone[] = [
-  { city: 'Los Angeles', tz: 'America/Los_Angeles' },
-  { city: 'New York', tz: 'America/New_York' },
-  { city: 'São Paulo', tz: 'America/Sao_Paulo' },
-  { city: 'London', tz: 'Europe/London' },
-  { city: 'Paris', tz: 'Europe/Paris' },
-  { city: 'Johannesburg', tz: 'Africa/Johannesburg' },
-  { city: 'Dubai', tz: 'Asia/Dubai' },
-  { city: 'New Delhi', tz: 'Asia/Kolkata' },
-  { city: 'Singapore', tz: 'Asia/Singapore' },
-  { city: 'Tokyo', tz: 'Asia/Tokyo' },
-  { city: 'Sydney', tz: 'Australia/Sydney' },
-  { city: 'Auckland', tz: 'Pacific/Auckland' },
+  { city: 'Los Angeles', tz: 'America/Los_Angeles', slug: 'los-angeles' },
+  { city: 'New York', tz: 'America/New_York', slug: 'new-york' },
+  { city: 'São Paulo', tz: 'America/Sao_Paulo', slug: 'sao-paulo' },
+  { city: 'London', tz: 'Europe/London', slug: 'london' },
+  { city: 'Paris', tz: 'Europe/Paris', slug: 'paris' },
+  { city: 'Johannesburg', tz: 'Africa/Johannesburg', slug: 'johannesburg' },
+  { city: 'Dubai', tz: 'Asia/Dubai', slug: 'dubai' },
+  { city: 'New Delhi', tz: 'Asia/Kolkata', slug: 'new-delhi' },
+  { city: 'Singapore', tz: 'Asia/Singapore', slug: 'singapore' },
+  { city: 'Tokyo', tz: 'Asia/Tokyo', slug: 'tokyo' },
+  { city: 'Sydney', tz: 'Australia/Sydney', slug: 'sydney' },
+  { city: 'Auckland', tz: 'Pacific/Auckland', slug: 'auckland' },
 ];
 
 function fmt(now: Date, tz: string, opts: Intl.DateTimeFormatOptions) {
@@ -44,9 +44,9 @@ const ZoneCard: React.FC<{ z: Zone; now: Date }> = ({ z, now }) => {
   const isDay = hour24 >= 6 && hour24 < 18;
 
   return (
-    <div className="glass-card rounded-xl p-4 flex flex-col justify-between min-h-[140px] relative">
+    <a href={`/time/${z.slug}`} title={`Current time in ${z.city}`} className="glass-card rounded-xl p-4 flex flex-col justify-between min-h-[140px] relative group">
       <div>
-        <h3 className="text-[15px] font-medium text-white leading-none mb-1">{z.city}</h3>
+        <h3 className="text-[15px] font-medium text-white leading-none mb-1 group-hover:text-blue-300 transition-colors">{z.city}</h3>
         <div className="text-[11px] text-zinc-500">{date}</div>
       </div>
       <div className="my-2">
@@ -62,7 +62,7 @@ const ZoneCard: React.FC<{ z: Zone; now: Date }> = ({ z, now }) => {
           : <Moon className="w-3.5 h-3.5 text-blue-400/80" />}
         <span className="text-xs font-medium text-zinc-500">{day}</span>
       </div>
-    </div>
+    </a>
   );
 };
 
