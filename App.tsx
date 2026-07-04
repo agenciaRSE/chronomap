@@ -34,6 +34,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/time', label: 'All cities' },
   { href: '/time-zone-map', label: 'Time zone map' },
   { href: '/discord-timestamp-generator', label: 'Discord timestamps' },
+  { href: '/windows', label: 'Windows app' },
 ];
 
 const SiteMenu: React.FC = () => {

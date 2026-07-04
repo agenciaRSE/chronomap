@@ -46,6 +46,7 @@ const FOOTER = `<footer class="w-full text-center mt-2 reveal">
             <a href="/time" class="hover:text-zinc-300 transition-colors">All cities</a>
             <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
             <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
+            <a href="/windows" class="hover:text-zinc-300 transition-colors">Windows app</a>
           </nav>
         </div>
       </footer>`;
@@ -72,7 +73,7 @@ function cityPage(c) {
     <meta property="og:url" content="${SITE}/time/${c.slug}" />
     <meta property="og:title" content="Current Time in ${name} — Live Local Time" />
     <meta property="og:description" content="Live local time in ${name}, ${country} (${tz}), with comparisons to major world cities." />
-    <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
     ${HEAD_FONTS}
     <script type="application/ld+json">
       {
@@ -151,7 +152,7 @@ function comparePage(a, b) {
     <meta property="og:url" content="${SITE}/time/${slug}" />
     <meta property="og:title" content="${an} to ${bn} Time Difference" />
     <meta property="og:description" content="Current time in ${an} and ${bn} side by side, with the exact time difference." />
-    <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
     ${HEAD_FONTS}
     <script type="application/ld+json">
       {
@@ -240,7 +241,7 @@ function timeIndexPage(cities, pairs) {
     <meta property="og:url" content="${SITE}/time" />
     <meta property="og:title" content="World Clock — Current Time in Cities Around the World" />
     <meta property="og:description" content="Browse or search current local time in ${cities.length}+ cities worldwide." />
-    <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
     ${HEAD_FONTS}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
@@ -307,6 +308,7 @@ export function generate() {
     { loc: `${SITE}/time`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
+    { loc: `${SITE}/windows`, pri: '0.7', freq: 'monthly' },
     ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),
     ...pairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, pri: '0.6', freq: 'weekly' })),
   ];
