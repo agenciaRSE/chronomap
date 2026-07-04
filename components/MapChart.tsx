@@ -154,7 +154,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         canvasPath(feature);
       }
     });
-    context.fillStyle = "rgba(39, 39, 42, 0.4)";
+    context.fillStyle = "#09090b"; // Match 2D land fill (was rgba(39,39,42,0.4) — too opaque)
     context.fill();
 
     // Draw hovered country with highlight
@@ -174,11 +174,9 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     // Draw Borders
     context.beginPath();
     canvasPath(mapData.borders);
-    context.strokeStyle = "#a1a1aa";
+    context.strokeStyle = "#3f3f46"; // Match 2D country stroke (was #a1a1aa @0.5)
     context.lineWidth = 0.8;
-    context.globalAlpha = 0.5;
     context.stroke();
-    context.globalAlpha = 1.0;
 
   }, [isGlobe, projection, mapData, dimensions, hoveredCountry]);
 
