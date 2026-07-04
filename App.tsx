@@ -31,6 +31,7 @@ const TIME_STEPS = [
 // visually collapsed), which links these pages from the app's top-authority page.
 const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/', label: 'World clock map' },
+  { href: '/time', label: 'All cities' },
   { href: '/time-zone-map', label: 'Time zone map' },
   { href: '/discord-timestamp-generator', label: 'Discord timestamps' },
 ];

@@ -41,8 +41,9 @@ const FOOTER = `<footer class="w-full text-center mt-2 reveal">
             </span>
             <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
           </a>
-          <nav class="flex items-center gap-6 text-[13px] text-zinc-500">
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
             <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
+            <a href="/time" class="hover:text-zinc-300 transition-colors">All cities</a>
             <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
             <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
           </nav>
@@ -192,6 +193,87 @@ function comparePage(a, b) {
 `;
 }
 
+const REGION_ORDER = ['Americas', 'Europe', 'Africa', 'Asia', 'Oceania'];
+function regionOf(tz) {
+  const p = tz.split('/')[0];
+  if (p === 'America') return 'Americas';
+  if (p === 'Europe' || p === 'Atlantic') return 'Europe';
+  if (p === 'Africa') return 'Africa';
+  if (p === 'Asia') return 'Asia';
+  return 'Oceania'; // Australia/ + Pacific/
+}
+
+function timeIndexPage(cities, pairs) {
+  const byRegion = {};
+  for (const c of cities) (byRegion[regionOf(c.tz)] ||= []).push(c);
+  const regionsHtml = REGION_ORDER.filter((r) => byRegion[r]).map((r) => {
+    const links = byRegion[r]
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((c) => `<a href="/time/${c.slug}" data-city="${esc(c.name)}" class="city-link block text-sm text-zinc-300 hover:text-blue-300 transition-colors py-1">${esc(c.name)}</a>`)
+      .join('\n            ');
+    return `<div data-region class="glass-card rounded-xl p-5">
+          <h2 class="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">${r}</h2>
+          <div class="grid grid-cols-2 gap-x-4">
+            ${links}
+          </div>
+        </div>`;
+  }).join('\n        ');
+
+  const cmpHtml = pairs
+    .map(([a, b]) => `<a href="/time/${a.slug}-to-${b.slug}" class="text-sm text-zinc-400 hover:text-blue-300 transition-colors py-1 truncate">${esc(a.name)} → ${esc(b.name)}</a>`)
+    .join('\n          ');
+
+  return `<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>World Clock — Current Time in Cities Around the World | ChronoMap</title>
+    <meta name="description" content="Find the current local time in any major city. Browse or search ${cities.length}+ cities worldwide and popular time-zone comparisons, with live clocks and UTC offsets." />
+    <meta name="keywords" content="world clock, current time in cities, local time by city, time zone by city, city time list" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="${SITE}/time" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${SITE}/time" />
+    <meta property="og:title" content="World Clock — Current Time in Cities Around the World" />
+    <meta property="og:description" content="Browse or search current local time in ${cities.length}+ cities worldwide." />
+    <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+    ${HEAD_FONTS}
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        ${LOGO}
+        <h1 class="text-4xl sm:text-5xl md:text-[52px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">World Clock by City</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl mb-6">The current local time in cities around the world. Search a city to jump to its live clock, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
+        <input id="city-search" type="search" placeholder="Search a city…" autocomplete="off" class="w-full max-w-sm bg-zinc-800/60 text-zinc-100 border border-white/10 rounded-lg px-4 py-2.5 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all" />
+      </header>
+
+      <section class="max-w-4xl w-full mx-auto mb-14 reveal">
+        <div id="city-groups" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        ${regionsHtml}
+        </div>
+        <p id="no-results" class="hidden text-center text-zinc-500 text-sm mt-8">No city matches your search.</p>
+      </section>
+
+      <section class="max-w-4xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Popular time comparisons</h2>
+        <div class="glass-panel rounded-2xl p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4">
+          ${cmpHtml}
+        </div>
+      </section>
+
+      ${FOOTER}
+    </main>
+    <script type="module" src="/src/time-index-page.tsx"></script>
+  </body>
+</html>
+`;
+}
+
 export function generate() {
   const cities = JSON.parse(readFileSync(filePath('src/cities.json'), 'utf8'));
   const today = new Date().toISOString().slice(0, 10);
@@ -214,8 +296,15 @@ export function generate() {
     entries.push({ name: `cmp-${slug}`, file: filePath(`time/${slug}.html`) });
   }
 
+  // Index/hub page served at /time — search + links to every city and comparison.
+  // time/index.html so it coexists with the time/{slug}.html pages; Vercel's
+  // cleanUrls serves it at /time.
+  writeFileSync(filePath('time/index.html'), timeIndexPage(cities, pairs));
+  entries.push({ name: 'time-index', file: filePath('time/index.html') });
+
   const urls = [
     { loc: `${SITE}/`, pri: '1.0', freq: 'weekly' },
+    { loc: `${SITE}/time`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
     ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),
