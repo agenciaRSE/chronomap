@@ -1,0 +1,22 @@
+[
+  { "slug": "tokyo", "name": "Tokyo", "country": "Japan", "tz": "Asia/Tokyo" },
+  { "slug": "london", "name": "London", "country": "United Kingdom", "tz": "Europe/London" },
+  { "slug": "new-york", "name": "New York", "country": "United States", "tz": "America/New_York" },
+  { "slug": "los-angeles", "name": "Los Angeles", "country": "United States", "tz": "America/Los_Angeles" },
+  { "slug": "chicago", "name": "Chicago", "country": "United States", "tz": "America/Chicago" },
+  { "slug": "toronto", "name": "Toronto", "country": "Canada", "tz": "America/Toronto" },
+  { "slug": "sao-paulo", "name": "São Paulo", "country": "Brazil", "tz": "America/Sao_Paulo" },
+  { "slug": "paris", "name": "Paris", "country": "France", "tz": "Europe/Paris" },
+  { "slug": "berlin", "name": "Berlin", "country": "Germany", "tz": "Europe/Berlin" },
+  { "slug": "madrid", "name": "Madrid", "country": "Spain", "tz": "Europe/Madrid" },
+  { "slug": "moscow", "name": "Moscow", "country": "Russia", "tz": "Europe/Moscow" },
+  { "slug": "istanbul", "name": "Istanbul", "country": "Turkey", "tz": "Europe/Istanbul" },
+  { "slug": "dubai", "name": "Dubai", "country": "United Arab Emirates", "tz": "Asia/Dubai" },
+  { "slug": "new-delhi", "name": "New Delhi", "country": "India", "tz": "Asia/Kolkata" },
+  { "slug": "singapore", "name": "Singapore", "country": "Singapore", "tz": "Asia/Singapore" },
+  { "slug": "hong-kong", "name": "Hong Kong", "country": "Hong Kong", "tz": "Asia/Hong_Kong" },
+  { "slug": "shanghai", "name": "Shanghai", "country": "China", "tz": "Asia/Shanghai" },
+  { "slug": "seoul", "name": "Seoul", "country": "South Korea", "tz": "Asia/Seoul" },
+  { "slug": "sydney", "name": "Sydney", "country": "Australia", "tz": "Australia/Sydney" },
+  { "slug": "auckland", "name": "Auckland", "country": "New Zealand", "tz": "Pacific/Auckland" }
+]
