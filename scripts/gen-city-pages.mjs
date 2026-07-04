@@ -1,15 +1,15 @@
 // Generates a static, crawlable HTML page per city under time/{slug}.html from
-// src/cities.json, plus a matching public/sitemap.xml. Runs before `vite build`
-// (see package.json). Each page ships real SEO content (name, country, time
-// zone, description, FAQ) as static HTML; the live clock is a React island
+// src/cities.json, plus a matching public/sitemap.xml. Called from vite.config
+// (so it runs at the start of every `vite build`, regardless of the build
+// command) and runnable directly (`node scripts/gen-city-pages.mjs`). Each page
+// ships real SEO content as static HTML; the live clock is a React island
 // (src/city-page.tsx) that reads the ct-* meta tags. Scaling = add JSON rows.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { argv } from 'node:process';
 
 const root = new URL('..', import.meta.url);
-const cities = JSON.parse(readFileSync(new URL('src/cities.json', root), 'utf8'));
 const SITE = 'https://www.chronomap.top';
-const TODAY = new Date().toISOString().slice(0, 10);
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -76,7 +76,7 @@ function page(c) {
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
         <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Time in ${name}</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>${name} is the ${country === 'Singapore' || country === 'Hong Kong' ? 'city-territory' : 'city in ' + country} that follows the <strong class="text-zinc-200">${tz}</strong> time zone. Its offset from Coordinated Universal Time (UTC) changes when daylight saving time is in effect, so the live clock above always shows the real local time right now.</p>
+          <p>${name} follows the <strong class="text-zinc-200">${tz}</strong> time zone. Its offset from Coordinated Universal Time (UTC) changes when daylight saving time is in effect, so the live clock above always shows the real local time right now.</p>
           <p>To plan a call or event across zones, compare ${name} with other cities in the list above, browse every offset on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a>, or turn any moment into a shareable code with the <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a>.</p>
         </div>
       </section>
@@ -119,28 +119,37 @@ function page(c) {
 `;
 }
 
-mkdirSync(fileURLToPath(new URL('time', root)), { recursive: true });
-for (const c of cities) {
-  writeFileSync(fileURLToPath(new URL(`time/${c.slug}.html`, root)), page(c));
-}
+export function generate() {
+  const cities = JSON.parse(readFileSync(new URL('src/cities.json', root), 'utf8'));
+  const today = new Date().toISOString().slice(0, 10);
 
-// Sitemap: static pages + every city page.
-const urls = [
-  { loc: `${SITE}/`, pri: '1.0', freq: 'weekly' },
-  { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
-  { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
-  ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),
-];
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+  mkdirSync(fileURLToPath(new URL('time', root)), { recursive: true });
+  for (const c of cities) {
+    writeFileSync(fileURLToPath(new URL(`time/${c.slug}.html`, root)), page(c));
+  }
+
+  const urls = [
+    { loc: `${SITE}/`, pri: '1.0', freq: 'weekly' },
+    { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
+    { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
+    ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),
+  ];
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url>
     <loc>${u.loc}</loc>
-    <lastmod>${TODAY}</lastmod>
+    <lastmod>${today}</lastmod>
     <changefreq>${u.freq}</changefreq>
     <priority>${u.pri}</priority>
   </url>`).join('\n')}
 </urlset>
 `;
-writeFileSync(fileURLToPath(new URL('public/sitemap.xml', root)), sitemap);
+  writeFileSync(fileURLToPath(new URL('public/sitemap.xml', root)), sitemap);
+  console.log(`[gen-city-pages] ${cities.length} city pages + sitemap (${urls.length} urls).`);
+  return cities;
+}
 
-console.log(`Generated ${cities.length} city pages + sitemap (${urls.length} urls).`);
+// Run when invoked directly: node scripts/gen-city-pages.mjs
+if (argv[1] && realpathSync(argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
+  generate();
+}

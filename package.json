@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node scripts/gen-city-pages.mjs && tsc && vite build",
+    "build": "tsc && vite build",
     "start": "node server.ts",
     "preview": "vite preview",
     "lint": "tsc --noEmit"
