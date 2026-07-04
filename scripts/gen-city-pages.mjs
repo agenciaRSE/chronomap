@@ -18,6 +18,20 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const tzLabelOf = (tz) => tz.split('/').pop().replace(/_/g, ' ');
 const filePath = (rel) => fileURLToPath(new URL(rel, root));
 
+// BreadcrumbList JSON-LD from [{name, path}] crumbs (path relative to SITE).
+const breadcrumb = (crumbs) => `<script type="application/ld+json">
+      ${JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: crumbs.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: c.name,
+          item: `${SITE}${c.path}`,
+        })),
+      })}
+    </script>`;
+
 const LOGO = `<a href="/" class="inline-flex items-center gap-3 mb-8 group shrink-0">
       <span class="relative w-8 h-8 flex items-center justify-center shrink-0">
         <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
@@ -85,6 +99,7 @@ function cityPage(c) {
         ]
       }
     </script>
+    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `Time in ${c.name}`, path: `/time/${c.slug}` }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
     <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
@@ -164,6 +179,7 @@ function comparePage(a, b) {
         ]
       }
     </script>
+    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `${a.name} to ${b.name}`, path: `/time/${slug}` }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
     <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
@@ -243,6 +259,7 @@ function timeIndexPage(cities, pairs) {
     <meta property="og:description" content="Browse or search current local time in ${cities.length}+ cities worldwide." />
     <meta property="og:image" content="https://www.chronomap.top/og.png" />
     ${HEAD_FONTS}
+    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
     <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
