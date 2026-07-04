@@ -117,12 +117,55 @@ body::after {
   box-shadow: 0 14px 40px -18px rgba(59, 130, 246, 0.45);
 }
 
+/* ── Glass panels / cards (aidesigner-inspired) ───────────────────────────*/
+.glass-panel {
+  background: rgba(24, 24, 27, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5);
+}
+.glass-card {
+  background: linear-gradient(180deg, rgba(39, 39, 42, 0.2) 0%, rgba(24, 24, 27, 0.4) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+.glass-card:hover {
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px -4px rgba(59, 130, 246, 0.15);
+}
+/* Thin glowing top line for panel headers */
+.glow-line::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+}
+/* Live equalizer bars */
+.eq-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: eq 0.5s ease-in-out infinite alternate;
+}
+.eq-bar:nth-child(2) { animation-delay: 0.2s; }
+.eq-bar:nth-child(3) { animation-delay: 0.1s; }
+@keyframes eq {
+  from { height: 4px; }
+  to { height: 14px; }
+}
+
 /* ── Respect reduced-motion ───────────────────────────────────────────────*/
 @media (prefers-reduced-motion: reduce) {
   body::before,
   .gradient-border::before,
   .text-shimmer,
-  .reveal {
+  .reveal,
+  .eq-bar {
     animation: none !important;
   }
   .text-shimmer {
