@@ -1,17 +1,22 @@
-// Generates a static, crawlable HTML page per city under time/{slug}.html from
-// src/cities.json, plus a matching public/sitemap.xml. Called from vite.config
-// (so it runs at the start of every `vite build`, regardless of the build
-// command) and runnable directly (`node scripts/gen-city-pages.mjs`). Each page
-// ships real SEO content as static HTML; the live clock is a React island
-// (src/city-page.tsx) that reads the ct-* meta tags. Scaling = add JSON rows.
+// Generates static, crawlable pages from src/cities.json:
+//   - one per city:            time/{slug}.html          (/time/{slug})
+//   - directional comparators: time/{a}-to-{b}.html      (/time/{a}-to-{b})
+//     for ordered pairs among the top PAIR_COUNT cities.
+// Also writes public/sitemap.xml and returns the Vite MPA entry list. Called
+// from vite.config (runs at the start of every build) and runnable directly
+// (`node scripts/gen-city-pages.mjs`). Live clocks are React islands
+// (city-page.tsx / compare-page.tsx) that read the ct-* meta tags.
 import { readFileSync, writeFileSync, mkdirSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { argv } from 'node:process';
 
 const root = new URL('..', import.meta.url);
 const SITE = 'https://www.chronomap.top';
+const PAIR_COUNT = 10; // comparators are generated among the first N cities
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const tzLabelOf = (tz) => tz.split('/').pop().replace(/_/g, ' ');
+const filePath = (rel) => fileURLToPath(new URL(rel, root));
 
 const LOGO = `<a href="/" class="inline-flex items-center gap-3 mb-8 group shrink-0">
       <span class="relative w-8 h-8 flex items-center justify-center shrink-0">
@@ -22,9 +27,31 @@ const LOGO = `<a href="/" class="inline-flex items-center gap-3 mb-8 group shrin
       <span class="text-[20px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
     </a>`;
 
-function page(c) {
+const HEAD_FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">`;
+
+const FOOTER = `<footer class="w-full text-center mt-2 reveal">
+        <div class="flex flex-col items-center gap-5">
+          <a href="/" class="inline-flex items-center gap-2 group">
+            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
+              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
+              <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            </span>
+            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
+          </a>
+          <nav class="flex items-center gap-6 text-[13px] text-zinc-500">
+            <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
+            <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
+            <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
+          </nav>
+        </div>
+      </footer>`;
+
+function cityPage(c) {
   const name = esc(c.name), country = esc(c.country), tz = esc(c.tz);
-  const tzLabel = tz.split('/').pop().replace(/_/g, ' ');
+  const tzLabel = tzLabelOf(tz);
   return `<!DOCTYPE html>
 <html lang="en" class="dark scroll-smooth">
   <head>
@@ -45,17 +72,14 @@ function page(c) {
     <meta property="og:title" content="Current Time in ${name} — Live Local Time" />
     <meta property="og:description" content="Live local time in ${name}, ${country} (${tz}), with comparisons to major world cities." />
     <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    ${HEAD_FONTS}
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
           { "@type": "Question", "name": "What time zone is ${name} in?", "acceptedAnswer": { "@type": "Answer", "text": "${name} is in the ${tz} time zone. The live clock above shows its current UTC offset, which already accounts for daylight saving time where it applies." } },
-          { "@type": "Question", "name": "Does ${name} observe daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "The times shown for ${name} use its current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it." } },
-          { "@type": "Question", "name": "How do I compare ${name} time with another city?", "acceptedAnswer": { "@type": "Answer", "text": "The comparison list shows the current time in major world cities alongside ${name}. For any two places, use the interactive ChronoMap world clock to pin and compare them." } }
+          { "@type": "Question", "name": "Does ${name} observe daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "The times shown for ${name} use its current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it." } }
         ]
       }
     </script>
@@ -95,23 +119,7 @@ function page(c) {
         </div>
       </section>
 
-      <footer class="w-full text-center mt-2 reveal">
-        <div class="flex flex-col items-center gap-5">
-          <a href="/" class="inline-flex items-center gap-2 group">
-            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
-              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
-              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
-              <span class="w-1 h-1 rounded-full bg-white/50"></span>
-            </span>
-            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
-          </a>
-          <nav class="flex items-center gap-6 text-[13px] text-zinc-500">
-            <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
-            <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
-            <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
-          </nav>
-        </div>
-      </footer>
+      ${FOOTER}
     </main>
     <script type="module" src="/src/city-page.tsx"></script>
   </body>
@@ -119,13 +127,91 @@ function page(c) {
 `;
 }
 
-export function generate() {
-  const cities = JSON.parse(readFileSync(new URL('src/cities.json', root), 'utf8'));
-  const today = new Date().toISOString().slice(0, 10);
+function comparePage(a, b) {
+  const an = esc(a.name), bn = esc(b.name), atz = esc(a.tz), btz = esc(b.tz);
+  const slug = `${a.slug}-to-${b.slug}`;
+  return `<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>${an} to ${bn} Time Difference &amp; Converter | ChronoMap</title>
+    <meta name="description" content="Time difference between ${an} and ${bn}. See the current local time in both cities side by side, how many hours apart they are, and convert any time from ${an} to ${bn}." />
+    <meta name="keywords" content="${a.name} to ${b.name} time, time difference ${a.name} ${b.name}, ${a.name} ${b.name} time converter, what time is it in ${b.name} when it is in ${a.name}" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="${SITE}/time/${slug}" />
+    <meta name="ct-a-city" content="${an}" />
+    <meta name="ct-a-tz" content="${atz}" />
+    <meta name="ct-b-city" content="${bn}" />
+    <meta name="ct-b-tz" content="${btz}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${SITE}/time/${slug}" />
+    <meta property="og:title" content="${an} to ${bn} Time Difference" />
+    <meta property="og:description" content="Current time in ${an} and ${bn} side by side, with the exact time difference." />
+    <meta property="og:image" content="https://agenciarse.com/wp-content/uploads/2025/11/screenshot-desktop.jpg" />
+    ${HEAD_FONTS}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "What is the time difference between ${an} and ${bn}?", "acceptedAnswer": { "@type": "Answer", "text": "The live tool above shows the current time in both ${an} (${atz}) and ${bn} (${btz}) and the exact difference in hours, which already accounts for daylight saving time on either side." } },
+          { "@type": "Question", "name": "How do I convert a time from ${an} to ${bn}?", "acceptedAnswer": { "@type": "Answer", "text": "Read the current time in ${an} and ${bn} from the two clocks above, or pin both cities on the interactive ChronoMap world clock to convert any specific time between them." } }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        ${LOGO}
+        <h1 class="text-4xl sm:text-5xl md:text-[52px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">${an} to ${bn} Time</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">The current time difference between ${an} and ${bn}, live. See both clocks side by side below, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
+      </header>
 
-  mkdirSync(fileURLToPath(new URL('time', root)), { recursive: true });
+      <div class="w-full max-w-2xl mx-auto mb-14 reveal" style="animation-delay:.1s" id="compare-app">
+        <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading live times for ${an} and ${bn}…</div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">${an} and ${bn} time difference</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>${an} follows the <strong class="text-zinc-200">${atz}</strong> time zone and ${bn} follows <strong class="text-zinc-200">${btz}</strong>. The gap between them shifts across the year as each city enters or leaves daylight saving time, so the live clocks above always show the real current difference.</p>
+          <p>Need to convert a specific time? Pin both cities on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a>, or turn a moment into a code everyone reads in their own zone with the <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a>.</p>
+        </div>
+      </section>
+
+      ${FOOTER}
+    </main>
+    <script type="module" src="/src/compare-page.tsx"></script>
+  </body>
+</html>
+`;
+}
+
+export function generate() {
+  const cities = JSON.parse(readFileSync(filePath('src/cities.json'), 'utf8'));
+  const today = new Date().toISOString().slice(0, 10);
+  mkdirSync(filePath('time'), { recursive: true });
+
+  const entries = [];
+
   for (const c of cities) {
-    writeFileSync(fileURLToPath(new URL(`time/${c.slug}.html`, root)), page(c));
+    writeFileSync(filePath(`time/${c.slug}.html`), cityPage(c));
+    entries.push({ name: `time-${c.slug}`, file: filePath(`time/${c.slug}.html`) });
+  }
+
+  // Directional comparators among the top cities (a≠b).
+  const top = cities.slice(0, PAIR_COUNT);
+  const pairs = [];
+  for (const a of top) for (const b of top) if (a.slug !== b.slug) pairs.push([a, b]);
+  for (const [a, b] of pairs) {
+    const slug = `${a.slug}-to-${b.slug}`;
+    writeFileSync(filePath(`time/${slug}.html`), comparePage(a, b));
+    entries.push({ name: `cmp-${slug}`, file: filePath(`time/${slug}.html`) });
   }
 
   const urls = [
@@ -133,6 +219,7 @@ export function generate() {
     { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
     ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),
+    ...pairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, pri: '0.6', freq: 'weekly' })),
   ];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -144,9 +231,9 @@ ${urls.map((u) => `  <url>
   </url>`).join('\n')}
 </urlset>
 `;
-  writeFileSync(fileURLToPath(new URL('public/sitemap.xml', root)), sitemap);
-  console.log(`[gen-city-pages] ${cities.length} city pages + sitemap (${urls.length} urls).`);
-  return cities;
+  writeFileSync(filePath('public/sitemap.xml'), sitemap);
+  console.log(`[gen-city-pages] ${cities.length} cities + ${pairs.length} comparators, sitemap ${urls.length} urls.`);
+  return entries;
 }
 
 // Run when invoked directly: node scripts/gen-city-pages.mjs
