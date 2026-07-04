@@ -14,7 +14,7 @@ import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
 import { enUS } from 'date-fns/locale';
 import { animate } from 'motion/react';
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2, Menu } from 'lucide-react';
 
 // Configuration for time steps
 const TIME_STEPS = [
@@ -25,6 +25,59 @@ const TIME_STEPS = [
   { label: '1 WEEK', fn: addWeeks, amount: 1 },
   { label: '1 MONTH', fn: addMonths, amount: 1 },
 ];
+
+// Footer "Explore" menu — internal links to the standalone SEO pages. Real
+// <a href> so they're crawlable (present in the DOM even when the panel is
+// visually collapsed), which links these pages from the app's top-authority page.
+const NAV_LINKS: { href: string; label: string }[] = [
+  { href: '/', label: 'World clock map' },
+  { href: '/time-zone-map', label: 'Time zone map' },
+  { href: '/discord-timestamp-generator', label: 'Discord timestamps' },
+];
+
+const SiteMenu: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Explore pages"
+        aria-expanded={open}
+        className="flex items-center gap-2 px-3 py-2.5 bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-xl text-zinc-400 hover:text-white transition-all"
+      >
+        <Menu className="w-4 h-4" />
+        <span className="text-xs font-medium hidden lg:inline">Explore</span>
+      </button>
+      <nav
+        aria-label="ChronoMap pages"
+        className={`absolute bottom-full right-0 mb-2 w-56 bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl shadow-2xl overflow-hidden py-1 z-50 transition-all duration-200 ${
+          open ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1 pointer-events-none'
+        }`}
+      >
+        {NAV_LINKS.map((l) => (
+          <a
+            key={l.href}
+            href={l.href}
+            className="block px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+          >
+            {l.label}
+          </a>
+        ))}
+      </nav>
+    </div>
+  );
+};
 
 const App: React.FC = () => {
   // Real-world wall clock time
@@ -632,8 +685,10 @@ const App: React.FC = () => {
              </button>
           </div>
 
-          {/* Right: Empty spacer for grid balance */}
-          <div className="hidden md:block"></div>
+          {/* Right: Explore menu — internal links to the standalone SEO pages */}
+          <div className="hidden md:flex justify-end">
+            <SiteMenu />
+          </div>
         </div>
       </footer>
 
