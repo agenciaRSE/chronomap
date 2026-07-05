@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { X, Search, Users, Calendar, Download } from 'lucide-react';
+import { X, Search, Users, Calendar, Download, Link2, Check } from 'lucide-react';
 import citiesData from './cities.json';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
 import { ymdInTz, hourInTz, timeLabel, dayLabel, wallToUtc } from './lib/tz';
@@ -30,6 +30,17 @@ const DEFAULT_ROWS: Row[] = [
   { key: 'new-york', label: 'New York', tz: 'America/New_York' },
 ].filter((r, i, a) => a.findIndex((x) => x.tz === r.tz) === i); // dedupe by tz
 
+// Shareable plan state: encode rows (label + tz) into a compact base64url token.
+const encodePlan = (rows: Row[]): string => {
+  const bytes = new TextEncoder().encode(JSON.stringify(rows.map((r) => [r.label, r.tz])));
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+const decodePlan = (s: string): Row[] => {
+  const bytes = Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
+  const pairs = JSON.parse(new TextDecoder().decode(bytes)) as [string, string][];
+  return pairs.map(([label, tz]) => ({ key: tz, label, tz }));
+};
+
 const Planner: React.FC = () => {
   const [now, setNow] = useState(() => new Date());
   const [rows, setRows] = useState<Row[]>(() => {
@@ -43,6 +54,7 @@ const Planner: React.FC = () => {
     return DEFAULT_ROWS;
   });
   const [query, setQuery] = useState('');
+  const [copied, setCopied] = useState(false);
   const ref = rows[0];
 
   useEffect(() => {
@@ -52,6 +64,36 @@ const Planner: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('chronomap-planner-rows', JSON.stringify(rows));
   }, [rows]);
+
+  // Hydrate from a shared ?cities= link, merging into existing rows (dedupe by tz)
+  // so a shared plan never wipes the visitor's saved cities. Then clean the URL.
+  useEffect(() => {
+    const s = new URLSearchParams(window.location.search).get('cities');
+    if (!s) return;
+    try {
+      const shared = decodePlan(s);
+      if (shared.length) {
+        setRows((prev) => {
+          const seen = new Set(prev.map((r) => r.tz));
+          return [...prev, ...shared.filter((r) => !seen.has(r.tz))];
+        });
+      }
+    } catch (e) {
+      console.warn('Could not parse shared plan', e);
+    }
+    window.history.replaceState({}, '', window.location.pathname);
+  }, []);
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/meeting-planner?cities=${encodePlan(rows)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      window.prompt('Copy this link to share your plan:', url);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const dayKey = ymdInTz(now, ref.tz);
   // 24 UTC instants, one per hour of the reference city's local day.
@@ -112,6 +154,16 @@ const Planner: React.FC = () => {
         )}
       </div>
 
+      <div className="flex justify-center mb-6">
+        <button
+          onClick={handleShare}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-200 rounded-lg border border-white/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+        >
+          {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Link2 className="w-3.5 h-3.5" />}
+          {copied ? 'Link copied' : 'Share this plan'}
+        </button>
+      </div>
+
       {/* Grid */}
       <div className="glass-panel rounded-2xl p-3 sm:p-4 overflow-x-auto">
         <div className="min-w-[640px]">
@@ -162,11 +214,13 @@ const Planner: React.FC = () => {
                       key={h}
                       onClick={() => setSelCol(h)}
                       title={`${timeLabel(inst, r.tz)} — ${r.label}`}
-                      className={`h-8 flex items-center justify-center text-[10px] font-mono border-r border-black/20 ${bg} ${
+                      aria-label={`${timeLabel(inst, r.tz)} in ${r.label}${good ? ', everyone available' : work ? ', working hours' : ''}`}
+                      className={`relative h-8 flex items-center justify-center text-[10px] font-mono border-r border-black/20 ${bg} ${
                         sel ? 'ring-2 ring-inset ring-blue-400 text-white' : work ? 'text-zinc-200' : 'text-zinc-500'
-                      } ${h === 0 ? 'rounded-l' : ''} ${h === 23 ? 'rounded-r' : ''}`}
+                      } ${h === 0 ? 'rounded-l' : ''} ${h === 23 ? 'rounded-r' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-300`}
                     >
                       {hr}
+                      {good && <span aria-hidden className="absolute bottom-[3px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-300" />}
                     </button>
                   );
                 })}
@@ -178,7 +232,7 @@ const Planner: React.FC = () => {
 
       {/* Legend */}
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-zinc-500">
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-emerald-500/30 inline-block" /> Everyone available</span>
+        <span className="flex items-center gap-1.5"><span className="relative w-3 h-3 rounded-sm bg-emerald-500/30 inline-block"><span className="absolute bottom-[1px] left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full bg-emerald-300" /></span> Everyone available (•)</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-blue-500/15 inline-block" /> Working hours (9–18)</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-zinc-800/40 inline-block" /> Night</span>
       </div>
