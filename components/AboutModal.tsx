@@ -94,7 +94,23 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v3.1.0</span>
+                      <span className="text-sm font-mono text-primary">v3.2.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">Travel Tools</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Flight time calculator:</strong> Get your local arrival time from a flight duration, or the real duration between two local times.</li>
+                        <li><strong>Flight route map:</strong> Plot airports and layovers on a world map and see the local time at every stop across time zones.</li>
+                        <li><strong>Jet lag calculator:</strong> Estimate time zones crossed, direction, recovery time and tips.</li>
+                        <li><strong>Clock widget:</strong> A dedicated page to embed a free live clock for any city on your website.</li>
+                        <li><strong>Share the map view:</strong> A shared link now also restores the exact map type, position and zoom.</li>
+                        <li><strong>Navigation &amp; SEO:</strong> A nav header on every page and a keyword-focused home heading.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v3.1.0</span>
                       <span className="text-xs text-zinc-500 mb-1">Tools, Sharing &amp; Español</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>Spanish version:</strong> The whole site is now available in Spanish at /es, with a language switch and hreflang.</li>

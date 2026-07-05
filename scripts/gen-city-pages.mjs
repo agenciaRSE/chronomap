@@ -59,10 +59,11 @@ function headerEn(alt) {
           <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
         </a>
         <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
-          <a href="/time" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Cities</a>
           <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Time zones</a>
-          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap">Planner</a>
-          <a href="/discord-timestamp-generator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Discord</a>
+          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Planner</a>
+          <a href="/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Flight time</a>
+          <a href="/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Jet lag</a>
+          <a href="/flight-route-map" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Route</a>
           ${alt ? `<a href="${alt}" hreflang="es" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">ES</a>` : ''}
         </div>
       </nav>
@@ -76,8 +77,10 @@ function headerEs(alt) {
         </a>
         <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
           <a href="/es/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Husos horarios</a>
-          <a href="/es/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap">Planificador</a>
-          <a href="/es/discord-timestamp-generator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Discord</a>
+          <a href="/es/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Planificador</a>
+          <a href="/es/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Vuelos</a>
+          <a href="/es/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Jet lag</a>
+          <a href="/es/flight-route-map" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Ruta</a>
           ${alt ? `<a href="${alt}" hreflang="en" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">EN</a>` : ''}
         </div>
       </nav>
