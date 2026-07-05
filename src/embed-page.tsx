@@ -103,6 +103,14 @@ const theme0: 'dark' | 'light' = params.get('theme') === 'light' ? 'light' : 'da
 
 const el = document.getElementById('embed-app');
 if (el) {
+  // Standalone view (not framed) needs the app's dark background so the snippet
+  // builder is readable; framed stays transparent to blend into the host site.
+  if (!framed) {
+    document.documentElement.style.backgroundColor = '#09090b';
+    document.body.style.backgroundColor = '#09090b';
+    document.body.style.minHeight = '100vh';
+    el.style.paddingTop = '48px';
+  }
   el.innerHTML = '';
   ReactDOM.createRoot(el).render(
     <React.StrictMode>
