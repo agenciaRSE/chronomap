@@ -1,8 +1,10 @@
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense, lazy } from 'react';
 import { NewsTicker } from './components/NewsTicker';
 import { AnimatedLogo } from './components/AnimatedLogo';
-import { MapChart } from './components/MapChart';
+// Lazy-load the map (d3 + topojson + globe) so the header/clock paint first and
+// the heavy chart chunk streams in after — better LCP on the app.
+const MapChart = lazy(() => import('./components/MapChart').then((m) => ({ default: m.MapChart })));
 import { DiscordGenerator } from './components/DiscordGenerator';
 import { AboutModal } from './components/AboutModal';
 import { TimeScrubber } from './components/TimeScrubber';
@@ -657,13 +659,15 @@ const App: React.FC = () => {
           </div>
 
           <div className="absolute inset-0 md:relative flex-1 bg-[#050505] z-0">
-            <MapChart 
-              currentTime={timeState.current} 
-              onMapClick={handleMapClick}
-              locations={locations}
-              centerTarget={centerTarget}
-              onCenterComplete={handleCenterComplete}
-            />
+            <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-zinc-600 text-xs font-mono tracking-wider">Loading map…</div>}>
+              <MapChart
+                currentTime={timeState.current}
+                onMapClick={handleMapClick}
+                locations={locations}
+                centerTarget={centerTarget}
+                onCenterComplete={handleCenterComplete}
+              />
+            </Suspense>
           </div>
         </div>
       </main>
