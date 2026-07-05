@@ -16,6 +16,7 @@ const ES: Record<string, string> = {
   'All cities': 'Todas las ciudades',
   'Time zone map': 'Mapa de husos horarios',
   'Meeting planner': 'Planificador de reuniones',
+  'Flight calculator': 'Calculadora de vuelo',
   'Discord timestamps': 'Timestamps de Discord',
   'Windows app': 'App de Windows',
   'Embed a clock': 'Insertar un reloj',
@@ -140,6 +141,22 @@ const ES: Record<string, string> = {
   'Copy embed code': 'Copiar código',
   'Copied!': '¡Copiado!',
   'Copy the embed code:': 'Copia el código para insertar:',
+  // Flight time calculator
+  'Arrival time': 'Hora de llegada',
+  'Flight duration': 'Duración del vuelo',
+  'From': 'Desde',
+  'To': 'Hasta',
+  'Departure': 'Salida',
+  'Arrival (local)': 'Llegada (local)',
+  'Hours': 'Horas',
+  'Minutes': 'Minutos',
+  'You arrive at': 'Llegas a las',
+  'local time in': 'hora local en',
+  'flight': 'vuelo',
+  'arrival before departure': 'llegada antes de la salida',
+  'based on local departure and arrival times, adjusted for the time-zone difference': 'según las horas locales de salida y llegada, ajustado por la diferencia horaria',
+  '(next day)': '(día siguiente)',
+  '(prev. day)': '(día anterior)',
 };
 
 export const t = (s: string): string => (isES ? ES[s] ?? s : s);

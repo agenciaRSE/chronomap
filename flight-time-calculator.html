@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Flight Time Calculator — Arrival Time &amp; Duration Across Time Zones | ChronoMap</title>
+    <meta name="description" content="Free flight time calculator. Enter your departure city and time, arrival city and flight duration to see the local arrival time — or work out the real flight duration between two local times. Time-zone and DST aware." />
+    <meta name="keywords" content="flight time calculator, flight arrival time calculator, flight duration calculator, what time will i arrive, arrival time calculator, flight time with time difference, time zone flight calculator" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/flight-time-calculator" />
+    <link rel="alternate" hreflang="en" href="https://www.chronomap.top/flight-time-calculator" />
+    <link rel="alternate" hreflang="es" href="https://www.chronomap.top/es/flight-time-calculator" />
+    <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/flight-time-calculator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/flight-time-calculator" />
+    <meta property="og:title" content="Flight Time Calculator — Arrival Time &amp; Duration Across Time Zones" />
+    <meta property="og:description" content="See your local arrival time given the flight duration, or work out the real duration between two local times — time-zone and DST aware." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Flight Time Calculator | ChronoMap" />
+    <meta property="twitter:image" content="https://www.chronomap.top/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Flight Time Calculator",
+        "url": "https://www.chronomap.top/flight-time-calculator",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any",
+        "description": "A free flight time calculator: find your local arrival time from a flight duration, or the real flight duration between two local times, accounting for the time-zone difference and daylight saving.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://agenciarse.com/#organization" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How do I calculate my flight arrival time?", "acceptedAnswer": { "@type": "Answer", "text": "Enter your departure city and departure date/time, choose the arrival city, and type the flight duration. The calculator shows the local arrival time in the destination city and tells you if you land the same day or the next day." } },
+          { "@type": "Question", "name": "How do I work out the real flight duration?", "acceptedAnswer": { "@type": "Answer", "text": "Switch to the 'Flight duration' mode and enter the local departure time and the local arrival time. The calculator converts both to a common reference and returns the true flight duration, adjusted for the time-zone difference." } },
+          { "@type": "Question", "name": "Does it account for time zones and daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Each city uses its current IANA time zone, so the time-zone difference and daylight saving time are handled automatically, and the arrival day (same or next day) is correct." } },
+          { "@type": "Question", "name": "Do I need a flight number or an API?", "acceptedAnswer": { "@type": "Answer", "text": "No. This is a calculator that works from the times you enter — it does not use live flight schedules or any external data, so it works instantly and offline." } },
+          { "@type": "Question", "name": "Is the flight time calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is completely free, needs no signup, and runs entirely in your browser." } }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chronomap.top/" },
+          { "@type": "ListItem", "position": 2, "name": "Flight time calculator", "item": "https://www.chronomap.top/flight-time-calculator" }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/" class="inline-flex items-center gap-2 group shrink-0" aria-label="ChronoMap home">
+          <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/time" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Cities</a>
+          <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Time zones</a>
+          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap">Planner</a>
+          <a href="/discord-timestamp-generator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Discord</a>
+          <a href="/es/flight-time-calculator" hreflang="es" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">ES</a>
+        </div>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Flight Time Calculator</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">Find out what time you'll land — in local time — given your flight duration, or work out the real duration between two local times. Time zones and daylight saving handled for you.</p>
+      </header>
+
+      <div class="w-full max-w-2xl mx-auto mb-16 reveal" style="animation-delay:.1s">
+        <div id="flight-app">
+          <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading the flight time calculator…</div>
+        </div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Why arrival times are confusing</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>When you fly across time zones, the arrival time on your ticket is in the destination's local time — which is why a "short" flight can look like it arrives before it left, or a long one seems to skip a day. The clock you land under is not the clock you took off from.</p>
+          <p>This calculator does the mental math for you. Enter where and when you leave and how long the flight is, and it shows the exact local time you'll arrive, plus whether it's the same day or the next. Switch modes to instead find the real flight duration from two local times. To compare the two cities directly, open the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">time zone map</a> or a <a href="/time" class="text-blue-400 hover:text-blue-300 transition-colors">city page</a>.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
+        <div class="space-y-3">
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I calculate my flight arrival time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Enter your departure city and time, choose the arrival city, and type the flight duration. The calculator shows the local arrival time and whether you land the same or the next day.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I work out the real flight duration?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Switch to "Flight duration" mode and enter the local departure time and the local arrival time — it returns the true duration, adjusted for the time-zone difference.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it account for time zones and daylight saving?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. Each city uses its current IANA time zone, so the difference and daylight saving are handled automatically and the arrival day is correct.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Do I need a flight number or an API?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. It works from the times you enter — no live flight data — so it is instant and private.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is it free?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — free, no signup, and it runs entirely in your browser.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="w-full text-center mt-2 reveal">
+        <div class="flex flex-col items-center gap-5">
+          <a href="/" class="inline-flex items-center gap-2 group">
+            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
+              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
+              <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            </span>
+            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
+          </a>
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+            <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
+            <a href="/time" class="hover:text-zinc-300 transition-colors">All cities</a>
+            <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
+            <a href="/meeting-planner" class="hover:text-zinc-300 transition-colors">Meeting planner</a>
+            <a href="/es/flight-time-calculator" class="hover:text-zinc-300 transition-colors" hreflang="es">Español</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="/src/flight-time-page.tsx"></script>
+  </body>
+</html>

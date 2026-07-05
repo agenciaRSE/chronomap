@@ -76,6 +76,8 @@ export default defineConfig({
         embed: fileURLToPath(new URL('./embed.html', import.meta.url)),
         clockwidget: fileURLToPath(new URL('./clock-widget.html', import.meta.url)),
         clockwidget_es: fileURLToPath(new URL('./es/clock-widget.html', import.meta.url)),
+        flight: fileURLToPath(new URL('./flight-time-calculator.html', import.meta.url)),
+        flight_es: fileURLToPath(new URL('./es/flight-time-calculator.html', import.meta.url)),
         notfound: fileURLToPath(new URL('./404.html', import.meta.url)),
         ...generatedInputs,
       },
