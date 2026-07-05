@@ -66,6 +66,9 @@ export default defineConfig({
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         home_es: fileURLToPath(new URL('./es/index.html', import.meta.url)),
+        tzmap_es: fileURLToPath(new URL('./es/time-zone-map.html', import.meta.url)),
+        discord_es: fileURLToPath(new URL('./es/discord-timestamp-generator.html', import.meta.url)),
+        planner_es: fileURLToPath(new URL('./es/meeting-planner.html', import.meta.url)),
         discord: fileURLToPath(new URL('./discord-timestamp-generator.html', import.meta.url)),
         tzmap: fileURLToPath(new URL('./time-zone-map.html', import.meta.url)),
         windows: fileURLToPath(new URL('./windows.html', import.meta.url)),

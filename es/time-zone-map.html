@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+
+    <title>Mapa de Husos Horarios Interactivo — Hora Actual en Cada Zona | ChronoMap</title>
+    <meta name="description" content="Mapa de husos horarios interactivo con la hora actual en cada offset UTC, de UTC−12 a UTC+14. Consulta la hora local en vivo de las principales ciudades y compara zonas horarias de todo el mundo." />
+    <meta name="keywords" content="mapa de husos horarios, mapa de zonas horarias, husos horarios del mundo, mapa offset utc, hora actual por zona horaria, reloj mundial, conversor de zonas horarias" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/es/time-zone-map" />
+
+    <link rel="alternate" hreflang="en" href="https://www.chronomap.top/time-zone-map" />
+    <link rel="alternate" hreflang="es" href="https://www.chronomap.top/es/time-zone-map" />
+    <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/time-zone-map" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/es/time-zone-map" />
+    <meta property="og:title" content="Mapa de Husos Horarios Interactivo — Hora Actual en Cada Zona" />
+    <meta property="og:description" content="La hora actual en cada offset UTC, horas locales en vivo de las principales ciudades y un mapa mundial interactivo con globo 3D." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Mapa de Husos Horarios Interactivo | ChronoMap" />
+    <meta property="twitter:image" content="https://www.chronomap.top/og.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Mapa de Husos Horarios Interactivo",
+        "url": "https://www.chronomap.top/es/time-zone-map",
+        "inLanguage": "es",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "description": "Mapa de husos horarios interactivo que muestra la hora actual en cada offset UTC y en las principales ciudades del mundo.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://agenciarse.com/#organization" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "es",
+        "mainEntity": [
+          { "@type": "Question", "name": "¿Qué es un mapa de husos horarios?", "acceptedAnswer": { "@type": "Answer", "text": "Un mapa de husos horarios muestra cómo el mundo se divide en regiones que comparten la misma hora estándar, expresada como un offset respecto al Tiempo Universal Coordinado (UTC). Permite ver de un vistazo la hora local actual en cualquier parte del mundo." } },
+          { "@type": "Question", "name": "¿Cuántos husos horarios hay?", "acceptedAnswer": { "@type": "Answer", "text": "Hay 24 husos horarios principales por horas, de UTC−12 a UTC+14, pero contando los offsets de media hora y de 45 minutos existen alrededor de 38 offsets distintos en uso." } },
+          { "@type": "Question", "name": "¿Qué es UTC?", "acceptedAnswer": { "@type": "Answer", "text": "UTC (Tiempo Universal Coordinado) es el estándar horario global con el que se definen todas las zonas horarias, por ejemplo UTC−5 (Nueva York) o UTC+9 (Tokio)." } },
+          { "@type": "Question", "name": "¿El mapa tiene en cuenta el horario de verano?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Las horas en vivo usan la zona horaria IANA actual de cada ubicación, que refleja automáticamente el horario de verano donde aplica, así que las horas mostradas son siempre la hora local real." } }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.chronomap.top/es" },
+          { "@type": "ListItem", "position": 2, "name": "Mapa de husos horarios", "item": "https://www.chronomap.top/es/time-zone-map" }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
+
+      <header class="max-w-3xl w-full text-center flex flex-col items-center mb-14 reveal">
+        <a href="/es" class="inline-flex items-center gap-3 mb-8 group shrink-0">
+          <span class="relative w-8 h-8 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-2 h-2 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[20px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <h1 class="text-4xl sm:text-5xl md:text-[56px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-5">Mapa de Husos Horarios Interactivo</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl">Consulta la hora actual en cada zona horaria, de UTC−12 a UTC+14. Horas locales en vivo de las principales ciudades y un mapa mundial interactivo con globo 3D en la <a href="/es" class="text-blue-400 hover:text-blue-300 transition-colors">página principal de ChronoMap</a>.</p>
+      </header>
+
+      <div class="w-full max-w-5xl mx-auto mb-20 reveal" style="animation-delay:.1s" id="tzmap-app">
+        <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Cargando los relojes en vivo… La referencia completa de offsets UTC está más abajo.</div>
+      </div>
+
+      <section class="max-w-3xl w-full mx-auto mb-20 reveal">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-semibold tracking-tight text-white mb-2">Zonas horarias por offset UTC</h2>
+          <p class="text-zinc-400 text-sm sm:text-base">Cada offset respecto al Tiempo Universal Coordinado, con ubicaciones de ejemplo.</p>
+        </div>
+        <div class="glass-panel rounded-xl overflow-hidden relative glow-line">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[560px] text-sm">
+              <thead>
+                <tr class="bg-white/[0.02] border-b border-white/10 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                  <th class="pl-5 pr-4 py-4">Offset UTC</th>
+                  <th class="px-4 py-4">Diferencia horaria</th>
+                  <th class="px-4 py-4 pr-5">Ubicaciones de ejemplo</th>
+                </tr>
+              </thead>
+              <tbody class="text-zinc-300">
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−12</code></td><td class="px-4 py-2.5 text-zinc-500">12 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Isla Baker</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−11</code></td><td class="px-4 py-2.5 text-zinc-500">11 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Samoa Americana, Niue</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−10</code></td><td class="px-4 py-2.5 text-zinc-500">10 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Hawái, Tahití</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−09</code></td><td class="px-4 py-2.5 text-zinc-500">9 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Alaska</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−08</code></td><td class="px-4 py-2.5 text-zinc-500">8 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Los Ángeles, Vancouver (PST)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−07</code></td><td class="px-4 py-2.5 text-zinc-500">7 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Denver, Phoenix (MST)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−06</code></td><td class="px-4 py-2.5 text-zinc-500">6 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Chicago, Ciudad de México (CST)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−05</code></td><td class="px-4 py-2.5 text-zinc-500">5 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Nueva York, Toronto, Lima (EST)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−04</code></td><td class="px-4 py-2.5 text-zinc-500">4 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Santiago, Caracas, Halifax</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−03</code></td><td class="px-4 py-2.5 text-zinc-500">3 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">São Paulo, Buenos Aires</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−02</code></td><td class="px-4 py-2.5 text-zinc-500">2 horas menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Georgia del Sur</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC−01</code></td><td class="px-4 py-2.5 text-zinc-500">1 hora menos</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Azores, Cabo Verde</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+00</code></td><td class="px-4 py-2.5 text-zinc-500">Igual que UTC</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Londres, Lisboa, Accra (GMT)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+01</code></td><td class="px-4 py-2.5 text-zinc-500">1 hora más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">París, Berlín, Madrid, Lagos (CET)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+02</code></td><td class="px-4 py-2.5 text-zinc-500">2 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">El Cairo, Atenas, Johannesburgo (EET)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+03</code></td><td class="px-4 py-2.5 text-zinc-500">3 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Moscú, Estambul, Nairobi, Riad</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+04</code></td><td class="px-4 py-2.5 text-zinc-500">4 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Dubái, Bakú, Tiflis</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+05</code></td><td class="px-4 py-2.5 text-zinc-500">5 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Karachi, Taskent</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+05:30</code></td><td class="px-4 py-2.5 text-zinc-500">5h 30m más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Bombay, Nueva Delhi (IST)</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+06</code></td><td class="px-4 py-2.5 text-zinc-500">6 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Daca, Almatý</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+07</code></td><td class="px-4 py-2.5 text-zinc-500">7 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Bangkok, Yakarta, Hanói</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+08</code></td><td class="px-4 py-2.5 text-zinc-500">8 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Pekín, Singapur, Perth</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+09</code></td><td class="px-4 py-2.5 text-zinc-500">9 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Tokio, Seúl</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+09:30</code></td><td class="px-4 py-2.5 text-zinc-500">9h 30m más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Adelaida, Darwin</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+10</code></td><td class="px-4 py-2.5 text-zinc-500">10 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Sídney, Brisbane</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+11</code></td><td class="px-4 py-2.5 text-zinc-500">11 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Numea, Islas Salomón</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+12</code></td><td class="px-4 py-2.5 text-zinc-500">12 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Auckland, Fiyi</td></tr>
+                <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+13</code></td><td class="px-4 py-2.5 text-zinc-500">13 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Samoa, Tonga</td></tr>
+                <tr class="hover:bg-white/[0.02] transition-colors"><td class="pl-5 pr-4 py-2.5"><code class="font-mono text-blue-300">UTC+14</code></td><td class="px-4 py-2.5 text-zinc-500">14 horas más</td><td class="px-4 py-2.5 pr-5 text-zinc-400">Kiritimati (Islas de la Línea)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16 reveal">
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+          <h2 class="text-xl font-semibold text-white flex items-center gap-3 mb-8 relative z-10">
+            <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Cómo funcionan los husos horarios
+          </h2>
+          <div class="space-y-7 relative z-10">
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center"><span class="w-6 h-6 rounded-full border border-blue-500/40 bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-mono shrink-0">1</span><span class="w-px flex-1 bg-gradient-to-b from-blue-500/20 to-transparent mt-2"></span></div>
+              <div><h3 class="text-zinc-200 font-medium mb-1 text-sm">Una hora por cada 15° de longitud</h3><p class="text-zinc-500 text-sm leading-relaxed">La Tierra rota 360° cada 24 horas, así que la hora solar local cambia alrededor de una hora por cada 15° de longitud. Los husos horarios redondean esto en regiones prácticas.</p></div>
+            </div>
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center"><span class="w-6 h-6 rounded-full border border-blue-500/40 bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-mono shrink-0">2</span><span class="w-px flex-1 bg-gradient-to-b from-blue-500/20 to-transparent mt-2"></span></div>
+              <div><h3 class="text-zinc-200 font-medium mb-1 text-sm">Offsets respecto a UTC</h3><p class="text-zinc-500 text-sm leading-relaxed">Cada zona es un offset fijo respecto a UTC. La mayoría son horas completas; unas pocas usan offsets de 30 o 45 minutos, y muchas observan horario de verano parte del año.</p></div>
+            </div>
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center"><span class="w-6 h-6 rounded-full border border-blue-500/40 bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-mono shrink-0">3</span></div>
+              <div><h3 class="text-zinc-200 font-medium mb-1 text-sm">Compáralas en vivo</h3><p class="text-zinc-500 text-sm leading-relaxed">En el <a href="/es" class="text-blue-400 hover:text-blue-300 transition-colors">mapa interactivo</a> puedes pasar el cursor por cualquier país para ver su hora en vivo, fijar ciudades para comparar y viajar en el tiempo. ¿Organizas un evento? Usa el <a href="/es/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">generador de timestamps de Discord</a>.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 relative">
+          <h2 class="text-xl font-semibold text-white flex items-center gap-3 mb-8">
+            <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Preguntas frecuentes
+          </h2>
+          <div class="space-y-3">
+            <details class="faq group glass-card rounded-lg overflow-hidden">
+              <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Qué es un mapa de husos horarios?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+              <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Un mapa de husos horarios muestra cómo el mundo se divide en regiones que comparten la misma hora estándar, expresada como un offset respecto a UTC. Permite ver de un vistazo la hora local actual en cualquier lugar.</p>
+            </details>
+            <details class="faq group glass-card rounded-lg overflow-hidden">
+              <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cuántos husos horarios hay?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+              <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Hay 24 husos principales por horas de UTC−12 a UTC+14, pero contando los offsets de media hora y de 45 minutos (como India en UTC+5:30 o Nepal en UTC+5:45) existen alrededor de 38 offsets distintos en uso.</p>
+            </details>
+            <details class="faq group glass-card rounded-lg overflow-hidden">
+              <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Qué es UTC?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+              <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">UTC (Tiempo Universal Coordinado) es el estándar horario global con el que se definen todas las zonas — por ejemplo UTC−5 (Nueva York) o UTC+9 (Tokio).</p>
+            </details>
+            <details class="faq group glass-card rounded-lg overflow-hidden">
+              <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿El mapa tiene en cuenta el horario de verano?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+              <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí. Las horas en vivo usan la zona horaria IANA actual de cada ubicación, que refleja el horario de verano automáticamente, así que las horas mostradas son siempre la hora local real.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <footer class="w-full text-center mt-6 reveal">
+        <div class="flex flex-col items-center gap-5">
+          <a href="/es" class="inline-flex items-center gap-2 group">
+            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
+              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
+              <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            </span>
+            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
+          </a>
+          <p class="text-xs text-zinc-500 max-w-sm">El mapa del reloj mundial interactivo — compara husos horarios en un mapa 2D o un globo 3D.</p>
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+            <a href="/es" class="hover:text-zinc-300 transition-colors">Reloj mundial</a>
+            <a href="/es/meeting-planner" class="hover:text-zinc-300 transition-colors">Planificador de reuniones</a>
+            <a href="/es/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Timestamps de Discord</a>
+            <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors" hreflang="en">English</a>
+          </nav>
+        </div>
+      </footer>
+
+    </main>
+    <script type="module" src="/src/time-zone-map-page.tsx"></script>
+  </body>
+</html>
