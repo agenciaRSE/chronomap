@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { X, Search, Users } from 'lucide-react';
+import { X, Search, Users, Calendar, Download } from 'lucide-react';
 import citiesData from './cities.json';
+import { googleCalUrl, icsDataUrl } from './lib/calendar';
 import './page.css';
 
 // Meeting planner for /meeting-planner. Pick cities, see a 24-hour band per city
@@ -222,6 +223,30 @@ const Planner: React.FC = () => {
             );
           })}
         </div>
+        {(() => {
+          const slot = instants[selCol];
+          const title = `Call — ${refHourLabel(selCol)} ${ref.label.replace(' (You)', '')}`;
+          const details = rows.map((r) => `${r.label}: ${timeLabel(slot, r.tz)}`).join(', ') + ' · via ChronoMap';
+          return (
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+              <a
+                href={googleCalUrl(title, slot, 30, details)}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400/30 transition-all"
+              >
+                <Calendar className="w-3.5 h-3.5" /> Add to Google Calendar
+              </a>
+              <a
+                href={icsDataUrl(title, slot, 30, details)}
+                download="chronomap-meeting.ics"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-200 rounded-lg border border-white/10 transition-all"
+              >
+                <Download className="w-3.5 h-3.5" /> Download .ics
+              </a>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

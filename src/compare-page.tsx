@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Calendar, Download } from 'lucide-react';
+import { googleCalUrl, icsDataUrl } from './lib/calendar';
 import './page.css';
 
 // Two-city comparator for /time/{a}-to-{b} pages. Reads both cities + IANA zones
@@ -80,6 +81,29 @@ const Converter: React.FC<{ now: Date }> = ({ now }) => {
           </button>
         )}
       </div>
+      {(() => {
+        const title = `Call — ${A.city} / ${B.city}`;
+        const details = `${A.city}: ${hm}, ${B.city}: ${bTime}${dayLabel} · via ChronoMap`;
+        return (
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
+            <a
+              href={googleCalUrl(title, instant, 30, details)}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400/30 transition-all"
+            >
+              <Calendar className="w-3.5 h-3.5" /> Google Calendar
+            </a>
+            <a
+              href={icsDataUrl(title, instant, 30, details)}
+              download="chronomap-time.ics"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-200 rounded-lg border border-white/10 transition-all"
+            >
+              <Download className="w-3.5 h-3.5" /> .ics
+            </a>
+          </div>
+        );
+      })()}
     </div>
   );
 };
