@@ -11,6 +11,7 @@ import { TimeScrubber } from './components/TimeScrubber';
 import { LocationSearch } from './components/LocationSearch';
 import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
+import { t, isES } from './src/lib/i18n';
 import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
@@ -52,13 +53,13 @@ const decodeShareState = (s: string): SharePayload => {
 // <a href> so they're crawlable (present in the DOM even when the panel is
 // visually collapsed), which links these pages from the app's top-authority page.
 const NAV_LINKS: { href: string; label: string }[] = [
-  { href: '/', label: 'World clock map' },
-  { href: '/time', label: 'All cities' },
-  { href: '/time-zone-map', label: 'Time zone map' },
-  { href: '/meeting-planner', label: 'Meeting planner' },
-  { href: '/discord-timestamp-generator', label: 'Discord timestamps' },
-  { href: '/windows', label: 'Windows app' },
-  { href: '/embed', label: 'Embed a clock' },
+  { href: isES ? '/es' : '/', label: t('World clock map') },
+  { href: '/time', label: t('All cities') },
+  { href: isES ? '/es/time-zone-map' : '/time-zone-map', label: t('Time zone map') },
+  { href: isES ? '/es/meeting-planner' : '/meeting-planner', label: t('Meeting planner') },
+  { href: isES ? '/es/discord-timestamp-generator' : '/discord-timestamp-generator', label: t('Discord timestamps') },
+  { href: '/windows', label: t('Windows app') },
+  { href: '/embed', label: t('Embed a clock') },
 ];
 
 // EN/ES switch. The app island is shared by / and /es, so it links to the other
@@ -93,15 +94,15 @@ const SiteMenu: React.FC = () => {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label="Explore pages"
+        aria-label={t('Explore pages')}
         aria-expanded={open}
         className="flex items-center gap-2 px-3 py-2.5 bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-xl text-zinc-400 hover:text-white transition-all"
       >
         <Menu className="w-4 h-4" />
-        <span className="text-xs font-medium hidden lg:inline">Explore</span>
+        <span className="text-xs font-medium hidden lg:inline">{t('Explore')}</span>
       </button>
       <nav
-        aria-label="ChronoMap pages"
+        aria-label={t('ChronoMap pages')}
         className={`absolute bottom-full right-0 mb-2 w-56 bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl shadow-2xl overflow-hidden py-1 z-50 transition-all duration-200 ${
           open ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1 pointer-events-none'
         }`}
@@ -464,11 +465,11 @@ const App: React.FC = () => {
     const hours = Math.floor(absMins / 60);
     const mins = absMins % 60;
     
-    if (absMins < 1) return { text: 'LIVE', color: 'text-green-500', bg: 'bg-green-500/10' };
-    
+    if (absMins < 1) return { text: t('LIVE'), color: 'text-green-500', bg: 'bg-green-500/10' };
+
     const isFuture = diffMins > 0;
     const sign = isFuture ? '+' : '-';
-    const text = `${sign}${hours}h ${mins > 0 ? `${mins}m` : ''} (${isFuture ? 'Future' : 'Past'})`;
+    const text = `${sign}${hours}h ${mins > 0 ? `${mins}m` : ''} (${isFuture ? t('Future') : t('Past')})`;
     
     if (isFuture) return { text, color: 'text-blue-400', bg: 'bg-blue-500/10' };
     return { text, color: 'text-amber-500', bg: 'bg-amber-500/10' };
@@ -490,8 +491,8 @@ const App: React.FC = () => {
              <button 
                 onClick={() => setShowAbout(true)}
                 className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
-                title="About & Changelog"
-                aria-label="About ChronoMap"
+                title={t('About & Changelog')}
+                aria-label={t('About ChronoMap')}
               >
                 <Info className="w-3 h-3" />
               </button>
@@ -501,7 +502,7 @@ const App: React.FC = () => {
                 className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
               >
                 {isMobileListOpen ? <MapIcon className="w-3 h-3" /> : <List className="w-3 h-3" />}
-                <span>{isMobileListOpen ? 'Map' : 'List'}</span>
+                <span>{isMobileListOpen ? t('Map') : t('List')}</span>
               </button>
           </div>
 
@@ -509,7 +510,7 @@ const App: React.FC = () => {
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
               ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v3.0.1</span>
             </h1>
-            <span className="text-xs text-muted-foreground">Temporal Geovisualization</span>
+            <span className="text-xs text-muted-foreground">{t('Temporal Geovisualization')}</span>
           </div>
         </div>
         
@@ -536,7 +537,7 @@ const App: React.FC = () => {
         <div className="flex flex-col items-end gap-1">
            <div className="flex items-center gap-2 mb-1 text-zinc-500">
               <Clock className="w-3 h-3" />
-              <span className="text-[10px] uppercase tracking-wider font-bold">Local Time</span>
+              <span className="text-[10px] uppercase tracking-wider font-bold">{t('Local Time')}</span>
            </div>
            <div className="text-sm font-mono text-zinc-400 tabular-nums">
              {format(realTime, 'HH:mm:ss')}
@@ -565,7 +566,7 @@ const App: React.FC = () => {
                 className="flex items-center justify-center gap-2 px-2 md:px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/30 rounded-md transition-all group h-auto w-20 md:w-auto shadow-[0_0_15px_rgba(59,130,246,0.2)]"
               >
                 <Share2 className="w-3 h-3 transition-colors shrink-0 hidden md:block" />
-                <span className="text-center leading-tight">Share Timestamp</span>
+                <span className="text-center leading-tight">{t('Share Timestamp')}</span>
               </button>
            </div>
         </div>
@@ -590,14 +591,14 @@ const App: React.FC = () => {
               
               <div className="flex items-center justify-between mt-3 px-1">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">
-                  {locations.length} Locations
+                  {locations.length} {t('Locations')}
                 </span>
                 {locations.some(l => !l.isPinned) && (
                   <button 
                     onClick={clearUnpinnedLocations} 
                     className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors px-1.5 py-0.5 rounded hover:bg-red-400/10"
                   >
-                    <Trash2 size={10} /> Clear unpinned
+                    <Trash2 size={10} /> {t('Clear unpinned')}
                   </button>
                 )}
               </div>
@@ -607,8 +608,8 @@ const App: React.FC = () => {
               {locations.length === 0 && (
                 <div className="mt-10 p-6 border border-dashed border-zinc-800 rounded-xl text-center bg-zinc-900/60 backdrop-blur-md pointer-events-auto">
                     <MapPin className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
-                    <h3 className="text-zinc-500 font-medium text-sm">No Locations</h3>
-                    <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">Search for a city or click on the map to compare times.</p>
+                    <h3 className="text-zinc-500 font-medium text-sm">{t('No Locations')}</h3>
+                    <p className="text-zinc-600 text-xs mt-1 max-w-[200px] mx-auto">{t('Search for a city or click on the map to compare times.')}</p>
                 </div>
               )}
 
@@ -618,8 +619,8 @@ const App: React.FC = () => {
                       <button 
                         onClick={() => togglePin(loc.id)}
                         className={`p-1.5 rounded-md transition-all ${loc.isPinned ? 'text-blue-500 hover:text-blue-400 bg-blue-500/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50'}`}
-                        title={loc.isPinned ? "Unpin Location" : "Pin Location"}
-                        aria-label={loc.isPinned ? "Unpin Location" : "Pin Location"}
+                        title={loc.isPinned ? t('Unpin Location') : t('Pin Location')}
+                        aria-label={loc.isPinned ? t('Unpin Location') : t('Pin Location')}
                       >
                         <Pin className={`w-3.5 h-3.5 ${loc.isPinned ? 'fill-current' : ''}`} />
                       </button>
@@ -627,8 +628,8 @@ const App: React.FC = () => {
                       <button 
                         onClick={() => removeLocation(loc.id)}
                         className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
-                        title="Remove Location"
-                        aria-label="Remove Location"
+                        title={t('Remove Location')}
+                        aria-label={t('Remove Location')}
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -689,8 +690,8 @@ const App: React.FC = () => {
             <button 
               onClick={() => handleTimeShift(-1)} 
               className="p-2.5 bg-zinc-900/50 hover:bg-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-all border border-zinc-800 hover:border-zinc-700 shadow-sm"
-              title="Step Back in Time"
-              aria-label="Step Back in Time"
+              title={t('Step Back in Time')}
+              aria-label={t('Step Back in Time')}
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -700,20 +701,20 @@ const App: React.FC = () => {
                   onClick={() => changeStep(1)}
                   disabled={timeStepIndex >= TIME_STEPS.length - 1}
                   className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                  aria-label="Increase time step"
+                  aria-label={t('Increase time step')}
                 >
                   <ChevronUp size={14} />
                 </button>
                 
                 <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider w-20 text-center select-none">
-                  {TIME_STEPS[timeStepIndex].label}
+                  {t(TIME_STEPS[timeStepIndex].label)}
                 </span>
                 
                 <button 
                   onClick={() => changeStep(-1)}
                   disabled={timeStepIndex <= 0}
                   className="text-zinc-600 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                  aria-label="Decrease time step"
+                  aria-label={t('Decrease time step')}
                 >
                   <ChevronDown size={14} />
                 </button>
@@ -722,8 +723,8 @@ const App: React.FC = () => {
             <button 
               onClick={() => handleTimeShift(1)} 
               className="p-2.5 bg-zinc-900/50 hover:bg-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-all border border-zinc-800 hover:border-zinc-700 shadow-sm"
-              title="Step Forward in Time"
-              aria-label="Step Forward in Time"
+              title={t('Step Forward in Time')}
+              aria-label={t('Step Forward in Time')}
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -736,7 +737,7 @@ const App: React.FC = () => {
                 className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
              >
                 {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
-                <span className="text-xs font-medium pr-1">{isPaused ? "Resume" : "Pause"}</span>
+                <span className="text-xs font-medium pr-1">{isPaused ? t('Resume') : t('Pause')}</span>
              </button>
 
              <div className="h-6 w-[1px] bg-zinc-800"></div>
@@ -756,8 +757,8 @@ const App: React.FC = () => {
                 </div>
                 <button 
                   className="p-1.5 rounded-md hover:bg-green-500/20 hover:text-green-500 text-zinc-600 transition-colors"
-                  title="Set Date and Time"
-                  aria-label="Set Date and Time"
+                  title={t('Set Date and Time')}
+                  aria-label={t('Set Date and Time')}
                   onClick={() => setIsPaused(true)}
                 >
                   <Check className="w-3.5 h-3.5" />
@@ -774,10 +775,10 @@ const App: React.FC = () => {
                     : 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]'
                 }`}
                 disabled={timeState.mode === 'live'}
-                title="Back to Present"
+                title={t('Back to Present')}
              >
                 <RotateCcw className={`w-4 h-4 ${timeState.mode !== 'live' ? 'animate-spin-slow' : ''}`} />
-                <span className="text-xs font-medium">Live</span>
+                <span className="text-xs font-medium">{t('Live')}</span>
              </button>
           </div>
 

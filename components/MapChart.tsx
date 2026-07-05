@@ -7,6 +7,7 @@ import { SavedLocation, MapClickEvent } from '../types';
 import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
 import { Plus, Minus, Maximize, Globe, Map as MapIcon } from 'lucide-react';
+import { t } from '../src/lib/i18n';
 
 interface MapChartProps {
   currentTime: Date;
@@ -711,14 +712,14 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         </button>
 
         <div className="h-[1px] w-full bg-zinc-800 my-1" />
-        <button onClick={handleZoomIn} className="p-2 rounded-lg border border-zinc-800 shadow-lg transition-all bg-zinc-900/80 text-zinc-200 hover:bg-zinc-800 hover:text-white" title="Zoom In" aria-label="Zoom In"><Plus className="w-4 h-4" /></button>
-        <button onClick={handleZoomOut} className="p-2 rounded-lg border border-zinc-800 shadow-lg transition-all bg-zinc-900/80 text-zinc-200 hover:bg-zinc-800 hover:text-white" title="Zoom Out" aria-label="Zoom Out"><Minus className="w-4 h-4" /></button>
-        <button onClick={handleResetView} className="p-2 bg-zinc-900/80 backdrop-blur text-zinc-200 rounded-lg border border-zinc-800 hover:bg-zinc-800 hover:text-white transition-all shadow-lg" title="Reset View" aria-label="Reset View"><Maximize className="w-4 h-4" /></button>
+        <button onClick={handleZoomIn} className="p-2 rounded-lg border border-zinc-800 shadow-lg transition-all bg-zinc-900/80 text-zinc-200 hover:bg-zinc-800 hover:text-white" title={t('Zoom In')} aria-label={t('Zoom In')}><Plus className="w-4 h-4" /></button>
+        <button onClick={handleZoomOut} className="p-2 rounded-lg border border-zinc-800 shadow-lg transition-all bg-zinc-900/80 text-zinc-200 hover:bg-zinc-800 hover:text-white" title={t('Zoom Out')} aria-label={t('Zoom Out')}><Minus className="w-4 h-4" /></button>
+        <button onClick={handleResetView} className="p-2 bg-zinc-900/80 backdrop-blur text-zinc-200 rounded-lg border border-zinc-800 hover:bg-zinc-800 hover:text-white transition-all shadow-lg" title={t('Reset View')} aria-label={t('Reset View')}><Maximize className="w-4 h-4" /></button>
       </div>
 
       <div className="absolute bottom-4 left-4 pointer-events-none hidden md:block">
-        <h2 className="text-zinc-500 text-xs uppercase tracking-widest font-bold">{isGlobe ? '3D Globe View' : 'Multi-Point View'}</h2>
-        <p className="text-zinc-700 text-[10px]">{isGlobe ? 'Scroll to zoom • Drag to rotate' : 'Scroll to zoom • Drag to pan'}</p>
+        <h2 className="text-zinc-500 text-xs uppercase tracking-widest font-bold">{isGlobe ? t('3D Globe View') : t('Multi-Point View')}</h2>
+        <p className="text-zinc-700 text-[10px]">{isGlobe ? t('Scroll to zoom • Drag to rotate') : t('Scroll to zoom • Drag to pan')}</p>
       </div>
 
       {hoveredInfo && (

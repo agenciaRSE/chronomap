@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, X } from 'lucide-react';
 import { MAJOR_CITIES } from '../constants';
 import { City } from '../types';
+import { t } from '../src/lib/i18n';
 
 interface LocationSearchProps {
   onSelectCity: (city: City) => void;
@@ -55,7 +56,7 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
         <input
           type="text"
           className="block w-full pl-10 pr-3 py-2.5 border border-zinc-800 rounded-xl leading-5 bg-zinc-900/50 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:bg-zinc-900 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-all"
-          placeholder="Search for a city or country..."
+          placeholder={t('Search for a city or country...')}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -67,7 +68,7 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
           <button 
             className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-white transition-colors"
             onClick={() => setQuery('')}
-            aria-label="Clear search"
+            aria-label={t('Clear search')}
           >
             <X className="h-3.5 w-3.5" />
           </button>
