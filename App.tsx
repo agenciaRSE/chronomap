@@ -59,7 +59,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: isES ? '/es/meeting-planner' : '/meeting-planner', label: t('Meeting planner') },
   { href: isES ? '/es/discord-timestamp-generator' : '/discord-timestamp-generator', label: t('Discord timestamps') },
   { href: '/windows', label: t('Windows app') },
-  { href: '/embed', label: t('Embed a clock') },
+  { href: '/clock-widget', label: t('Embed a clock') },
 ];
 
 // EN/ES switch. The app island is shared by / and /es, so it links to the other

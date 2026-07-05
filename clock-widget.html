@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Free World Clock Widget for Your Website — Embed a Live Clock | ChronoMap</title>
+    <meta name="description" content="Add a free live world-clock widget to any website. Pick a city, copy the iframe code, and paste it in — a real-time clock in light or dark theme, no signup, works anywhere." />
+    <meta name="keywords" content="clock widget, world clock widget, clock widget for website, embed clock, iframe clock, add clock to website, live clock widget, time widget, website clock" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/clock-widget" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/clock-widget" />
+    <meta property="og:title" content="Free World Clock Widget for Your Website" />
+    <meta property="og:description" content="Pick a city, copy the code, paste it in — a free live clock for any site, in light or dark theme." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Free World Clock Widget for Your Website | ChronoMap" />
+    <meta property="twitter:image" content="https://www.chronomap.top/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ChronoMap Clock Widget",
+        "url": "https://www.chronomap.top/clock-widget",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "description": "A free, embeddable live world-clock widget for any website. Choose a city and a light or dark theme, then copy the iframe code.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://agenciarse.com/#organization" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Is the clock widget free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The ChronoMap clock widget is completely free, needs no signup or API key, and there are no ads inside the widget." } },
+          { "@type": "Question", "name": "How do I add the clock to my website?", "acceptedAnswer": { "@type": "Answer", "text": "Pick a city and a theme above, copy the generated iframe snippet, and paste it into your page's HTML wherever you want the clock to appear. It works anywhere you can paste HTML." } },
+          { "@type": "Question", "name": "Does the clock update in real time?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The widget shows the live local time for the chosen city and ticks every second, using the city's IANA time zone so daylight saving time is handled automatically." } },
+          { "@type": "Question", "name": "Can I choose the city and a light or dark theme?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Search for any of 200+ cities and switch between a light and a dark theme; the preview and the generated code update instantly. The widget background is transparent, so it blends into your page." } },
+          { "@type": "Question", "name": "Will the widget slow down my website?", "acceptedAnswer": { "@type": "Answer", "text": "No. It is a lightweight iframe that loads lazily and runs independently of your page, so it has a negligible impact on load time." } },
+          { "@type": "Question", "name": "Does it work with WordPress, Wix, Squarespace, etc.?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Any platform that lets you embed an iframe or a custom HTML block works — WordPress (Custom HTML block), Wix, Squarespace, Webflow, Notion, and plain HTML sites." } }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chronomap.top/" },
+          { "@type": "ListItem", "position": 2, "name": "Clock widget", "item": "https://www.chronomap.top/clock-widget" }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/" class="inline-flex items-center gap-2 group shrink-0" aria-label="ChronoMap home">
+          <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/time" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Cities</a>
+          <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Time zones</a>
+          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap">Planner</a>
+          <a href="/discord-timestamp-generator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Discord</a>
+        </div>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Free World Clock Widget</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">Add a live clock for any city to your website in seconds. Pick a city, choose light or dark, copy the code, and paste it in — free, real-time, no signup.</p>
+      </header>
+
+      <div class="w-full max-w-xl mx-auto mb-16 reveal" style="animation-delay:.1s">
+        <div id="widget-app">
+          <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading the clock widget builder…</div>
+        </div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-5 relative z-10">How to add the clock to your site</h2>
+        <ol class="space-y-3 text-sm text-zinc-400 leading-relaxed list-decimal list-inside relative z-10">
+          <li>Search for the <strong class="text-zinc-200">city</strong> you want and pick a <strong class="text-zinc-200">light or dark</strong> theme — the preview updates live.</li>
+          <li>Click <strong class="text-zinc-200">Copy embed code</strong> to copy the iframe snippet.</li>
+          <li>Paste it into your page's HTML (in WordPress use a <em>Custom HTML</em> block; Wix, Squarespace, Webflow and Notion all accept an embed too).</li>
+        </ol>
+      </section>
+
+      <section class="max-w-3xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-2xl font-semibold tracking-tight text-white mb-6 text-center">Why this clock widget</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="glass-card rounded-xl p-5"><h3 class="text-sm font-semibold text-white mb-1">Live &amp; accurate</h3><p class="text-sm text-zinc-400 leading-relaxed">Ticks every second using the city's IANA time zone, so daylight saving time is always correct.</p></div>
+          <div class="glass-card rounded-xl p-5"><h3 class="text-sm font-semibold text-white mb-1">200+ cities</h3><p class="text-sm text-zinc-400 leading-relaxed">Show the time for any major city in the world — search and switch in one click.</p></div>
+          <div class="glass-card rounded-xl p-5"><h3 class="text-sm font-semibold text-white mb-1">Light or dark, transparent</h3><p class="text-sm text-zinc-400 leading-relaxed">Two themes and a transparent background, so it blends into any page design.</p></div>
+          <div class="glass-card rounded-xl p-5"><h3 class="text-sm font-semibold text-white mb-1">Lightweight &amp; free</h3><p class="text-sm text-zinc-400 leading-relaxed">A tiny lazy-loaded iframe with negligible impact on your load time. No signup, no ads.</p></div>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
+        <div class="space-y-3">
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is the clock widget free?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — completely free, no signup or API key, and no ads inside the widget.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I add the clock to my website?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Pick a city and theme above, copy the iframe snippet, and paste it into your page's HTML wherever you want the clock.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it update in real time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — it shows the live local time and ticks every second, with daylight saving handled automatically.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Will it slow down my website?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. It is a lightweight iframe that loads lazily and runs independently of your page.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it work with WordPress, Wix, Squarespace…?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — anywhere you can embed an iframe or custom HTML: WordPress (Custom HTML block), Wix, Squarespace, Webflow, Notion and plain HTML.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="w-full text-center mt-2 reveal">
+        <div class="flex flex-col items-center gap-5">
+          <a href="/" class="inline-flex items-center gap-2 group">
+            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
+              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
+              <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            </span>
+            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
+          </a>
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+            <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
+            <a href="/time" class="hover:text-zinc-300 transition-colors">All cities</a>
+            <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
+            <a href="/meeting-planner" class="hover:text-zinc-300 transition-colors">Meeting planner</a>
+            <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="/src/clock-widget-page.tsx"></script>
+  </body>
+</html>
