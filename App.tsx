@@ -59,6 +59,21 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/embed', label: 'Embed a clock' },
 ];
 
+// EN/ES switch. The app island is shared by / and /es, so it links to the other
+// locale based on the current path. hreflang tags do the SEO pairing.
+const LangSwitch: React.FC = () => {
+  const isES = window.location.pathname.startsWith('/es');
+  return (
+    <a
+      href={isES ? '/' : '/es'}
+      aria-label={isES ? 'Switch to English' : 'Cambiar a español'}
+      className="flex items-center px-3 py-2.5 text-xs font-medium bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-xl text-zinc-400 hover:text-white transition-all"
+    >
+      {isES ? 'EN' : 'ES'}
+    </a>
+  );
+};
+
 const SiteMenu: React.FC = () => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -762,8 +777,9 @@ const App: React.FC = () => {
              </button>
           </div>
 
-          {/* Right: Explore menu — internal links to the standalone SEO pages */}
-          <div className="hidden md:flex justify-end">
+          {/* Right: language switch + Explore menu (internal links to SEO pages) */}
+          <div className="hidden md:flex justify-end items-center gap-2">
+            <LangSwitch />
             <SiteMenu />
           </div>
         </div>

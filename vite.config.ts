@@ -65,6 +65,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        home_es: fileURLToPath(new URL('./es/index.html', import.meta.url)),
         discord: fileURLToPath(new URL('./discord-timestamp-generator.html', import.meta.url)),
         tzmap: fileURLToPath(new URL('./time-zone-map.html', import.meta.url)),
         windows: fileURLToPath(new URL('./windows.html', import.meta.url)),

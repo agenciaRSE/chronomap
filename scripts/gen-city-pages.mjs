@@ -368,6 +368,7 @@ export function generate() {
 
   const urls = [
     { loc: `${SITE}/`, pri: '1.0', freq: 'weekly' },
+    { loc: `${SITE}/es`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/time`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
