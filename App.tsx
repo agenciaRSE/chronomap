@@ -14,7 +14,7 @@ import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
 import { enUS } from 'date-fns/locale';
 import { animate } from 'motion/react';
-import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2, Menu } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2, Menu, Link2 } from 'lucide-react';
 
 // Configuration for time steps
 const TIME_STEPS = [
@@ -25,6 +25,26 @@ const TIME_STEPS = [
   { label: '1 WEEK', fn: addWeeks, amount: 1 },
   { label: '1 MONTH', fn: addMonths, amount: 1 },
 ];
+
+// Shareable view state: encode the pinned cities (+ custom time) into a compact
+// base64url token so a link reproduces the exact view. Array-of-arrays keeps the
+// URL short; TextEncoder/Decoder round-trips accented city names correctly.
+type SharePayload = { l: [string, number, number, string][]; t?: number };
+
+const encodeShareState = (locations: SavedLocation[], timeState: TimeState): string => {
+  const payload: SharePayload = {
+    l: locations.map((loc) => [loc.name, +loc.lat.toFixed(4), +loc.lng.toFixed(4), loc.timezone || '']),
+  };
+  if (timeState.mode === 'custom') payload.t = timeState.current.getTime();
+  const bytes = new TextEncoder().encode(JSON.stringify(payload));
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+const decodeShareState = (s: string): SharePayload => {
+  const b64 = s.replace(/-/g, '+').replace(/_/g, '/');
+  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
+};
 
 // Footer "Explore" menu — internal links to the standalone SEO pages. Real
 // <a href> so they're crawlable (present in the DOM even when the panel is
@@ -109,6 +129,7 @@ const App: React.FC = () => {
 
   const [showDiscordGen, setShowDiscordGen] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [centerTarget, setCenterTarget] = useState<[number, number] | null>(null);
@@ -124,15 +145,58 @@ const App: React.FC = () => {
     localStorage.setItem('chronomap-pinned-locations', JSON.stringify(pinnedLocations));
   }, [locations]);
 
-  // Check for PWA Shortcuts actions on mount
+  // Check for PWA Shortcuts actions + shared-view state on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('action') === 'discord') {
       setShowDiscordGen(true);
-      // Optional: Clean up URL
       window.history.replaceState({}, '', '/');
+      return;
+    }
+    const s = params.get('s');
+    if (s) {
+      try {
+        const { l, t } = decodeShareState(s);
+        const shared: SavedLocation[] = (l || []).map(([name, lat, lng, tz]) => ({
+          id: crypto.randomUUID(),
+          name,
+          lat,
+          lng,
+          timezone: tz || undefined,
+          country: undefined,
+          lngOffset: lng / 15,
+          isPinned: false,
+        }));
+        // Merge into any localStorage-restored pins (dedupe by name) so a shared
+        // link never clobbers the visitor's own saved locations.
+        if (shared.length) {
+          setLocations((prev) => {
+            const seen = new Set(prev.map((p) => p.name));
+            return [...prev, ...shared.filter((x) => !seen.has(x.name))];
+          });
+        }
+        if (typeof t === 'number' && !isNaN(t)) {
+          setTimeState((prev) => ({ ...prev, mode: 'custom', current: new Date(t) }));
+          setIsPaused(true);
+        }
+      } catch (e) {
+        console.warn('Could not parse shared view state', e);
+      }
+      window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
+
+  const handleShareView = useCallback(async () => {
+    const token = encodeShareState(locations, timeState);
+    const url = `${window.location.origin}/?s=${token}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      window.prompt('Copy this link to share your view:', url);
+    }
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2000);
+  }, [locations, timeState]);
 
   // Real-time clock ticker
   useEffect(() => {
@@ -468,7 +532,16 @@ const App: React.FC = () => {
              >
                <Info className="w-3 h-3" />
              </button>
-             <button 
+             <button
+                onClick={handleShareView}
+                disabled={locations.length === 0}
+                title={locations.length === 0 ? 'Add a location to share' : 'Copy a link to this view'}
+                aria-label="Share this view"
+                className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {shareCopied ? <Check className="w-3 h-3 text-green-500" /> : <Link2 className="w-3 h-3" />}
+              </button>
+             <button
                 onClick={() => setShowDiscordGen(true)}
                 className="flex items-center justify-center gap-2 px-2 md:px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/30 rounded-md transition-all group h-auto w-20 md:w-auto shadow-[0_0_15px_rgba(59,130,246,0.2)]"
               >
