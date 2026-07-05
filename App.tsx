@@ -53,6 +53,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/', label: 'World clock map' },
   { href: '/time', label: 'All cities' },
   { href: '/time-zone-map', label: 'Time zone map' },
+  { href: '/meeting-planner', label: 'Meeting planner' },
   { href: '/discord-timestamp-generator', label: 'Discord timestamps' },
   { href: '/windows', label: 'Windows app' },
 ];

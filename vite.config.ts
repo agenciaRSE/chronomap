@@ -68,6 +68,7 @@ export default defineConfig({
         discord: fileURLToPath(new URL('./discord-timestamp-generator.html', import.meta.url)),
         tzmap: fileURLToPath(new URL('./time-zone-map.html', import.meta.url)),
         windows: fileURLToPath(new URL('./windows.html', import.meta.url)),
+        planner: fileURLToPath(new URL('./meeting-planner.html', import.meta.url)),
         notfound: fileURLToPath(new URL('./404.html', import.meta.url)),
         ...generatedInputs,
       },
