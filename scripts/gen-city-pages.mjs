@@ -66,9 +66,48 @@ const FOOTER = `<footer class="w-full text-center mt-2 reveal">
         </div>
       </footer>`;
 
+// DST transition detection, baked at build time (Node has full ICU). We scan each
+// day's LOCAL-noon offset (anchoring to local noon, not UTC, keeps the reported
+// date correct even in UTC+13/14 zones) and report the next change. Refreshes on
+// every deploy since the generator reruns.
+const DST_NOW = new Date();
+function offsetMinutes(date, tz) {
+  const s = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' })
+    .formatToParts(date).find((p) => p.type === 'timeZoneName')?.value ?? '';
+  const m = s.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
+  return m ? (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] || 0)) : 0;
+}
+function nextTransition(tz) {
+  const Y = DST_NOW.getUTCFullYear(), Mo = DST_NOW.getUTCMonth(), D = DST_NOW.getUTCDate();
+  // Real UTC instant of ~noon local on day D+i (transitions happen ~02:00, so noon
+  // is unambiguous and always lands on the correct local calendar day).
+  const localNoon = (i) => {
+    const wall = Date.UTC(Y, Mo, D + i, 12, 0, 0);
+    const off = offsetMinutes(new Date(wall), tz);
+    return { instant: new Date(wall - off * 60000), off };
+  };
+  let prev = localNoon(0).off;
+  for (let i = 1; i <= 400; i++) {
+    const { instant, off } = localNoon(i);
+    if (off !== prev) return { date: instant, forward: off > prev };
+    prev = off;
+  }
+  return null;
+}
+// Plain-text sentence (no quotes → safe in both JSON-LD and HTML). `name` arrives escaped.
+function dstSentence(name, tz) {
+  const t = nextTransition(tz);
+  if (!t) return `${name} does not currently observe daylight saving time, so its UTC offset stays the same all year round.`;
+  const date = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(t.date);
+  return t.forward
+    ? `${name} observes daylight saving time. The clocks next go forward one hour (DST begins) on ${date}.`
+    : `${name} observes daylight saving time. The clocks next go back one hour (DST ends) on ${date}.`;
+}
+
 function cityPage(c) {
   const name = esc(c.name), country = esc(c.country), tz = esc(c.tz);
   const tzLabel = tzLabelOf(tz);
+  const dst = dstSentence(name, c.tz);
   return `<!DOCTYPE html>
 <html lang="en" class="dark scroll-smooth">
   <head>
@@ -96,7 +135,8 @@ function cityPage(c) {
         "@type": "FAQPage",
         "mainEntity": [
           { "@type": "Question", "name": "What time zone is ${name} in?", "acceptedAnswer": { "@type": "Answer", "text": "${name} is in the ${tz} time zone. The live clock above shows its current UTC offset, which already accounts for daylight saving time where it applies." } },
-          { "@type": "Question", "name": "Does ${name} observe daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "The times shown for ${name} use its current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it." } }
+          { "@type": "Question", "name": "Does ${name} observe daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "The times shown for ${name} use its current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it." } },
+          { "@type": "Question", "name": "When do the clocks change in ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${dst}" } }
         ]
       }
     </script>
@@ -119,6 +159,7 @@ function cityPage(c) {
         <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Time in ${name}</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
           <p>${name} follows the <strong class="text-zinc-200">${tz}</strong> time zone. Its offset from Coordinated Universal Time (UTC) changes when daylight saving time is in effect, so the live clock above always shows the real local time right now.</p>
+          <p><strong class="text-zinc-200">Daylight saving:</strong> ${dst}</p>
           <p>To plan a call or event across zones, compare ${name} with other cities in the list above, browse every offset on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a>, or turn any moment into a shareable code with the <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a>.</p>
         </div>
       </section>
@@ -133,6 +174,10 @@ function cityPage(c) {
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does ${name} observe daylight saving time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
             <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">The times shown use the current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>When do the clocks change in ${name}?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${dst}</p>
           </details>
         </div>
       </section>
