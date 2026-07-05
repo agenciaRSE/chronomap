@@ -75,7 +75,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: isES ? '/es/meeting-planner' : '/meeting-planner', label: t('Meeting planner') },
   { href: isES ? '/es/discord-timestamp-generator' : '/discord-timestamp-generator', label: t('Discord timestamps') },
   { href: '/windows', label: t('Windows app') },
-  { href: '/clock-widget', label: t('Embed a clock') },
+  { href: isES ? '/es/clock-widget' : '/clock-widget', label: t('Embed a clock') },
 ];
 
 // EN/ES switch. The app island is shared by / and /es, so it links to the other
@@ -536,7 +536,7 @@ const App: React.FC = () => {
 
           <div className="hidden md:block">
             <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v3.0.1</span>
+              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v3.1.0</span>
             </h1>
             <span className="text-xs text-muted-foreground">{t('Temporal Geovisualization')}</span>
           </div>

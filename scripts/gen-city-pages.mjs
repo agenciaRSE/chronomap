@@ -589,6 +589,7 @@ export function generate() {
     { loc: `${SITE}/es/time-zone-map`, pri: '0.8', freq: 'weekly' },
     { loc: `${SITE}/es/meeting-planner`, pri: '0.7', freq: 'monthly' },
     { loc: `${SITE}/es/discord-timestamp-generator`, pri: '0.7', freq: 'monthly' },
+    { loc: `${SITE}/es/clock-widget`, pri: '0.6', freq: 'monthly' },
     { loc: `${SITE}/time`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },

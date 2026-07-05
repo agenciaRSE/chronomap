@@ -131,6 +131,15 @@ const ES: Record<string, string> = {
   'We bring your ideas to life.': 'Damos vida a tus ideas.',
   'Changelog': 'Novedades',
   'All rights reserved.': 'Todos los derechos reservados.',
+  // Clock widget builder
+  'Embed this clock on your site': 'Inserta este reloj en tu web',
+  'Change city…': 'Cambiar ciudad…',
+  'Change city': 'Cambiar ciudad',
+  'dark': 'oscuro',
+  'light': 'claro',
+  'Copy embed code': 'Copiar código',
+  'Copied!': '¡Copiado!',
+  'Copy the embed code:': 'Copia el código para insertar:',
 };
 
 export const t = (s: string): string => (isES ? ES[s] ?? s : s);

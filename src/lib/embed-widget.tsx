@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import citiesData from '../cities.json';
+import { t, isES } from './i18n';
 
 // Shared embeddable-clock widget: the live Clock and the snippet builder (with a
 // live preview). Used by the raw /embed endpoint and the /clock-widget landing.
@@ -18,7 +19,7 @@ export const Clock: React.FC<{ tz: string; city: string; theme: 'dark' | 'light'
     return () => clearInterval(id);
   }, []);
   const time = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(now);
-  const date = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric' }).format(now);
+  const date = new Intl.DateTimeFormat(isES ? 'es-ES' : 'en-US', { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric' }).format(now);
   const dark = theme === 'dark';
   const slug = cityForTz(tz)?.slug;
   return (
@@ -57,7 +58,7 @@ export const SnippetBuilder: React.FC<{ tz: string; city: string; theme: 'dark' 
   const src = `${SITE}/embed?tz=${encodeURIComponent(tz)}&city=${encodeURIComponent(city)}&theme=${theme}`;
   const code = `<iframe src="${src}" width="340" height="150" style="border:0;overflow:hidden" title="${city} time — ChronoMap" loading="lazy"></iframe>\n<a href="${SITE}">Live clock by ChronoMap</a>`;
   const copy = async () => {
-    try { await navigator.clipboard.writeText(code); } catch { window.prompt('Copy the embed code:', code); }
+    try { await navigator.clipboard.writeText(code); } catch { window.prompt(t('Copy the embed code:'), code); }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -67,9 +68,9 @@ export const SnippetBuilder: React.FC<{ tz: string; city: string; theme: 'dark' 
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 32 }}>
         <Clock tz={tz} city={city} theme={theme} />
       </div>
-      <h2 style={{ color: '#fafafa', fontSize: 18, fontWeight: 600, marginBottom: 12 }}>Embed this clock on your site</h2>
+      <h2 style={{ color: '#fafafa', fontSize: 18, fontWeight: 600, marginBottom: 12 }}>{t('Embed this clock on your site')}</h2>
       <div style={{ position: 'relative', marginBottom: 10 }}>
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Change city…" aria-label="Change city" style={input} />
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('Change city…')} aria-label={t('Change city')} style={input} />
         {results.length > 0 && (
           <div style={{ position: 'absolute', zIndex: 10, marginTop: 4, width: '100%', background: 'rgba(24,24,27,0.98)', border: '1px solid #27272a', borderRadius: 8, overflow: 'hidden' }}>
             {results.map((c) => (
@@ -82,12 +83,12 @@ export const SnippetBuilder: React.FC<{ tz: string; city: string; theme: 'dark' 
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
         {(['dark', 'light'] as const).map((th) => (
-          <button key={th} onClick={() => setTheme(th)} style={{ padding: '6px 14px', fontSize: 13, borderRadius: 8, cursor: 'pointer', textTransform: 'capitalize', border: `1px solid ${theme === th ? '#3b82f6' : 'rgba(255,255,255,0.12)'}`, background: theme === th ? 'rgba(59,130,246,0.15)' : 'transparent', color: theme === th ? '#fff' : '#a1a1aa' }}>{th}</button>
+          <button key={th} onClick={() => setTheme(th)} style={{ padding: '6px 14px', fontSize: 13, borderRadius: 8, cursor: 'pointer', textTransform: 'capitalize', border: `1px solid ${theme === th ? '#3b82f6' : 'rgba(255,255,255,0.12)'}`, background: theme === th ? 'rgba(59,130,246,0.15)' : 'transparent', color: theme === th ? '#fff' : '#a1a1aa' }}>{t(th)}</button>
         ))}
       </div>
       <textarea readOnly value={code} onFocus={(e) => e.currentTarget.select()} style={{ ...input, height: 90, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, resize: 'none' }} />
       <button onClick={copy} style={{ marginTop: 10, padding: '9px 18px', fontSize: 14, fontWeight: 500, borderRadius: 8, cursor: 'pointer', border: '1px solid rgba(59,130,246,0.3)', background: '#2563eb', color: '#fff' }}>
-        {copied ? 'Copied!' : 'Copy embed code'}
+        {copied ? t('Copied!') : t('Copy embed code')}
       </button>
     </div>
   );

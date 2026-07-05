@@ -94,7 +94,25 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                 <div className="relative">
                    <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-background"></div>
                    <div className="flex flex-col">
-                      <span className="text-sm font-mono text-primary">v3.0.1</span>
+                      <span className="text-sm font-mono text-primary">v3.1.0</span>
+                      <span className="text-xs text-zinc-500 mb-1">Tools, Sharing &amp; Español</span>
+                      <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                        <li><strong>Spanish version:</strong> The whole site is now available in Spanish at /es, with a language switch and hreflang.</li>
+                        <li><strong>Meeting planner:</strong> New /meeting-planner finds the best overlapping time to meet across time zones.</li>
+                        <li><strong>Time converter:</strong> City comparison pages now convert any time between the two cities, DST-aware.</li>
+                        <li><strong>Shareable links:</strong> The Share button copies a link that restores your pinned cities, the selected time, and the exact map type, position and zoom.</li>
+                        <li><strong>Add to calendar:</strong> Turn a planned time into a Google Calendar event or an .ics download.</li>
+                        <li><strong>Clock widget:</strong> Embed a free live clock for any city on your website (/clock-widget).</li>
+                        <li><strong>Daylight-saving info:</strong> City pages now show the next clock change.</li>
+                        <li><strong>Faster &amp; navigable:</strong> The heavy map loads lazily for a quicker first paint, and a nav header was added to every page.</li>
+                      </ul>
+                   </div>
+                </div>
+
+                <div className="relative">
+                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-700 ring-4 ring-background"></div>
+                   <div className="flex flex-col">
+                      <span className="text-sm font-mono text-zinc-400">v3.0.1</span>
                       <span className="text-xs text-zinc-500 mb-1">Globe Centering Fix</span>
                       <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
                         <li><strong>City Centering:</strong> Selecting or searching a city in 3D Globe mode now rotates the globe until the location is perfectly centered. Previously the animation stopped halfway and never finished. The 2D map centering benefits from the same fix.</li>
