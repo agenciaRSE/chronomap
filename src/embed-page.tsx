@@ -70,7 +70,10 @@ const SnippetBuilder: React.FC<{ tz: string; city: string; theme: 'dark' | 'ligh
   };
   const input: React.CSSProperties = { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: '#fafafa', padding: '8px 12px', fontSize: 14, width: '100%' };
   return (
-    <div style={{ maxWidth: 520, margin: '32px auto 0', fontFamily: "'Inter', system-ui, sans-serif", color: '#a1a1aa' }}>
+    <div style={{ maxWidth: 520, margin: '0 auto', fontFamily: "'Inter', system-ui, sans-serif", color: '#a1a1aa' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 32 }}>
+        <Clock tz={tz} city={city} theme={theme} />
+      </div>
       <h2 style={{ color: '#fafafa', fontSize: 18, fontWeight: 600, marginBottom: 12 }}>Embed this clock on your site</h2>
       <div style={{ position: 'relative', marginBottom: 10 }}>
         <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Change city…" aria-label="Change city" style={input} />
@@ -114,10 +117,9 @@ if (el) {
   el.innerHTML = '';
   ReactDOM.createRoot(el).render(
     <React.StrictMode>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Clock tz={tz0} city={city0} theme={theme0} />
-      </div>
-      {!framed && <SnippetBuilder tz={tz0} city={city0} theme={theme0} />}
+      {framed
+        ? <div style={{ display: 'flex', justifyContent: 'center' }}><Clock tz={tz0} city={city0} theme={theme0} /></div>
+        : <SnippetBuilder tz={tz0} city={city0} theme={theme0} />}
     </React.StrictMode>
   );
 }
