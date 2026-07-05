@@ -69,6 +69,7 @@ export default defineConfig({
         tzmap: fileURLToPath(new URL('./time-zone-map.html', import.meta.url)),
         windows: fileURLToPath(new URL('./windows.html', import.meta.url)),
         planner: fileURLToPath(new URL('./meeting-planner.html', import.meta.url)),
+        embed: fileURLToPath(new URL('./embed.html', import.meta.url)),
         notfound: fileURLToPath(new URL('./404.html', import.meta.url)),
         ...generatedInputs,
       },
