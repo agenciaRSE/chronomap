@@ -56,6 +56,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/meeting-planner', label: 'Meeting planner' },
   { href: '/discord-timestamp-generator', label: 'Discord timestamps' },
   { href: '/windows', label: 'Windows app' },
+  { href: '/embed', label: 'Embed a clock' },
 ];
 
 const SiteMenu: React.FC = () => {
