@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Sun, Moon } from 'lucide-react';
-import { t } from './lib/i18n';
+import { t, isES } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
+
+// Zone slugs that have a Spanish /es/time/{slug} page (top-30 subset).
+const ES_ZONE = new Set(['los-angeles', 'new-york', 'sao-paulo', 'london', 'paris', 'dubai', 'new-delhi', 'singapore', 'tokyo', 'sydney', 'auckland']);
+const cityHref = (slug: string) => (isES && ES_ZONE.has(slug) ? `/es/time/${slug}` : `/time/${slug}`);
+const homeHref = isES ? '/es' : '/';
 
 // Live-clocks glass panel for /time-zone-map (aidesigner-inspired look).
 // The page's SEO content (UTC table, text, FAQ) is static HTML; this widget is
@@ -46,7 +51,7 @@ const ZoneCard: React.FC<{ z: Zone; now: Date }> = ({ z, now }) => {
   const isDay = hour24 >= 6 && hour24 < 18;
 
   return (
-    <a href={`/time/${z.slug}`} title={`${t('Current time in')} ${z.city}`} className="glass-card rounded-xl p-4 flex flex-col justify-between min-h-[140px] relative group">
+    <a href={cityHref(z.slug)} title={`${t('Current time in')} ${z.city}`} className="glass-card rounded-xl p-4 flex flex-col justify-between min-h-[140px] relative group">
       <div>
         <h3 className="text-[15px] font-medium text-white leading-none mb-1 group-hover:text-blue-300 transition-colors">{z.city}</h3>
         <div className="text-[11px] text-zinc-500">{date}</div>
@@ -102,7 +107,7 @@ const LivePanel: React.FC = () => {
       </div>
       <div className="px-5 py-4 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-zinc-500 relative">
         <span>{t('Times update automatically every second · daylight saving handled')}</span>
-        <span>{t('Powered by')} <a href="/" className="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap</a></span>
+        <span>{t('Powered by')} <a href={homeHref} className="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap</a></span>
       </div>
     </div>
   );

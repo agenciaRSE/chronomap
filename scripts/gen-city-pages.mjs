@@ -275,6 +275,10 @@ function cityPage(c, hasEs) {
   const esAlt = hasEs
     ? `\n    <link rel="alternate" hreflang="en" href="${SITE}/time/${c.slug}" />\n    <link rel="alternate" hreflang="es" href="${SITE}/es/time/${c.slug}" />\n    <link rel="alternate" hreflang="x-default" href="${SITE}/time/${c.slug}" />`
     : '';
+  // Add a visible "Español" language link to the footer when a Spanish twin exists.
+  const footer = hasEs
+    ? FOOTER.replace('</nav>', `<a href="/es/time/${c.slug}" class="hover:text-zinc-300 transition-colors" hreflang="es">Español</a>\n          </nav>`)
+    : FOOTER;
   return `<!DOCTYPE html>
 <html lang="en" class="dark scroll-smooth">
   <head>
@@ -349,7 +353,7 @@ function cityPage(c, hasEs) {
         </div>
       </section>
 
-      ${FOOTER}
+      ${footer}
     </main>
     <script type="module" src="/src/city-page.tsx"></script>
   </body>
