@@ -45,6 +45,45 @@ const HEAD_FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">`;
 
+// Sticky top nav for the static interior pages — real crawlable internal links on
+// every page (helps SEO + navigation). `alt` is the other-language twin URL (or '').
+const HEADER_LOGO = `<span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+          <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+          <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+        </span>`;
+function headerEn(alt) {
+  return `<header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/" class="inline-flex items-center gap-2 group shrink-0" aria-label="ChronoMap home">${HEADER_LOGO}
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/time" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Cities</a>
+          <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Time zones</a>
+          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap">Planner</a>
+          <a href="/discord-timestamp-generator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Discord</a>
+          ${alt ? `<a href="${alt}" hreflang="es" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">ES</a>` : ''}
+        </div>
+      </nav>
+    </header>`;
+}
+function headerEs(alt) {
+  return `<header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/es" class="inline-flex items-center gap-2 group shrink-0" aria-label="Inicio de ChronoMap">${HEADER_LOGO}
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/es/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Husos horarios</a>
+          <a href="/es/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap">Planificador</a>
+          <a href="/es/discord-timestamp-generator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Discord</a>
+          ${alt ? `<a href="${alt}" hreflang="en" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">EN</a>` : ''}
+        </div>
+      </nav>
+    </header>`;
+}
+
 const FOOTER = `<footer class="w-full text-center mt-2 reveal">
         <div class="flex flex-col items-center gap-5">
           <a href="/" class="inline-flex items-center gap-2 group">
@@ -204,9 +243,9 @@ function cityPageEs(c, es) {
     </script>
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
-    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
+    ${headerEs(`/time/${c.slug}`)}
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
       <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
-        ${LOGO_ES}
         <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Hora actual en ${name}</h1>
         <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">La hora local en vivo en ${name}, ${country} — ${tzLabel} (${tz}). Compárala con las principales ciudades más abajo, o abre el <a href="/es" class="text-blue-400 hover:text-blue-300 transition-colors">mapa del reloj mundial</a> completo.</p>
       </header>
@@ -314,9 +353,9 @@ function cityPage(c, hasEs) {
     ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `Time in ${c.name}`, path: `/time/${c.slug}` }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
-    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
+    ${headerEn(hasEs ? `/es/time/${c.slug}` : '')}
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
       <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
-        ${LOGO}
         <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Current Time in ${name}</h1>
         <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">The live local time in ${name}, ${country} — ${tzLabel} (${tz}). Compare it with major cities below, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
       </header>
@@ -399,9 +438,9 @@ function comparePage(a, b) {
     ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `${a.name} to ${b.name}`, path: `/time/${slug}` }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
-    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
+    ${headerEn('')}
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
       <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
-        ${LOGO}
         <h1 class="text-4xl sm:text-5xl md:text-[52px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">${an} to ${bn} Time</h1>
         <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">The current time difference between ${an} and ${bn}, live. See both clocks side by side below, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
       </header>
@@ -479,9 +518,9 @@ function timeIndexPage(cities, pairs) {
     ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
-    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-28">
+    ${headerEn('')}
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
       <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
-        ${LOGO}
         <h1 class="text-4xl sm:text-5xl md:text-[52px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">World Clock by City</h1>
         <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl mb-6">The current local time in cities around the world. Search a city to jump to its live clock, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
         <input id="city-search" type="search" placeholder="Search a city…" autocomplete="off" class="w-full max-w-sm bg-zinc-800/60 text-zinc-100 border border-white/10 rounded-lg px-4 py-2.5 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all" />
