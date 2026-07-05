@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Sun, Moon, Calendar, Download } from 'lucide-react';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
 import { part, fmt, offsetMin, hm24, ymdInTz, wallToUtc } from './lib/tz';
+import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
 
@@ -31,30 +32,30 @@ const Converter: React.FC<{ now: Date }> = ({ now }) => {
   const delta = Math.round(
     (Date.UTC(bDay.y, bDay.mo - 1, bDay.d) - Date.UTC(aDay.y, aDay.mo - 1, aDay.d)) / 86400000
   );
-  const dayLabel = delta === 0 ? '' : delta > 0 ? ' (next day)' : ' (prev. day)';
+  const dayLabel = delta === 0 ? '' : delta > 0 ? t(' (next day)') : t(' (prev. day)');
 
   return (
     <div className="px-5 py-4 border-t border-white/5 relative">
       <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-sm text-zinc-300">
-        <span className="text-zinc-500">When it's</span>
+        <span className="text-zinc-500">{t("When it's")}</span>
         <input
           type="time"
           value={hm}
           onChange={(e) => setCustom(e.target.value)}
-          aria-label={`Time in ${A.city}`}
+          aria-label={`${t('in')} ${A.city}`}
           className="bg-white/5 border border-white/10 rounded px-2 py-1 font-mono text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
           style={{ colorScheme: 'dark' }}
         />
-        <span>in <span className="text-white font-medium">{A.city}</span>,</span>
-        <span className="text-zinc-500">it's</span>
+        <span>{t('in')} <span className="text-white font-medium">{A.city}</span>,</span>
+        <span className="text-zinc-500">{t("it's")}</span>
         <span className="font-mono text-white font-medium">{bTime}</span>
-        <span>in <span className="text-white font-medium">{B.city}</span>{dayLabel}</span>
+        <span>{t('in')} <span className="text-white font-medium">{B.city}</span>{dayLabel}</span>
         {custom && (
           <button
             onClick={() => setCustom(null)}
             className="ml-1 text-[11px] text-blue-400 hover:text-blue-300 underline underline-offset-2"
           >
-            reset to now
+            {t('reset to now')}
           </button>
         )}
       </div>
@@ -119,8 +120,8 @@ const Comparator: React.FC = () => {
   const abs = Math.abs(diff);
   const hrs = Number.isInteger(abs) ? `${abs}` : abs.toFixed(1).replace('.0', '');
   const label =
-    diff === 0 ? `${A.city} and ${B.city} are in the same time`
-    : `${B.city} is ${hrs} hour${abs === 1 ? '' : 's'} ${diff > 0 ? 'ahead of' : 'behind'} ${A.city}`;
+    diff === 0 ? `${A.city} ${t('and')} ${B.city} ${t('are in the same time')}`
+    : `${B.city} ${t('is')} ${hrs} ${abs === 1 ? t('hour') : t('hours')} ${diff > 0 ? t('ahead of') : t('behind')} ${A.city}`;
 
   return (
     <div className="glass-panel rounded-2xl overflow-hidden relative glow-line isolate">

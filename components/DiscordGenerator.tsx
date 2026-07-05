@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Copy, Check, Clock } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
-import { enUS } from 'date-fns/locale';
+import { t, dateLocale } from '../src/lib/i18n';
 
 interface DiscordGeneratorProps {
   targetDate: Date;
@@ -16,13 +16,13 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
   const unixTimestamp = Math.floor(targetDate.getTime() / 1000);
 
   const formats = [
-    { code: 't', label: 'Short Time', preview: format(targetDate, 'p', { locale: enUS }) },
-    { code: 'T', label: 'Long Time', preview: format(targetDate, 'pp', { locale: enUS }) },
-    { code: 'd', label: 'Short Date', preview: format(targetDate, 'P', { locale: enUS }) },
-    { code: 'D', label: 'Long Date', preview: format(targetDate, 'PP', { locale: enUS }) },
-    { code: 'f', label: 'Short Date/Time', preview: format(targetDate, 'Pp', { locale: enUS }) },
-    { code: 'F', label: 'Long Date/Time', preview: format(targetDate, 'PPpp', { locale: enUS }) },
-    { code: 'R', label: 'Relative', preview: formatDistanceToNow(targetDate, { addSuffix: true, locale: enUS }) },
+    { code: 't', label: t('Short Time'), preview: format(targetDate, 'p', { locale: dateLocale }) },
+    { code: 'T', label: t('Long Time'), preview: format(targetDate, 'pp', { locale: dateLocale }) },
+    { code: 'd', label: t('Short Date'), preview: format(targetDate, 'P', { locale: dateLocale }) },
+    { code: 'D', label: t('Long Date'), preview: format(targetDate, 'PP', { locale: dateLocale }) },
+    { code: 'f', label: t('Short Date/Time'), preview: format(targetDate, 'Pp', { locale: dateLocale }) },
+    { code: 'F', label: t('Long Date/Time'), preview: format(targetDate, 'PPpp', { locale: dateLocale }) },
+    { code: 'R', label: t('Relative'), preview: formatDistanceToNow(targetDate, { addSuffix: true, locale: dateLocale }) },
   ];
 
   const handleCopy = (code: string) => {
@@ -38,11 +38,11 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
         <div className="p-4 border-b border-border flex justify-between items-center bg-secondary/30">
           <h2 className="font-semibold text-foreground flex items-center gap-2">
             <Clock className="w-4 h-4 text-primary" />
-            Discord Timestamp Generator
+            {t('Discord Timestamp Generator')}
           </h2>
-          <button 
+          <button
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('Close')}
             className="text-white/70 hover:text-white transition-colors text-2xl leading-none p-1 hover:bg-white/10 rounded-md"
           >
             &times;
@@ -51,8 +51,8 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
         
         <div className="p-6 space-y-4">
           <div className="text-sm text-muted-foreground mb-4">
-             Generate a dynamic timestamp for <span className="text-primary font-mono">{format(targetDate, 'yyyy-MM-dd HH:mm:ss')}</span>. 
-             Previews show how it will look in Discord.
+             {t('Generate a dynamic timestamp for')} <span className="text-primary font-mono">{format(targetDate, 'yyyy-MM-dd HH:mm:ss')}</span>.
+             {' '}{t('Previews show how it will look in Discord.')}
           </div>
 
           <div className="grid gap-3 max-h-[60vh] overflow-y-auto pr-2">
@@ -78,12 +78,12 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
                     {copied === fmt.code ? (
                       <>
                         <Check className="w-3.5 h-3.5" />
-                        <span>Copied</span>
+                        <span>{t('Copied')}</span>
                       </>
                     ) : (
                       <>
                         <Copy className="w-3.5 h-3.5" />
-                        <span>Copy</span>
+                        <span>{t('Copy')}</span>
                       </>
                     )}
                   </button>

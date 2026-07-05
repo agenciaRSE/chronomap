@@ -4,6 +4,7 @@ import { X, Search, Users, Calendar, Download, Link2, Check } from 'lucide-react
 import citiesData from './cities.json';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
 import { ymdInTz, hourInTz, timeLabel, dayLabel, wallToUtc } from './lib/tz';
+import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
 
@@ -25,7 +26,7 @@ const refHourLabel = (h: number) => (h === 0 ? '12a' : h < 12 ? `${h}a` : h === 
 const myTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const myMatch = CITIES.find((c) => c.tz === myTz);
 const DEFAULT_ROWS: Row[] = [
-  { key: 'you', label: myMatch ? `${myMatch.name} (You)` : 'Your location', tz: myTz },
+  { key: 'you', label: myMatch ? `${myMatch.name} ${t('(You)')}` : t('Your location'), tz: myTz },
   { key: 'london', label: 'London', tz: 'Europe/London' },
   { key: 'new-york', label: 'New York', tz: 'America/New_York' },
 ].filter((r, i, a) => a.findIndex((x) => x.tz === r.tz) === i); // dedupe by tz
@@ -135,8 +136,8 @@ const Planner: React.FC = () => {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Add a city…"
-          aria-label="Add a city to the planner"
+          placeholder={t('Add a city…')}
+          aria-label={t('Add a city to the planner')}
           className="w-full bg-zinc-800/60 text-zinc-100 border border-white/10 rounded-lg pl-9 pr-4 py-2.5 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
         />
         {results.length > 0 && (
@@ -160,7 +161,7 @@ const Planner: React.FC = () => {
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-200 rounded-lg border border-white/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
         >
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Link2 className="w-3.5 h-3.5" />}
-          {copied ? 'Link copied' : 'Share this plan'}
+          {copied ? t('Link copied') : t('Share this plan')}
         </button>
       </div>
 
@@ -192,7 +193,7 @@ const Planner: React.FC = () => {
                 {rows.length > 1 && (
                   <button
                     onClick={() => removeRow(r.key)}
-                    aria-label={`Remove ${r.label}`}
+                    aria-label={`${t('Remove Location')}: ${r.label}`}
                     className="opacity-0 group-hover:opacity-100 text-zinc-600 hover:text-red-400 transition-all shrink-0"
                   >
                     <X className="w-3 h-3" />
@@ -214,7 +215,7 @@ const Planner: React.FC = () => {
                       key={h}
                       onClick={() => setSelCol(h)}
                       title={`${timeLabel(inst, r.tz)} — ${r.label}`}
-                      aria-label={`${timeLabel(inst, r.tz)} in ${r.label}${good ? ', everyone available' : work ? ', working hours' : ''}`}
+                      aria-label={`${timeLabel(inst, r.tz)} ${t('in')} ${r.label}${good ? ', ' + t('Everyone available') : work ? ', ' + t('Working hours (9–18)') : ''}`}
                       className={`relative h-8 flex items-center justify-center text-[10px] font-mono border-r border-black/20 ${bg} ${
                         sel ? 'ring-2 ring-inset ring-blue-400 text-white' : work ? 'text-zinc-200' : 'text-zinc-500'
                       } ${h === 0 ? 'rounded-l' : ''} ${h === 23 ? 'rounded-r' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-300`}
@@ -232,16 +233,16 @@ const Planner: React.FC = () => {
 
       {/* Legend */}
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-3 text-[11px] text-zinc-500">
-        <span className="flex items-center gap-1.5"><span className="relative w-3 h-3 rounded-sm bg-emerald-500/30 inline-block"><span className="absolute bottom-[1px] left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full bg-emerald-300" /></span> Everyone available (•)</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-blue-500/15 inline-block" /> Working hours (9–18)</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-zinc-800/40 inline-block" /> Night</span>
+        <span className="flex items-center gap-1.5"><span className="relative w-3 h-3 rounded-sm bg-emerald-500/30 inline-block"><span className="absolute bottom-[1px] left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full bg-emerald-300" /></span> {t('Everyone available (•)')}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-blue-500/15 inline-block" /> {t('Working hours (9–18)')}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-zinc-800/40 inline-block" /> {t('Night')}</span>
       </div>
 
       {/* Selected slot summary */}
       <div className="glass-card rounded-xl p-4 sm:p-5 mt-6">
         <div className="flex items-center gap-2 mb-3 text-sm font-medium text-white">
           <Users className="w-4 h-4 text-blue-400" />
-          At {refHourLabel(selCol)} in {ref.label.replace(' (You)', '')}, everyone is at:
+          {t('At')} {refHourLabel(selCol)} {t('in')} {ref.label.replace(` ${t('(You)')}`, '')}, {t('everyone is at:')}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {rows.map((r) => {
@@ -270,14 +271,14 @@ const Planner: React.FC = () => {
                 rel="noopener"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400/30 transition-all"
               >
-                <Calendar className="w-3.5 h-3.5" /> Add to Google Calendar
+                <Calendar className="w-3.5 h-3.5" /> {t('Add to Google Calendar')}
               </a>
               <a
                 href={icsDataUrl(title, slot, 30, details)}
                 download="chronomap-meeting.ics"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-200 rounded-lg border border-white/10 transition-all"
               >
-                <Download className="w-3.5 h-3.5" /> Download .ics
+                <Download className="w-3.5 h-3.5" /> {t('Download .ics')}
               </a>
             </div>
           );

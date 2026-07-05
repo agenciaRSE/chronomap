@@ -3,7 +3,12 @@
 // and returns its Spanish translation on ES pages, falling back to the English
 // key when there's no entry — so untranslated strings simply stay English.
 
+import { enUS, es } from 'date-fns/locale';
+
 export const isES = typeof document !== 'undefined' && document.documentElement.lang === 'es';
+
+// date-fns locale matching the page language (for preview formatting).
+export const dateLocale = isES ? es : enUS;
 
 const ES: Record<string, string> = {
   // Nav / menu
@@ -62,6 +67,68 @@ const ES: Record<string, string> = {
   'Zoom In': 'Acercar',
   'Zoom Out': 'Alejar',
   'Reset View': 'Restablecer vista',
+  'Current time in': 'Hora actual en',
+  'All times update in real-time': 'Todas las horas se actualizan en tiempo real',
+  'Times update automatically every second · daylight saving handled': 'Las horas se actualizan cada segundo · horario de verano incluido',
+  'Powered by': 'Con la tecnología de',
+  // Meeting planner island
+  'Add a city…': 'Añade una ciudad…',
+  'Add a city to the planner': 'Añade una ciudad al planificador',
+  'Share this plan': 'Compartir este plan',
+  'Link copied': 'Enlace copiado',
+  'Everyone available': 'Todos disponibles',
+  'Everyone available (•)': 'Todos disponibles (•)',
+  'Working hours (9–18)': 'Horario laboral (9–18)',
+  'Night': 'Noche',
+  'Add to Google Calendar': 'Añadir a Google Calendar',
+  'Download .ics': 'Descargar .ics',
+  'At': 'A las',
+  'everyone is at:': 'todos están a:',
+  '(You)': '(Tú)',
+  'Your location': 'Tu ubicación',
+  // Converter island
+  "When it's": 'Cuando son las',
+  'in': 'en',
+  "it's": 'son las',
+  'reset to now': 'restablecer a ahora',
+  ' (next day)': ' (día siguiente)',
+  ' (prev. day)': ' (día anterior)',
+  'and': 'y',
+  'are in the same time': 'están en la misma hora',
+  'is': 'va',
+  'hour': 'hora',
+  'hours': 'horas',
+  'ahead of': 'por delante de',
+  'behind': 'por detrás de',
+  // Discord tool / generator
+  'Generate': 'Generar',
+  'Click any row to copy': 'Haz clic en cualquier fila para copiar',
+  'Date & time': 'Fecha y hora',
+  'Reset to now': 'Restablecer a ahora',
+  'Copy code': 'Copiar código',
+  'Copy': 'Copiar',
+  'Copied': 'Copiado',
+  'Short Time': 'Hora corta',
+  'Long Time': 'Hora larga',
+  'Short Date': 'Fecha corta',
+  'Long Date': 'Fecha larga',
+  'Short Date/Time': 'Fecha y hora corta',
+  'Long Date/Time': 'Fecha y hora larga',
+  'Relative': 'Relativo',
+  'Discord Timestamp Generator': 'Generador de timestamps de Discord',
+  'Close': 'Cerrar',
+  'Generate a dynamic timestamp for': 'Genera un timestamp dinámico para',
+  'Previews show how it will look in Discord.': 'Las vistas previas muestran cómo se verá en Discord.',
+  // About modal chrome (changelog entries stay English)
+  'Community & Support': 'Comunidad y soporte',
+  'Report a Bug': 'Reportar un error',
+  'Found an issue? Let us know.': '¿Encontraste un problema? Cuéntanoslo.',
+  'Support & Donations': 'Apoyo y donaciones',
+  'Help keep the servers running.': 'Ayuda a mantener los servidores.',
+  'Web Development': 'Desarrollo web',
+  'We bring your ideas to life.': 'Damos vida a tus ideas.',
+  'Changelog': 'Novedades',
+  'All rights reserved.': 'Todos los derechos reservados.',
 };
 
 export const t = (s: string): string => (isES ? ES[s] ?? s : s);

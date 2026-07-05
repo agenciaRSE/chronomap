@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { X, Bug, Heart, Code, GitCommit, ExternalLink } from 'lucide-react';
+import { t } from '../src/lib/i18n';
 
 interface AboutModalProps {
   onClose: () => void;
@@ -14,11 +15,11 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
         <div className="p-4 border-b border-border flex justify-between items-center bg-secondary/30 flex-none">
           <h2 className="font-semibold text-foreground flex items-center gap-2">
             <Code className="w-4 h-4 text-primary" />
-            About ChronoMap
+            {t('About ChronoMap')}
           </h2>
-          <button 
+          <button
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('Close')}
             className="text-white/70 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-md"
           >
             <X className="w-5 h-5" />
@@ -28,7 +29,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
         <div className="p-6 overflow-y-auto space-y-8">
           
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Community & Support</h3>
+            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">{t('Community & Support')}</h3>
             
             <a 
               href="mailto:dev@agenciarse.com"
@@ -39,8 +40,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                   <Bug className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-foreground">Report a Bug</div>
-                  <div className="text-xs text-muted-foreground">Found an issue? Let us know.</div>
+                  <div className="text-sm font-medium text-foreground">{t('Report a Bug')}</div>
+                  <div className="text-xs text-muted-foreground">{t('Found an issue? Let us know.')}</div>
                 </div>
               </div>
               <ExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-foreground transition-colors" />
@@ -57,8 +58,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                   <Heart className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-foreground">Support & Donations</div>
-                  <div className="text-xs text-muted-foreground">Help keep the servers running.</div>
+                  <div className="text-sm font-medium text-foreground">{t('Support & Donations')}</div>
+                  <div className="text-xs text-muted-foreground">{t('Help keep the servers running.')}</div>
                 </div>
               </div>
               <ExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-foreground transition-colors" />
@@ -75,8 +76,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                   <Code className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-foreground">Web Development</div>
-                  <div className="text-xs text-muted-foreground">We bring your ideas to life.</div>
+                  <div className="text-sm font-medium text-foreground">{t('Web Development')}</div>
+                  <div className="text-xs text-muted-foreground">{t('We bring your ideas to life.')}</div>
                 </div>
               </div>
               <ExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-foreground transition-colors" />
@@ -86,7 +87,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
           <div>
              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                <GitCommit className="w-3 h-3" />
-               Changelog
+               {t('Changelog')}
              </h3>
                           <div className="relative pl-4 space-y-6 border-l border-zinc-800">
 
@@ -625,7 +626,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
         </div>
         
         <div className="p-4 border-t border-border bg-secondary/10 text-center text-[10px] text-zinc-500">
-          &copy; {new Date().getFullYear()} Agenciarse. All rights reserved.
+          &copy; {new Date().getFullYear()} Agenciarse. {t('All rights reserved.')}
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Sun, Moon } from 'lucide-react';
+import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
 
@@ -45,7 +46,7 @@ const ZoneCard: React.FC<{ z: Zone; now: Date }> = ({ z, now }) => {
   const isDay = hour24 >= 6 && hour24 < 18;
 
   return (
-    <a href={`/time/${z.slug}`} title={`Current time in ${z.city}`} className="glass-card rounded-xl p-4 flex flex-col justify-between min-h-[140px] relative group">
+    <a href={`/time/${z.slug}`} title={`${t('Current time in')} ${z.city}`} className="glass-card rounded-xl p-4 flex flex-col justify-between min-h-[140px] relative group">
       <div>
         <h3 className="text-[15px] font-medium text-white leading-none mb-1 group-hover:text-blue-300 transition-colors">{z.city}</h3>
         <div className="text-[11px] text-zinc-500">{date}</div>
@@ -85,9 +86,9 @@ const LivePanel: React.FC = () => {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-2 px-2 py-1 bg-blue-500/10 rounded border border-blue-500/20">
             <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-xs font-semibold tracking-wider text-blue-400 uppercase">Live</span>
+            <span className="text-xs font-semibold tracking-wider text-blue-400 uppercase">{t('Live')}</span>
           </span>
-          <span className="text-xs text-zinc-500 font-medium hidden sm:inline">All times update in real-time</span>
+          <span className="text-xs text-zinc-500 font-medium hidden sm:inline">{t('All times update in real-time')}</span>
         </div>
         <div className="flex items-center gap-3 text-zinc-400">
           <span className="flex items-end h-4 gap-1 opacity-60" aria-hidden="true">
@@ -100,8 +101,8 @@ const LivePanel: React.FC = () => {
         {ZONES.map((z) => <ZoneCard key={z.tz} z={z} now={now} />)}
       </div>
       <div className="px-5 py-4 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-zinc-500 relative">
-        <span>Times update automatically every second · daylight saving handled</span>
-        <span>Powered by <a href="/" className="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap</a></span>
+        <span>{t('Times update automatically every second · daylight saving handled')}</span>
+        <span>{t('Powered by')} <a href="/" className="text-blue-400 hover:text-blue-300 transition-colors">ChronoMap</a></span>
       </div>
     </div>
   );
