@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Mapa de Ruta de Vuelos — Aeropuertos, Escalas y Horas Locales | ChronoMap</title>
+    <meta name="description" content="Mapa de ruta de vuelos gratis. Añade aeropuertos y escalas, ve la ruta sobre un mapa mundial y obtén la hora local de llegada, salida y escala en cada parada — con zonas horarias." />
+    <meta name="keywords" content="mapa de ruta de vuelos, planificador de vuelos multidestino, itinerario de vuelo zonas horarias, calculadora de escalas, mapa de vuelo con horas, ruta de aeropuertos, horas entre vuelos" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/es/flight-route-map" />
+    <link rel="alternate" hreflang="en" href="https://www.chronomap.top/flight-route-map" />
+    <link rel="alternate" hreflang="es" href="https://www.chronomap.top/es/flight-route-map" />
+    <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/flight-route-map" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/es/flight-route-map" />
+    <meta property="og:title" content="Mapa de Ruta de Vuelos — Aeropuertos, Escalas y Horas Locales" />
+    <meta property="og:description" content="Dibuja un viaje multidestino y ve la hora local en cada aeropuerto, escalas incluidas." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Mapa de Ruta de Vuelos | ChronoMap" />
+    <meta property="twitter:image" content="https://www.chronomap.top/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Mapa de Ruta de Vuelos",
+        "url": "https://www.chronomap.top/es/flight-route-map",
+        "inLanguage": "es",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any",
+        "description": "Un mapa de ruta de vuelos gratis: añade aeropuertos y escalas, ve la ruta de gran círculo sobre un mapa mundial y las horas locales de llegada, salida y escala en cada parada, con zonas horarias.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://agenciarse.com/#organization" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "es",
+        "mainEntity": [
+          { "@type": "Question", "name": "¿Cómo funciona el mapa de ruta de vuelos?", "acceptedAnswer": { "@type": "Answer", "text": "Añade tus aeropuertos en orden, indica la hora de la primera salida y la duración de cada vuelo (y las escalas). El mapa dibuja la ruta de gran círculo entre aeropuertos y el itinerario muestra la hora local de llegada y salida en cada parada." } },
+          { "@type": "Question", "name": "¿Puedo añadir escalas o varias paradas?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Añade tantos aeropuertos como tenga tu viaje; en cada parada intermedia puedes indicar una escala, y la calculadora arrastra las horas por todas las zonas horarias." } },
+          { "@type": "Question", "name": "¿Tiene en cuenta las zonas horarias y el horario de verano?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Cada aeropuerto usa su zona horaria IANA, así que las horas locales y el día de llegada son correctos, con el horario de verano gestionado automáticamente." } },
+          { "@type": "Question", "name": "¿Usa horarios de vuelo reales?", "acceptedAnswer": { "@type": "Answer", "text": "No. Funciona con las duraciones y escalas que introduces — sin datos de vuelo en vivo ni API — así que es instantáneo y privado. Las coordenadas cubren los principales aeropuertos del mundo." } },
+          { "@type": "Question", "name": "¿El mapa de ruta de vuelos es gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Es totalmente gratis, no necesita registro y funciona por completo en tu navegador." } }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.chronomap.top/es" },
+          { "@type": "ListItem", "position": 2, "name": "Mapa de ruta de vuelos", "item": "https://www.chronomap.top/es/flight-route-map" }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/es" class="inline-flex items-center gap-2 group shrink-0" aria-label="Inicio de ChronoMap">
+          <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/es/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Hora de vuelo</a>
+          <a href="/es/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap">Jet lag</a>
+          <a href="/es/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Husos horarios</a>
+          <a href="/es/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Planificador</a>
+          <a href="/flight-route-map" hreflang="en" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">EN</a>
+        </div>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Mapa de Ruta de Vuelos</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">Dibuja un viaje entre aeropuertos y escalas, y ve la hora local en cada parada. La ruta se traza sobre un mapa mundial; las zonas horarias, resueltas por ti.</p>
+      </header>
+
+      <div class="w-full max-w-3xl mx-auto mb-16 reveal" style="animation-delay:.1s">
+        <div id="route-app">
+          <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Cargando el mapa de ruta de vuelos…</div>
+        </div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Planifica un viaje con escalas entre zonas horarias</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>Los viajes largos con conexiones son difíciles de calcular: cada tramo cruza zonas horarias, así que el reloj en tu escala y en el destino final no se parece al que dejaste. Este mapa traza la ruta de gran círculo entre los principales aeropuertos del mundo y calcula la hora local real a la que llegas y sales en cada parada, escalas incluidas.</p>
+          <p>¿Solo un tramo? Usa la <a href="/es/flight-time-calculator" class="text-blue-400 hover:text-blue-300 transition-colors">calculadora de hora de vuelo</a>. ¿Cómo te sentirás al llegar? Prueba la <a href="/es/jet-lag-calculator" class="text-blue-400 hover:text-blue-300 transition-colors">calculadora de jet lag</a>. Funciona con las duraciones que introduces — sin datos de vuelo en vivo.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Preguntas frecuentes</h2>
+        <div class="space-y-3">
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cómo funciona el mapa de ruta de vuelos?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Añade aeropuertos en orden, indica la primera salida y la duración de cada vuelo y sus escalas. El mapa dibuja la ruta y el itinerario muestra las horas locales de llegada y salida en cada parada.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Puedo añadir escalas o varias paradas?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí — añade tantos aeropuertos como tenga tu viaje, con una escala en cada parada intermedia, y las horas se arrastran por todas las zonas horarias.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Tiene en cuenta las zonas horarias?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí — cada aeropuerto usa su zona horaria IANA, así que las horas locales y el día de llegada son correctos, con el horario de verano automático.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Usa horarios de vuelo reales?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No — funciona con las duraciones y escalas que introduces, sin datos de vuelo en vivo. Las coordenadas cubren los principales aeropuertos del mundo.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Es gratis?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí — gratis, sin registro, funciona en tu navegador.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="w-full text-center mt-2 reveal">
+        <div class="flex flex-col items-center gap-5">
+          <a href="/es" class="inline-flex items-center gap-2 group">
+            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
+              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
+              <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            </span>
+            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
+          </a>
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+            <a href="/es" class="hover:text-zinc-300 transition-colors">Reloj mundial</a>
+            <a href="/es/flight-time-calculator" class="hover:text-zinc-300 transition-colors">Hora de vuelo</a>
+            <a href="/es/jet-lag-calculator" class="hover:text-zinc-300 transition-colors">Jet lag</a>
+            <a href="/es/time-zone-map" class="hover:text-zinc-300 transition-colors">Mapa de husos horarios</a>
+            <a href="/flight-route-map" class="hover:text-zinc-300 transition-colors" hreflang="en">English</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="/src/flight-route-page.tsx"></script>
+  </body>
+</html>

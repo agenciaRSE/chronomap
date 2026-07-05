@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Flight Route Map — Plot Airports, Layovers &amp; Local Times | ChronoMap</title>
+    <meta name="description" content="Free flight route map. Add airports and layovers, see the great-circle route on a world map, and get the local arrival, departure and layover times at every stop — time-zone aware." />
+    <meta name="keywords" content="flight route map, multi city flight planner, flight itinerary time zones, layover time calculator, flight map with times, airport route map, connecting flight time" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/flight-route-map" />
+    <link rel="alternate" hreflang="en" href="https://www.chronomap.top/flight-route-map" />
+    <link rel="alternate" hreflang="es" href="https://www.chronomap.top/es/flight-route-map" />
+    <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/flight-route-map" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/flight-route-map" />
+    <meta property="og:title" content="Flight Route Map — Plot Airports, Layovers &amp; Local Times" />
+    <meta property="og:description" content="Map a multi-stop trip and see the local time at every airport, layovers included." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Flight Route Map | ChronoMap" />
+    <meta property="twitter:image" content="https://www.chronomap.top/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Flight Route Map",
+        "url": "https://www.chronomap.top/flight-route-map",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any",
+        "description": "A free flight route map: add airports and layovers, see the great-circle route on a world map, and the local arrival, departure and layover times at each stop, time-zone aware.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://agenciarse.com/#organization" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How does the flight route map work?", "acceptedAnswer": { "@type": "Answer", "text": "Add your airports in order, set the first departure time and each flight's duration (and any layovers). The map draws the great-circle route between airports and the itinerary shows the local arrival and departure time at every stop." } },
+          { "@type": "Question", "name": "Can I add layovers or multiple stops?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Add as many airports as your trip has; for each intermediate stop you can enter a layover, and the calculator carries the times forward across every time zone." } },
+          { "@type": "Question", "name": "Does it account for time zones and daylight saving?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every airport uses its IANA time zone, so the local times and the day of arrival are correct, with daylight saving handled automatically." } },
+          { "@type": "Question", "name": "Does it use real flight schedules?", "acceptedAnswer": { "@type": "Answer", "text": "No. It works from the durations and layovers you enter — no live flight data or API — so it is instant and private. Coordinates cover the world's major airports." } },
+          { "@type": "Question", "name": "Is the flight route map free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is completely free, needs no signup, and runs entirely in your browser." } }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chronomap.top/" },
+          { "@type": "ListItem", "position": 2, "name": "Flight route map", "item": "https://www.chronomap.top/flight-route-map" }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/" class="inline-flex items-center gap-2 group shrink-0" aria-label="ChronoMap home">
+          <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Flight time</a>
+          <a href="/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap">Jet lag</a>
+          <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Time zones</a>
+          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Planner</a>
+          <a href="/es/flight-route-map" hreflang="es" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">ES</a>
+        </div>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Flight Route Map</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">Map a trip across airports and layovers, and see the local time at every stop. The route is drawn on a world map; time zones handled for you.</p>
+      </header>
+
+      <div class="w-full max-w-3xl mx-auto mb-16 reveal" style="animation-delay:.1s">
+        <div id="route-app">
+          <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading the flight route map…</div>
+        </div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Plan a multi-stop trip across time zones</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>Long trips with connections are hard to reason about: each leg crosses time zones, so the clock at your layover and final destination is nothing like the one you left. This map plots the great-circle route between the world's major airports and works out the real local time you arrive and leave at every stop, layovers included.</p>
+          <p>Need just one leg? Use the <a href="/flight-time-calculator" class="text-blue-400 hover:text-blue-300 transition-colors">flight time calculator</a>. Wondering how you'll feel on arrival? Try the <a href="/jet-lag-calculator" class="text-blue-400 hover:text-blue-300 transition-colors">jet lag calculator</a>. It works from the durations you enter — no live flight data.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
+        <div class="space-y-3">
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How does the flight route map work?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Add airports in order, set the first departure and each flight's duration and layovers. The map draws the route and the itinerary shows local arrival and departure times at every stop.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Can I add layovers or multiple stops?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — add as many airports as your trip has, with a layover at each intermediate stop, and the times carry forward across every time zone.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it account for time zones?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — each airport uses its IANA time zone, so local times and the arrival day are correct, with daylight saving handled automatically.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it use real flight schedules?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No — it works from the durations and layovers you enter, with no live flight data. Coordinates cover the world's major airports.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is it free?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — free, no signup, runs in your browser.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="w-full text-center mt-2 reveal">
+        <div class="flex flex-col items-center gap-5">
+          <a href="/" class="inline-flex items-center gap-2 group">
+            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
+              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
+              <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            </span>
+            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
+          </a>
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+            <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
+            <a href="/flight-time-calculator" class="hover:text-zinc-300 transition-colors">Flight time</a>
+            <a href="/jet-lag-calculator" class="hover:text-zinc-300 transition-colors">Jet lag</a>
+            <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
+            <a href="/es/flight-route-map" class="hover:text-zinc-300 transition-colors" hreflang="es">Español</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="/src/flight-route-page.tsx"></script>
+  </body>
+</html>

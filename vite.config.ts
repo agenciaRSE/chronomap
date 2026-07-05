@@ -80,6 +80,8 @@ export default defineConfig({
         flight_es: fileURLToPath(new URL('./es/flight-time-calculator.html', import.meta.url)),
         jetlag: fileURLToPath(new URL('./jet-lag-calculator.html', import.meta.url)),
         jetlag_es: fileURLToPath(new URL('./es/jet-lag-calculator.html', import.meta.url)),
+        route: fileURLToPath(new URL('./flight-route-map.html', import.meta.url)),
+        route_es: fileURLToPath(new URL('./es/flight-route-map.html', import.meta.url)),
         notfound: fileURLToPath(new URL('./404.html', import.meta.url)),
         ...generatedInputs,
       },
