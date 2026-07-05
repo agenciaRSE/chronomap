@@ -1,0 +1,27 @@
+# ChronoMap
+
+> ChronoMap is a free, interactive world clock and time zone toolkit. See the current local time anywhere on a 2D map or 3D globe, compare cities, convert times, plan meetings across time zones, and generate Discord timestamps. No account, no ads, works in any browser.
+
+All times use each location's live IANA time zone, so daylight saving time is always handled correctly.
+
+## Core tools
+
+- [World clock map](https://www.chronomap.top/): Interactive world clock on a 2D map and 3D globe. Hover any country for its live local time, pin and compare multiple cities, and travel forwards or backwards through time.
+- [Time zone map](https://www.chronomap.top/time-zone-map): The current time in every UTC offset, from UTC−12 to UTC+14, with live clocks for major cities.
+- [Meeting planner](https://www.chronomap.top/meeting-planner): Add cities and see everyone's working hours side by side to find the best overlapping time to schedule a call across time zones.
+- [Discord timestamp generator](https://www.chronomap.top/discord-timestamp-generator): Turn any date and time into a Discord `<t:UNIX:style>` code that renders in each user's own time zone.
+
+## Cities and comparisons
+
+- [All cities index](https://www.chronomap.top/time): Browse or search the current local time in 200+ cities worldwide, grouped by region.
+- Per-city pages: https://www.chronomap.top/time/{city} — live local time, UTC offset, and daylight-saving info for a single city (e.g. /time/london, /time/tokyo, /time/new-york).
+- City comparators: https://www.chronomap.top/time/{city-a}-to-{city-b} — the live time difference and a time converter between two cities (e.g. /time/london-to-new-york).
+
+## Apps
+
+- [ChronoMap for Windows](https://www.chronomap.top/windows): Free ChronoMap app on the Microsoft Store for Windows 10 and 11.
+
+## About
+
+- Publisher: Agenciarse (https://agenciarse.com)
+- All features are free and run client-side; time math uses the browser's IANA time zone database.
