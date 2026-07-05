@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Sun, Moon } from 'lucide-react';
+import './lib/analytics';
 import './page.css';
 
 // Live-clocks glass panel for /time-zone-map (aidesigner-inspired look).

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { X, Search, Users, Calendar, Download } from 'lucide-react';
 import citiesData from './cities.json';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
+import './lib/analytics';
 import './page.css';
 
 // Meeting planner for /meeting-planner. Pick cities, see a 24-hour band per city

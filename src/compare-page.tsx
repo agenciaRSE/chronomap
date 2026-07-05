@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Sun, Moon, Calendar, Download } from 'lucide-react';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
+import './lib/analytics';
 import './page.css';
 
 // Two-city comparator for /time/{a}-to-{b} pages. Reads both cities + IANA zones

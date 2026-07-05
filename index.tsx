@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './src/lib/analytics';
 import './src/index.css';
 
 // Unregister any stale service workers (avoids serving cached old assets).

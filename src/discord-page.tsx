@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { format, formatDistanceToNow } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { Copy, Check } from 'lucide-react';
+import './lib/analytics';
 import './page.css';
 
 // Interactive generator for /discord-timestamp-generator (glass panel look).

@@ -1,3 +1,4 @@
+import './lib/analytics';
 import './page.css';
 
 // Client-side search filter for the /time hub. All city links are static HTML

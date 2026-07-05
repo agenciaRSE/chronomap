@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Sun, Moon } from 'lucide-react';
+import './lib/analytics';
 import './page.css';
 
 // Live clock for a /time/{city} page. Reads the target city + IANA time zone
