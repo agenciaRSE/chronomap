@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Jet Lag Calculator — Estimate Recovery Time &amp; Get Tips | ChronoMap</title>
+    <meta name="description" content="Free jet lag calculator. Enter your origin and destination to see how many time zones you cross, the direction, an estimated recovery time, and tips to adjust faster." />
+    <meta name="keywords" content="jet lag calculator, jet lag estimator, how long does jet lag last, jet lag recovery time, time zones jet lag, jet lag tips, east vs west jet lag" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/jet-lag-calculator" />
+    <link rel="alternate" hreflang="en" href="https://www.chronomap.top/jet-lag-calculator" />
+    <link rel="alternate" hreflang="es" href="https://www.chronomap.top/es/jet-lag-calculator" />
+    <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/jet-lag-calculator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/jet-lag-calculator" />
+    <meta property="og:title" content="Jet Lag Calculator — Estimate Recovery Time &amp; Get Tips" />
+    <meta property="og:description" content="See how many time zones you cross, the direction, an estimated recovery time, and tips to beat jet lag." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Jet Lag Calculator | ChronoMap" />
+    <meta property="twitter:image" content="https://www.chronomap.top/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Jet Lag Calculator",
+        "url": "https://www.chronomap.top/jet-lag-calculator",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any",
+        "description": "A free jet lag calculator that estimates the number of time zones crossed, the direction of travel, a rough recovery time, and tips to adjust faster.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://agenciarse.com/#organization" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How is jet lag calculated?", "acceptedAnswer": { "@type": "Answer", "text": "Jet lag is driven by how many time zones you cross and the direction. Enter your origin and destination and the calculator shows the number of zones crossed, whether you travel east or west, and a rough estimate of how many days it takes to adjust." } },
+          { "@type": "Question", "name": "How long does jet lag last?", "acceptedAnswer": { "@type": "Answer", "text": "A common rule of thumb is that your body clock shifts about one hour per day, so recovery takes roughly one day per time zone crossed when flying east, and a bit faster when flying west. It varies a lot between people." } },
+          { "@type": "Question", "name": "Is east or west jet lag worse?", "acceptedAnswer": { "@type": "Answer", "text": "Eastward travel is usually harder because it shortens your day and asks your body to fall asleep earlier, which most people find more difficult than staying up later when flying west." } },
+          { "@type": "Question", "name": "Does it need my flight details?", "acceptedAnswer": { "@type": "Answer", "text": "No. It only needs your origin and destination cities to compare their time zones — no flight number, no API, no personal data." } },
+          { "@type": "Question", "name": "Is the jet lag calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is completely free, needs no signup, and runs entirely in your browser. It gives a rough estimate and is not medical advice." } }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chronomap.top/" },
+          { "@type": "ListItem", "position": 2, "name": "Jet lag calculator", "item": "https://www.chronomap.top/jet-lag-calculator" }
+        ]
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/" class="inline-flex items-center gap-2 group shrink-0" aria-label="ChronoMap home">
+          <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Flight time</a>
+          <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Time zones</a>
+          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap">Planner</a>
+          <a href="/discord-timestamp-generator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Discord</a>
+          <a href="/es/jet-lag-calculator" hreflang="es" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">ES</a>
+        </div>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Jet Lag Calculator</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">See how many time zones your trip crosses, which direction is harder, roughly how long it takes to adjust, and what to do about it.</p>
+      </header>
+
+      <div class="w-full max-w-2xl mx-auto mb-16 reveal" style="animation-delay:.1s">
+        <div id="jetlag-app">
+          <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading the jet lag calculator…</div>
+        </div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">What causes jet lag</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>Jet lag happens when your internal body clock is still on home time while the world around you runs on a different schedule. The more time zones you cross, the bigger the gap, and it takes a few days for your clock to catch up — shifting roughly an hour per day.</p>
+          <p>Direction matters: flying <strong class="text-zinc-200">east</strong> shortens your day and usually feels worse, while flying <strong class="text-zinc-200">west</strong> lengthens it and is often easier. Once you know the arrival time, plan your trip with the <a href="/flight-time-calculator" class="text-blue-400 hover:text-blue-300 transition-colors">flight time calculator</a> or check the destination on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">time zone map</a>. This tool gives a rough estimate and is not medical advice.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
+        <div class="space-y-3">
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How is jet lag calculated?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">From the number of time zones you cross and the direction. Enter origin and destination and it shows zones crossed, east or west, and a rough number of days to adjust.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How long does jet lag last?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Roughly one day per time zone flying east, and a bit faster flying west — your clock shifts about an hour a day. It varies between people.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is east or west jet lag worse?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">East is usually harder — it shortens your day and asks you to sleep earlier, which most people find tougher than staying up later.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it need my flight details?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No — just origin and destination cities. No flight number, no API, no personal data.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is it free?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — free, no signup, runs in your browser. It is a rough estimate, not medical advice.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="w-full text-center mt-2 reveal">
+        <div class="flex flex-col items-center gap-5">
+          <a href="/" class="inline-flex items-center gap-2 group">
+            <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+              <span class="absolute inset-0 rounded-full border border-zinc-700"></span>
+              <span class="absolute inset-0.5 rounded-full border border-blue-500/60 border-t-transparent"></span>
+              <span class="w-1 h-1 rounded-full bg-white/50"></span>
+            </span>
+            <span class="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">ChronoMap</span>
+          </a>
+          <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+            <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
+            <a href="/flight-time-calculator" class="hover:text-zinc-300 transition-colors">Flight time</a>
+            <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
+            <a href="/meeting-planner" class="hover:text-zinc-300 transition-colors">Meeting planner</a>
+            <a href="/es/jet-lag-calculator" class="hover:text-zinc-300 transition-colors" hreflang="es">Español</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="/src/jet-lag-page.tsx"></script>
+  </body>
+</html>

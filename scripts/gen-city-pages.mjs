@@ -100,6 +100,7 @@ const FOOTER = `<footer class="w-full text-center mt-2 reveal">
             <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
             <a href="/meeting-planner" class="hover:text-zinc-300 transition-colors">Meeting planner</a>
             <a href="/flight-time-calculator" class="hover:text-zinc-300 transition-colors">Flight time</a>
+            <a href="/jet-lag-calculator" class="hover:text-zinc-300 transition-colors">Jet lag</a>
             <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
             <a href="/clock-widget" class="hover:text-zinc-300 transition-colors">Clock widget</a>
             <a href="/windows" class="hover:text-zinc-300 transition-colors">Windows app</a>
@@ -591,12 +592,14 @@ export function generate() {
     { loc: `${SITE}/es/meeting-planner`, pri: '0.7', freq: 'monthly' },
     { loc: `${SITE}/es/discord-timestamp-generator`, pri: '0.7', freq: 'monthly' },
     { loc: `${SITE}/es/flight-time-calculator`, pri: '0.7', freq: 'monthly' },
+    { loc: `${SITE}/es/jet-lag-calculator`, pri: '0.6', freq: 'monthly' },
     { loc: `${SITE}/es/clock-widget`, pri: '0.6', freq: 'monthly' },
     { loc: `${SITE}/time`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
     { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
     { loc: `${SITE}/meeting-planner`, pri: '0.8', freq: 'monthly' },
     { loc: `${SITE}/flight-time-calculator`, pri: '0.8', freq: 'monthly' },
+    { loc: `${SITE}/jet-lag-calculator`, pri: '0.7', freq: 'monthly' },
     { loc: `${SITE}/clock-widget`, pri: '0.7', freq: 'monthly' },
     { loc: `${SITE}/windows`, pri: '0.7', freq: 'monthly' },
     ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),

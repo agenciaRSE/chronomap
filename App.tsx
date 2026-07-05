@@ -74,6 +74,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: isES ? '/es/time-zone-map' : '/time-zone-map', label: t('Time zone map') },
   { href: isES ? '/es/meeting-planner' : '/meeting-planner', label: t('Meeting planner') },
   { href: isES ? '/es/flight-time-calculator' : '/flight-time-calculator', label: t('Flight calculator') },
+  { href: isES ? '/es/jet-lag-calculator' : '/jet-lag-calculator', label: t('Jet lag') },
   { href: isES ? '/es/discord-timestamp-generator' : '/discord-timestamp-generator', label: t('Discord timestamps') },
   { href: '/windows', label: t('Windows app') },
   { href: isES ? '/es/clock-widget' : '/clock-widget', label: t('Embed a clock') },

@@ -1,22 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { Plane, Search, X } from 'lucide-react';
-import citiesData from './cities.json';
+import { Plane } from 'lucide-react';
 import { wallToUtc, timeLabel, dayLabel, ymdInTz } from './lib/tz';
-import { t, isES } from './lib/i18n';
+import { CityPicker, CITIES, cityLabel, type Endpoint } from './lib/city-picker';
+import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
 
 // Flight arrival-time / duration calculator for /flight-time-calculator.
 // Pure Intl timezone math (wallToUtc) — no flight data, no API.
 
-type City = { slug: string; name: string; country: string; tz: string };
-const CITIES = citiesData as City[];
-type Endpoint = { name: string; tz: string };
-
 const myTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-const byTz = (tz: string) => CITIES.find((c) => c.tz === tz);
-const label = (tz: string) => byTz(tz)?.name ?? tz.split('/').pop()!.replace(/_/g, ' ');
+const label = cityLabel;
 
 // Local datetime-local default (departure ~ now, rounded), formatted for the input.
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -29,45 +24,6 @@ const parseDT = (s: string) => {
   const [y, mo, d] = date.split('-').map(Number);
   const [hh, mm] = (tm || '00:00').split(':').map(Number);
   return { y, mo, d, hh, mm };
-};
-
-const CityPicker: React.FC<{ value: Endpoint; onChange: (e: Endpoint) => void; label: string }> = ({ value, onChange, label: lbl }) => {
-  const [query, setQuery] = useState('');
-  const [open, setOpen] = useState(false);
-  const results = useMemo(
-    () => (query.trim() ? CITIES.filter((c) => c.name.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 6) : []),
-    [query]
-  );
-  return (
-    <div className="relative">
-      <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-1.5">{lbl}</span>
-      <div className="relative">
-        <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-        <input
-          type="search"
-          value={open ? query : value.name}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-          onFocus={() => { setQuery(''); setOpen(true); }}
-          onBlur={() => setTimeout(() => setOpen(false), 150)}
-          aria-label={lbl}
-          className="w-full bg-zinc-800/60 text-zinc-100 border border-white/10 rounded-lg pl-9 pr-3 py-2.5 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
-        />
-      </div>
-      {open && results.length > 0 && (
-        <div className="absolute z-20 mt-1 w-full bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-lg shadow-2xl overflow-hidden">
-          {results.map((c) => (
-            <button
-              key={c.slug}
-              onMouseDown={() => { onChange({ name: c.name, tz: c.tz }); setOpen(false); }}
-              className="block w-full text-left px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
-            >
-              {c.name}<span className="text-zinc-600"> · {c.country}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 };
 
 const Flight: React.FC = () => {

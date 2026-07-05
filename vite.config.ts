@@ -78,6 +78,8 @@ export default defineConfig({
         clockwidget_es: fileURLToPath(new URL('./es/clock-widget.html', import.meta.url)),
         flight: fileURLToPath(new URL('./flight-time-calculator.html', import.meta.url)),
         flight_es: fileURLToPath(new URL('./es/flight-time-calculator.html', import.meta.url)),
+        jetlag: fileURLToPath(new URL('./jet-lag-calculator.html', import.meta.url)),
+        jetlag_es: fileURLToPath(new URL('./es/jet-lag-calculator.html', import.meta.url)),
         notfound: fileURLToPath(new URL('./404.html', import.meta.url)),
         ...generatedInputs,
       },
