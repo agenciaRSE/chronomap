@@ -26,6 +26,8 @@ const ES: Record<string, string> = {
   'Temporal Geovisualization': 'Geovisualización temporal',
   'Local Time': 'Hora local',
   'Share Timestamp': 'Compartir timestamp',
+  'Share this view': 'Compartir esta vista',
+  'Copy a link to this view': 'Copiar enlace a esta vista',
   'About & Changelog': 'Acerca de y novedades',
   'About ChronoMap': 'Acerca de ChronoMap',
   'LIVE': 'EN VIVO',

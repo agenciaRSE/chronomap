@@ -582,10 +582,9 @@ const App: React.FC = () => {
              </button>
              <button
                 onClick={handleShareView}
-                disabled={locations.length === 0}
-                title={locations.length === 0 ? 'Add a location to share' : 'Copy a link to this view'}
-                aria-label="Share this view"
-                className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                title={t('Copy a link to this view')}
+                aria-label={t('Share this view')}
+                className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
               >
                 {shareCopied ? <Check className="w-3 h-3 text-green-500" /> : <Link2 className="w-3 h-3" />}
               </button>
