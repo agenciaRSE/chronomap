@@ -5,6 +5,7 @@ import { AnimatedLogo } from './components/AnimatedLogo';
 // Lazy-load the map (d3 + topojson + globe) so the header/clock paint first and
 // the heavy chart chunk streams in after — better LCP on the app.
 const MapChart = lazy(() => import('./components/MapChart').then((m) => ({ default: m.MapChart })));
+import type { MapView } from './components/MapChart';
 import { DiscordGenerator } from './components/DiscordGenerator';
 import { AboutModal } from './components/AboutModal';
 import { TimeScrubber } from './components/TimeScrubber';
@@ -32,16 +33,31 @@ const TIME_STEPS = [
 // Shareable view state: encode the pinned cities (+ custom time) into a compact
 // base64url token so a link reproduces the exact view. Array-of-arrays keeps the
 // URL short; TextEncoder/Decoder round-trips accented city names correctly.
-type SharePayload = { l: [string, number, number, string][]; t?: number };
+// v = [g, r0, r1, r2, z, tx, ty, tk]: map type + globe rotation/zoom + 2D transform.
+type SharePayload = { l: [string, number, number, string][]; t?: number; v?: number[] };
 
-const encodeShareState = (locations: SavedLocation[], timeState: TimeState): string => {
+const encodeShareState = (locations: SavedLocation[], timeState: TimeState, view?: MapView | null): string => {
   const payload: SharePayload = {
     l: locations.map((loc) => [loc.name, +loc.lat.toFixed(4), +loc.lng.toFixed(4), loc.timezone || '']),
   };
   if (timeState.mode === 'custom') payload.t = timeState.current.getTime();
+  if (view) {
+    payload.v = [
+      view.g ? 1 : 0,
+      +view.r[0].toFixed(1), +view.r[1].toFixed(1), +view.r[2].toFixed(1),
+      +view.z.toFixed(2),
+      Math.round(view.t[0]), Math.round(view.t[1]), +view.t[2].toFixed(3),
+    ];
+  }
   const bytes = new TextEncoder().encode(JSON.stringify(payload));
   return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 };
+
+// Decode a shared `v` array back into a MapView (null if absent/malformed).
+const viewFromPayload = (v?: number[]): MapView | null =>
+  v && v.length === 8
+    ? { g: v[0] === 1, r: [v[1], v[2], v[3]], z: v[4], t: [v[5], v[6], v[7]] }
+    : null;
 
 const decodeShareState = (s: string): SharePayload => {
   const b64 = s.replace(/-/g, '+').replace(/_/g, '/');
@@ -155,6 +171,18 @@ const App: React.FC = () => {
   const [centerTarget, setCenterTarget] = useState<[number, number] | null>(null);
   const timeAnimationRef = useRef<any>(null);
   const targetTimeRef = useRef<Date | null>(null);
+
+  // Latest map camera (type/rotation/zoom), reported by MapChart, for the share link.
+  const mapViewRef = useRef<MapView | null>(null);
+  const handleMapViewChange = useCallback((v: MapView) => { mapViewRef.current = v; }, []);
+  // Map view decoded from a shared ?s= link at mount (before MapChart renders).
+  const [initialMapView] = useState<MapView | null>(() => {
+    try {
+      const s = new URLSearchParams(window.location.search).get('s');
+      if (s) return viewFromPayload(decodeShareState(s).v);
+    } catch { /* ignore */ }
+    return null;
+  });
   
   // Mobile View State: Default to map view on mobile, list view on desktop
   const [isMobileListOpen, setIsMobileListOpen] = useState(window.innerWidth < 768 ? false : true);
@@ -207,7 +235,7 @@ const App: React.FC = () => {
   }, []);
 
   const handleShareView = useCallback(async () => {
-    const token = encodeShareState(locations, timeState);
+    const token = encodeShareState(locations, timeState, mapViewRef.current);
     const url = `${window.location.origin}/?s=${token}`;
     try {
       await navigator.clipboard.writeText(url);
@@ -667,6 +695,8 @@ const App: React.FC = () => {
                 locations={locations}
                 centerTarget={centerTarget}
                 onCenterComplete={handleCenterComplete}
+                initialView={initialMapView}
+                onViewChange={handleMapViewChange}
               />
             </Suspense>
           </div>

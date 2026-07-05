@@ -9,15 +9,26 @@ import tzlookup from 'tz-lookup';
 import { Plus, Minus, Maximize, Globe, Map as MapIcon } from 'lucide-react';
 import { t } from '../src/lib/i18n';
 
+// Shareable camera state: map type (globe vs 2D), globe rotation + zoom, and the
+// 2D pan/zoom transform.
+export interface MapView {
+  g: boolean;
+  r: [number, number, number];
+  z: number;
+  t: [number, number, number]; // [x, y, k]
+}
+
 interface MapChartProps {
   currentTime: Date;
   onMapClick: (data: MapClickEvent) => void;
   locations: SavedLocation[];
   centerTarget: [number, number] | null;
   onCenterComplete: () => void;
+  initialView?: MapView | null;
+  onViewChange?: (v: MapView) => void;
 }
 
-export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, locations, centerTarget, onCenterComplete }) => {
+export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, locations, centerTarget, onCenterComplete, initialView, onViewChange }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mapGroupRef = useRef<SVGGElement>(null);
@@ -32,7 +43,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const [mapData, setMapData] = useState<{ features: any[], borders: any } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 960, height: 500 });
   
-  const [isGlobe, setIsGlobe] = useState(window.innerWidth < 768);
+  const [isGlobe, setIsGlobe] = useState(() => initialView?.g ?? window.innerWidth < 768);
   const [hoveredInfo, setHoveredInfo] = useState<{
     x: number;
     y: number;
@@ -43,10 +54,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     timezone?: string;
   } | null>(null);
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
-  const [zoomLevel, setZoomLevel] = useState(1); 
-  const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
-  const [globeZoom, setGlobeZoom] = useState(1);
-  const [mapTransform, setMapTransform] = useState(() => d3.zoomIdentity);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [rotation, setRotation] = useState<[number, number, number]>(() => initialView?.r ?? [0, 0, 0]);
+  const [globeZoom, setGlobeZoom] = useState(() => initialView?.z ?? 1);
+  const [mapTransform, setMapTransform] = useState(() =>
+    initialView ? d3.zoomIdentity.translate(initialView.t[0], initialView.t[1]).scale(initialView.t[2]) : d3.zoomIdentity
+  );
 
 
   const rotationRef = useRef(rotation);
@@ -59,6 +72,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     rotationRef.current = rotation;
     globeZoomRef.current = globeZoom;
   }, [rotation, globeZoom]);
+
+  // Report the current camera state up so App can put it in a share link.
+  useEffect(() => {
+    onViewChange?.({ g: isGlobe, r: rotation, z: globeZoom, t: [mapTransform.x, mapTransform.y, mapTransform.k] });
+  }, [isGlobe, rotation, globeZoom, mapTransform, onViewChange]);
 
   useEffect(() => {
     return () => {
