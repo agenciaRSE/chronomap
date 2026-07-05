@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Sun, Moon, Calendar, Download } from 'lucide-react';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
+import { part, fmt, offsetMin, hm24, ymdInTz, wallToUtc } from './lib/tz';
 import './lib/analytics';
 import './page.css';
 
@@ -13,28 +14,6 @@ const A = { city: meta('ct-a-city'), tz: meta('ct-a-tz') };
 const B = { city: meta('ct-b-city'), tz: meta('ct-b-tz') };
 
 const HM: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
-function part(now: Date, tz: string, opts: Intl.DateTimeFormatOptions, type: string) {
-  return new Intl.DateTimeFormat('en-US', { timeZone: tz, ...opts })
-    .formatToParts(now).find((p) => p.type === type)?.value ?? '';
-}
-function fmt(now: Date, tz: string, opts: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat('en-US', { timeZone: tz, ...opts }).format(now);
-}
-function offsetMin(now: Date, tz: string) {
-  const s = part(now, tz, { timeZoneName: 'shortOffset' }, 'timeZoneName'); // GMT+9, GMT, GMT-3:30
-  const m = s.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
-  if (!m) return 0;
-  return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] || 0));
-}
-// HH:mm (24h) of an instant in a zone — the value shape an <input type="time"> wants.
-const hm24 = (d: Date, tz: string) =>
-  new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
-// Calendar Y/M/D of an instant as seen in a zone.
-function ymdInTz(d: Date, tz: string) {
-  const p = new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d);
-  const g = (t: string) => Number(p.find((x) => x.type === t)?.value);
-  return { y: g('year'), mo: g('month'), d: g('day') };
-}
 
 // Converter: pick a wall-clock time in city A, see the equivalent in city B.
 const Converter: React.FC<{ now: Date }> = ({ now }) => {
@@ -42,12 +21,9 @@ const Converter: React.FC<{ now: Date }> = ({ now }) => {
   const hm = custom ?? hm24(now, A.tz);
   const [hh, mm] = hm.split(':').map(Number);
 
-  // Anchor to A's current calendar day, then resolve the wall time to a real UTC
-  // instant. ponytail: single-pass wall→UTC; the ambiguous DST-transition hour
-  // (once a year, ~2am) can be off by 1h. Good enough — no tz lib on this island.
+  // Resolve the chosen wall time on A's current calendar day to a real UTC instant.
   const { y, mo, d } = ymdInTz(now, A.tz);
-  const asUTC = Date.UTC(y, mo - 1, d, hh || 0, mm || 0);
-  const instant = new Date(asUTC - offsetMin(new Date(asUTC), A.tz) * 60000);
+  const instant = wallToUtc(y, mo, d, hh || 0, mm || 0, A.tz);
 
   const bTime = fmt(instant, B.tz, HM);
   const aDay = ymdInTz(instant, A.tz);

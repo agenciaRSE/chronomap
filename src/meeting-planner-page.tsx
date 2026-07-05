@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { X, Search, Users, Calendar, Download } from 'lucide-react';
 import citiesData from './cities.json';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
+import { ymdInTz, hourInTz, timeLabel, dayLabel, wallToUtc } from './lib/tz';
 import './lib/analytics';
 import './page.css';
 
@@ -18,24 +19,6 @@ const WORK_START = 9; // 09:00 inclusive
 const WORK_END = 18; // 18:00 exclusive
 const isWork = (h: number) => h >= WORK_START && h < WORK_END;
 const isNight = (h: number) => h < 7 || h >= 22;
-
-function offsetMin(d: Date, tz: string) {
-  const s = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' })
-    .formatToParts(d).find((p) => p.type === 'timeZoneName')?.value ?? '';
-  const m = s.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
-  return m ? (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] || 0)) : 0;
-}
-function ymdInTz(d: Date, tz: string) {
-  const p = new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d);
-  const g = (t: string) => Number(p.find((x) => x.type === t)?.value);
-  return { y: g('year'), mo: g('month'), d: g('day') };
-}
-const hourInTz = (d: Date, tz: string) =>
-  Number(new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', hour12: false }).format(d)) % 24;
-const timeLabel = (d: Date, tz: string) =>
-  new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit', hour12: true }).format(d);
-const dayLabel = (d: Date, tz: string) =>
-  new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric' }).format(d);
 const refHourLabel = (h: number) => (h === 0 ? '12a' : h < 12 ? `${h}a` : h === 12 ? '12p' : `${h - 12}p`);
 
 // A city whose IANA zone matches the visitor's, for a friendly first row.
@@ -74,10 +57,7 @@ const Planner: React.FC = () => {
   // 24 UTC instants, one per hour of the reference city's local day.
   const instants = useMemo(() => {
     const { y, mo, d } = dayKey;
-    return Array.from({ length: 24 }, (_, h) => {
-      const asUTC = Date.UTC(y, mo - 1, d, h, 0);
-      return new Date(asUTC - offsetMin(new Date(asUTC), ref.tz) * 60000);
-    });
+    return Array.from({ length: 24 }, (_, h) => wallToUtc(y, mo, d, h, 0, ref.tz));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref.tz, dayKey.y, dayKey.mo, dayKey.d]);
 
