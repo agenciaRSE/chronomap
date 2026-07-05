@@ -537,10 +537,11 @@ const App: React.FC = () => {
           </div>
 
           <div className="hidden md:block">
-            <h1 className="font-bold text-xl tracking-tight leading-none flex items-center gap-2">
-              ChronoMap <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v3.1.0</span>
-            </h1>
-            <span className="text-xs text-muted-foreground">{t('Temporal Geovisualization')}</span>
+            <div className="flex items-center gap-2">
+              <h1 className="font-bold text-xl tracking-tight leading-none">ChronoMap</h1>
+              <span className="px-1.5 py-0.5 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">v3.1.0</span>
+            </div>
+            <span className="text-xs text-muted-foreground">{t('World Clock & Time Zone Map')}</span>
           </div>
         </div>
         

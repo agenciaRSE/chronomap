@@ -25,7 +25,7 @@ const ES: Record<string, string> = {
   'Explore pages': 'Explorar páginas',
   'ChronoMap pages': 'Páginas de ChronoMap',
   // Header
-  'Temporal Geovisualization': 'Geovisualización temporal',
+  'World Clock & Time Zone Map': 'Reloj Mundial y Mapa de Husos Horarios',
   'Local Time': 'Hora local',
   'Share Timestamp': 'Compartir timestamp',
   'Share this view': 'Compartir esta vista',
