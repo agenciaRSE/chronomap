@@ -594,9 +594,9 @@ const App: React.FC = () => {
               </button>
              <button
                 onClick={() => setShowDiscordGen(true)}
-                className="flex items-center justify-center gap-2 px-2 md:px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/30 rounded-md transition-all group h-auto w-20 md:w-auto shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+                className="hidden md:flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/30 rounded-md transition-all group h-auto shadow-[0_0_15px_rgba(59,130,246,0.2)]"
               >
-                <Share2 className="w-3 h-3 transition-colors shrink-0 hidden md:block" />
+                <Share2 className="w-3 h-3 transition-colors shrink-0" />
                 <span className="text-center leading-tight">{t('Share Timestamp')}</span>
               </button>
            </div>
@@ -764,13 +764,13 @@ const App: React.FC = () => {
           </div>
 
           {/* Center: Play/Pause, Calendar & Back to Present */}
-          <div className="flex items-center justify-center gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg w-fit mx-auto md:col-span-1">
+          <div className="flex items-center justify-center gap-2 md:gap-3 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800/50 shadow-lg w-fit mx-auto md:col-span-1">
              <button 
                 onClick={() => setIsPaused(!isPaused)}
                 className={`p-2.5 rounded-lg transition-all flex items-center gap-2 ${isPaused ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'}`}
              >
                 {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
-                <span className="text-xs font-medium pr-1">{isPaused ? t('Resume') : t('Pause')}</span>
+                <span className="hidden md:inline text-xs font-medium pr-1">{isPaused ? t('Resume') : t('Pause')}</span>
              </button>
 
              <div className="h-6 w-[1px] bg-zinc-800"></div>
@@ -784,7 +784,7 @@ const App: React.FC = () => {
                       type="datetime-local"
                       value={format(timeState.current, "yyyy-MM-dd'T'HH:mm")}
                       onChange={handleCustomDateChange}
-                      className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-8 py-1 w-[220px] font-mono cursor-pointer"
+                      className="bg-transparent border-none text-xs text-zinc-300 focus:ring-0 pl-7 md:pl-8 py-1 w-[132px] md:w-[220px] font-mono cursor-pointer"
                       style={{ colorScheme: 'dark' }}
                     />
                 </div>
@@ -811,8 +811,13 @@ const App: React.FC = () => {
                 title={t('Back to Present')}
              >
                 <RotateCcw className={`w-4 h-4 ${timeState.mode !== 'live' ? 'animate-spin-slow' : ''}`} />
-                <span className="text-xs font-medium">{t('Live')}</span>
+                <span className="hidden md:inline text-xs font-medium">{t('Live')}</span>
              </button>
+
+             <div className="md:hidden h-6 w-[1px] bg-zinc-800"></div>
+             <div className="md:hidden">
+                <SiteMenu />
+             </div>
           </div>
 
           {/* Right: language switch + Explore menu (internal links to SEO pages) */}

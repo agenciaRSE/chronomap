@@ -12,6 +12,8 @@ async function startServer() {
   const PORT = 3000;
 
   // Security headers (mirrors vercel.json for local / self-hosted parity).
+  // Dev needs 'unsafe-inline' (react-refresh preamble) and ws: (HMR); prod CSP stays strict.
+  const isDev = process.env.NODE_ENV !== "production";
   app.use((_req, res, next) => {
     res.setHeader(
       "Content-Security-Policy",
@@ -24,11 +26,11 @@ async function startServer() {
         "img-src 'self' data: https:",
         "font-src 'self' https://fonts.gstatic.com data:",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "script-src 'self' https://va.vercel-scripts.com",
-        "connect-src 'self' https://vitals.vercel-insights.com",
+        `script-src 'self' https://va.vercel-scripts.com${isDev ? " 'unsafe-inline'" : ""}`,
+        `connect-src 'self' https://vitals.vercel-insights.com${isDev ? " ws:" : ""}`,
         "manifest-src 'self'",
         "worker-src 'self'",
-        "upgrade-insecure-requests",
+        ...(isDev ? [] : ["upgrade-insecure-requests"]),
       ].join("; ")
     );
     res.setHeader("X-Content-Type-Options", "nosniff");
