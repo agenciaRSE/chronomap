@@ -473,6 +473,116 @@ function comparePage(a, b) {
 `;
 }
 
+// Time-zone abbreviation comparators (/time/est-to-ist, /time/pst-to-gmt, …).
+// `tz` is the IANA zone users MEAN by the abbreviation (colloquial "EST" = US
+// Eastern Time including DST), `min` its STANDARD offset in minutes (for the
+// "normally X hours ahead" prose — the live island always shows the real gap).
+const ZONES = [
+  { slug: 'est',  abbr: 'EST',  name: 'Eastern Standard Time',             tz: 'America/New_York',    min: -300, off: 'UTC−5',    dst: 'EDT (UTC−4)' },
+  { slug: 'cst',  abbr: 'CST',  name: 'Central Standard Time',             tz: 'America/Chicago',     min: -360, off: 'UTC−6',    dst: 'CDT (UTC−5)', note: 'CST can also refer to China Standard Time (UTC+8); this page covers North American Central Time.' },
+  { slug: 'mst',  abbr: 'MST',  name: 'Mountain Standard Time',            tz: 'America/Denver',      min: -420, off: 'UTC−7',    dst: 'MDT (UTC−6)' },
+  { slug: 'pst',  abbr: 'PST',  name: 'Pacific Standard Time',             tz: 'America/Los_Angeles', min: -480, off: 'UTC−8',    dst: 'PDT (UTC−7)' },
+  { slug: 'gmt',  abbr: 'GMT',  name: 'Greenwich Mean Time',               tz: 'Etc/GMT',             min: 0,    off: 'UTC+0',    dst: null },
+  { slug: 'utc',  abbr: 'UTC',  name: 'Coordinated Universal Time',        tz: 'Etc/UTC',             min: 0,    off: 'UTC+0',    dst: null },
+  { slug: 'bst',  abbr: 'BST',  name: 'British Summer Time',               tz: 'Etc/GMT-1',           min: 60,   off: 'UTC+1',    dst: null, note: 'BST is the summer time of the United Kingdom; in winter the UK is on GMT (UTC+0).' },
+  { slug: 'cet',  abbr: 'CET',  name: 'Central European Time',             tz: 'Europe/Paris',        min: 60,   off: 'UTC+1',    dst: 'CEST (UTC+2)' },
+  { slug: 'ist',  abbr: 'IST',  name: 'India Standard Time',               tz: 'Asia/Kolkata',        min: 330,  off: 'UTC+5:30', dst: null },
+  { slug: 'gst',  abbr: 'GST',  name: 'Gulf Standard Time',                tz: 'Asia/Dubai',          min: 240,  off: 'UTC+4',    dst: null },
+  { slug: 'sgt',  abbr: 'SGT',  name: 'Singapore Time',                    tz: 'Asia/Singapore',      min: 480,  off: 'UTC+8',    dst: null },
+  { slug: 'hkt',  abbr: 'HKT',  name: 'Hong Kong Time',                    tz: 'Asia/Hong_Kong',      min: 480,  off: 'UTC+8',    dst: null },
+  { slug: 'jst',  abbr: 'JST',  name: 'Japan Standard Time',               tz: 'Asia/Tokyo',          min: 540,  off: 'UTC+9',    dst: null },
+  { slug: 'kst',  abbr: 'KST',  name: 'Korea Standard Time',               tz: 'Asia/Seoul',          min: 540,  off: 'UTC+9',    dst: null },
+  { slug: 'aest', abbr: 'AEST', name: 'Australian Eastern Standard Time',  tz: 'Australia/Sydney',    min: 600,  off: 'UTC+10',   dst: 'AEDT (UTC+11)' },
+];
+
+// "IST is normally 10 hours 30 minutes ahead of EST" (standard offsets; live
+// island shows the real current gap including DST).
+function zoneGapSentence(a, b) {
+  const diff = b.min - a.min;
+  if (diff === 0) return `${b.abbr} and ${a.abbr} share the same standard offset, so their clocks normally read the same time.`;
+  const abs = Math.abs(diff);
+  const h = Math.floor(abs / 60), m = abs % 60;
+  const span = `${h} hour${h === 1 ? '' : 's'}${m ? ` ${m} minutes` : ''}`;
+  return `${b.abbr} is normally ${span} ${diff > 0 ? 'ahead of' : 'behind'} ${a.abbr}.`;
+}
+
+function zoneDstSentence(z) {
+  return z.dst
+    ? `${z.abbr} is the standard time (${z.off}); when daylight saving is in effect it becomes ${z.dst}. The live clock on this page always shows the current offset.`
+    : `${z.abbr} stays at ${z.off} all year round — it does not observe daylight saving time.`;
+}
+
+function zoneComparePage(a, b) {
+  const an = esc(a.abbr), bn = esc(b.abbr), atz = esc(a.tz), btz = esc(b.tz);
+  const slug = `${a.slug}-to-${b.slug}`;
+  const gap = zoneGapSentence(a, b);
+  const notes = [a, b].filter((z) => z.note).map((z) => esc(z.note));
+  return `<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>${an} to ${bn} — Time Difference &amp; Converter | ChronoMap</title>
+    <meta name="description" content="Convert ${an} (${esc(a.name)}, ${esc(a.off)}) to ${bn} (${esc(b.name)}, ${esc(b.off)}). ${esc(gap)} See both live clocks and convert any time between ${an} and ${bn}." />
+    <meta name="keywords" content="${a.abbr} to ${b.abbr}, ${a.abbr} to ${b.abbr} converter, ${a.abbr} to ${b.abbr} time difference, convert ${a.abbr} to ${b.abbr}, ${a.name} to ${b.name}" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="${SITE}/time/${slug}" />
+    <meta name="ct-a-city" content="${an}" />
+    <meta name="ct-a-tz" content="${atz}" />
+    <meta name="ct-b-city" content="${bn}" />
+    <meta name="ct-b-tz" content="${btz}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${SITE}/time/${slug}" />
+    <meta property="og:title" content="${an} to ${bn} — Time Difference &amp; Converter" />
+    <meta property="og:description" content="${esc(gap)} Live clocks and converter between ${an} and ${bn}." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    ${HEAD_FONTS}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "What is the time difference between ${an} and ${bn}?", "acceptedAnswer": { "@type": "Answer", "text": "${gap} The live tool on this page shows the exact current difference, which already accounts for daylight saving time where it applies." } },
+          { "@type": "Question", "name": "What does ${an} stand for?", "acceptedAnswer": { "@type": "Answer", "text": "${an} stands for ${esc(a.name)}, at ${esc(a.off)}. ${zoneDstSentence(a)}" } },
+          { "@type": "Question", "name": "What does ${bn} stand for?", "acceptedAnswer": { "@type": "Answer", "text": "${bn} stands for ${esc(b.name)}, at ${esc(b.off)}. ${zoneDstSentence(b)}" } }
+        ]
+      }
+    </script>
+    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `${a.abbr} to ${b.abbr}`, path: `/time/${slug}` }])}
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    ${headerEn('')}
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        <h1 class="text-4xl sm:text-5xl md:text-[52px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">${an} to ${bn}</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">Convert ${esc(a.name)} (${an}) to ${esc(b.name)} (${bn}), live. ${esc(gap)} Pick any time below, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
+      </header>
+
+      <div class="w-full max-w-2xl mx-auto mb-14 reveal" style="animation-delay:.1s" id="compare-app">
+        <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading live ${an} and ${bn} clocks…</div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">${an} vs ${bn}</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p><strong class="text-zinc-200">${an}</strong> (${esc(a.name)}) runs at <strong class="text-zinc-200">${esc(a.off)}</strong> and <strong class="text-zinc-200">${bn}</strong> (${esc(b.name)}) at <strong class="text-zinc-200">${esc(b.off)}</strong>. ${esc(gap)}</p>
+          <p>${esc(zoneDstSentence(a))} ${esc(zoneDstSentence(b))}</p>
+          ${notes.length ? `<p>${notes.join(' ')}</p>` : ''}
+          <p>Looking for the reverse conversion? See <a href="/time/${b.slug}-to-${a.slug}" class="text-blue-400 hover:text-blue-300 transition-colors">${bn} to ${an}</a>. You can also browse every offset on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a> or line up several zones at once with the <a href="/meeting-planner" class="text-blue-400 hover:text-blue-300 transition-colors">meeting planner</a>.</p>
+        </div>
+      </section>
+
+      ${FOOTER}
+    </main>
+    <script type="module" src="/src/compare-page.tsx"></script>
+  </body>
+</html>
+`;
+}
+
 const REGION_ORDER = ['Americas', 'Europe', 'Africa', 'Asia', 'Oceania'];
 function regionOf(tz) {
   const p = tz.split('/')[0];
@@ -483,7 +593,7 @@ function regionOf(tz) {
   return 'Oceania'; // Australia/ + Pacific/
 }
 
-function timeIndexPage(cities, pairs) {
+function timeIndexPage(cities, pairs, zonePairs) {
   const byRegion = {};
   for (const c of cities) (byRegion[regionOf(c.tz)] ||= []).push(c);
   const regionsHtml = REGION_ORDER.filter((r) => byRegion[r]).map((r) => {
@@ -502,6 +612,10 @@ function timeIndexPage(cities, pairs) {
 
   const cmpHtml = pairs
     .map(([a, b]) => `<a href="/time/${a.slug}-to-${b.slug}" class="text-sm text-zinc-400 hover:text-blue-300 transition-colors py-1 truncate">${esc(a.name)} → ${esc(b.name)}</a>`)
+    .join('\n          ');
+
+  const zoneHtml = zonePairs
+    .map(([a, b]) => `<a href="/time/${a.slug}-to-${b.slug}" class="text-sm text-zinc-400 hover:text-blue-300 transition-colors py-1 truncate">${esc(a.abbr)} → ${esc(b.abbr)}</a>`)
     .join('\n          ');
 
   return `<!DOCTYPE html>
@@ -547,6 +661,14 @@ function timeIndexPage(cities, pairs) {
         </div>
       </section>
 
+      <section class="max-w-4xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Time zone converters</h2>
+        <p class="text-sm text-zinc-500 text-center mb-5 max-w-xl mx-auto">Convert between time zone abbreviations — EST, PST, GMT, IST and more — with live clocks and exact current differences.</p>
+        <div class="glass-panel rounded-2xl p-5 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-4">
+          ${zoneHtml}
+        </div>
+      </section>
+
       ${FOOTER}
     </main>
     <script type="module" src="/src/time-index-page.tsx"></script>
@@ -583,10 +705,19 @@ export function generate() {
     entries.push({ name: `cmp-${slug}`, file: filePath(`time/${slug}.html`) });
   }
 
+  // Time-zone abbreviation comparators (a≠b) — reuse the same compare island.
+  const zonePairs = [];
+  for (const a of ZONES) for (const b of ZONES) if (a.slug !== b.slug) zonePairs.push([a, b]);
+  for (const [a, b] of zonePairs) {
+    const slug = `${a.slug}-to-${b.slug}`;
+    writeFileSync(filePath(`time/${slug}.html`), zoneComparePage(a, b));
+    entries.push({ name: `zcmp-${slug}`, file: filePath(`time/${slug}.html`) });
+  }
+
   // Index/hub page served at /time — search + links to every city and comparison.
   // time/index.html so it coexists with the time/{slug}.html pages; Vercel's
   // cleanUrls serves it at /time.
-  writeFileSync(filePath('time/index.html'), timeIndexPage(cities, pairs));
+  writeFileSync(filePath('time/index.html'), timeIndexPage(cities, pairs, zonePairs));
   entries.push({ name: 'time-index', file: filePath('time/index.html') });
 
   const urls = [
@@ -611,6 +742,7 @@ export function generate() {
     ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),
     ...cities.filter((c) => ES_CITY[c.slug]).map((c) => ({ loc: `${SITE}/es/time/${c.slug}`, pri: '0.6', freq: 'weekly' })),
     ...pairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, pri: '0.6', freq: 'weekly' })),
+    ...zonePairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, pri: '0.6', freq: 'weekly' })),
   ];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -623,7 +755,7 @@ ${urls.map((u) => `  <url>
 </urlset>
 `;
   writeFileSync(filePath('public/sitemap.xml'), sitemap);
-  console.log(`[gen-city-pages] ${cities.length} cities + ${pairs.length} comparators, sitemap ${urls.length} urls.`);
+  console.log(`[gen-city-pages] ${cities.length} cities + ${pairs.length} comparators + ${zonePairs.length} zone converters, sitemap ${urls.length} urls.`);
   return entries;
 }
 
