@@ -87,6 +87,7 @@ const ES: Record<string, string> = {
   'Sunrise': 'Amanecer',
   'Sunset': 'Atardecer',
   'Day length': 'Duración del día',
+  'compared with': 'comparada con',
   'All times update in real-time': 'Todas las horas se actualizan en tiempo real',
   'Times update automatically every second · daylight saving handled': 'Las horas se actualizan cada segundo · horario de verano incluido',
   'Powered by': 'Con la tecnología de',

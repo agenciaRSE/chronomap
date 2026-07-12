@@ -103,7 +103,7 @@ const CityClock: React.FC = () => {
         <div className="relative">
           <div className="flex items-center justify-center gap-2 text-xs uppercase tracking-wider text-blue-400 mb-3">
             {isDay ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-blue-400" />}
-            Current time in {CITY}
+            {t('Current time in')} {CITY}
           </div>
           <div className="flex items-baseline justify-center gap-2">
             <span className="text-5xl sm:text-6xl md:text-7xl font-mono font-light text-white tracking-tight tabular-nums">{time}</span>
@@ -119,7 +119,7 @@ const CityClock: React.FC = () => {
       {Number.isFinite(LAT) && Number.isFinite(LNG) && <SunCard now={now} />}
 
       <div className="glass-panel rounded-2xl p-5 relative">
-        <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">{CITY} compared with</div>
+        <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">{CITY} {t('compared with')}</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {refs.map((r) => (
             <div key={r.tz} className="glass-card rounded-lg px-3 py-2.5 flex items-center justify-between gap-3">
