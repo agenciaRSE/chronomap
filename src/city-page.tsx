@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Sunrise, Sunset } from 'lucide-react';
+import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
 
 // Live clock for a /time/{city} page. Reads the target city + IANA time zone
-// from the ct-* meta tags the generator writes. SEO text is static HTML.
+// (and optional lat/lng for sun times) from the ct-* meta tags the generator writes.
+// SEO text is static HTML.
 
 const meta = (n: string) => document.querySelector(`meta[name="${n}"]`)?.getAttribute('content') ?? '';
 const CITY = meta('ct-city');
 const TZ = meta('ct-tz');
+const LAT = parseFloat(meta('ct-lat'));
+const LNG = parseFloat(meta('ct-lng'));
 
 const REF: { city: string; tz: string }[] = [
   { city: 'London', tz: 'Europe/London' },
@@ -29,6 +33,50 @@ function part(now: Date, tz: string, opts: Intl.DateTimeFormatOptions, type: str
 function fmt(now: Date, tz: string, opts: Intl.DateTimeFormatOptions) {
   return new Intl.DateTimeFormat('en-US', { timeZone: tz, ...opts }).format(now);
 }
+
+// Approximate sunrise/sunset for today in the city's calendar (NOAA-style
+// declination + equation of time, ±3 min). Null in polar day/night.
+function sunTimes(now: Date, lat: number, lng: number, tz: string) {
+  const ymd = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+  const [y, m, d] = ymd.split('-').map(Number);
+  const n = Math.floor((Date.UTC(y, m - 1, d) - Date.UTC(y, 0, 0)) / 86400000);
+  const rad = Math.PI / 180;
+  const decl = -23.44 * Math.cos(rad * (360 / 365) * (n + 10));
+  const B = rad * (360 / 365) * (n - 81);
+  const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B); // minutes
+  const cosH = (Math.sin(rad * -0.83) - Math.sin(rad * lat) * Math.sin(rad * decl)) / (Math.cos(rad * lat) * Math.cos(rad * decl));
+  if (cosH < -1 || cosH > 1) return null;
+  const H = Math.acos(cosH) / rad; // half day-arc in degrees; 1° = 4 min
+  const noonUtcMin = 720 - 4 * lng - eot;
+  const base = Date.UTC(y, m - 1, d);
+  return {
+    rise: new Date(base + (noonUtcMin - 4 * H) * 60000),
+    set: new Date(base + (noonUtcMin + 4 * H) * 60000),
+    dayMin: Math.round(8 * H),
+  };
+}
+
+const SunCard: React.FC<{ now: Date }> = ({ now }) => {
+  const s = sunTimes(now, LAT, LNG, TZ);
+  if (!s) return null;
+  const hm = (dt: Date) => `${part(dt, TZ, HM, 'hour')}:${part(dt, TZ, HM, 'minute')} ${part(dt, TZ, HM, 'dayPeriod')}`;
+  return (
+    <div className="glass-panel rounded-2xl p-5 grid grid-cols-3 gap-3 text-center">
+      <div>
+        <div className="flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider text-zinc-500 mb-1.5"><Sunrise className="w-3.5 h-3.5 text-amber-400" />{t('Sunrise')}</div>
+        <div className="font-mono text-sm text-white tabular-nums">{hm(s.rise)}</div>
+      </div>
+      <div>
+        <div className="flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider text-zinc-500 mb-1.5"><Sunset className="w-3.5 h-3.5 text-orange-400" />{t('Sunset')}</div>
+        <div className="font-mono text-sm text-white tabular-nums">{hm(s.set)}</div>
+      </div>
+      <div>
+        <div className="text-xs uppercase tracking-wider text-zinc-500 mb-1.5">{t('Day length')}</div>
+        <div className="font-mono text-sm text-white tabular-nums">{Math.floor(s.dayMin / 60)}h {String(s.dayMin % 60).padStart(2, '0')}m</div>
+      </div>
+    </div>
+  );
+};
 
 const CityClock: React.FC = () => {
   const [now, setNow] = useState<Date>(() => new Date());
@@ -67,6 +115,8 @@ const CityClock: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {Number.isFinite(LAT) && Number.isFinite(LNG) && <SunCard now={now} />}
 
       <div className="glass-panel rounded-2xl p-5 relative">
         <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">{CITY} compared with</div>

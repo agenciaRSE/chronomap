@@ -195,12 +195,182 @@ function dstSentenceEs(name, tz) {
 
 const LOGO_ES = LOGO.replace('href="/"', 'href="/es"');
 
+// ---- City enrichment: quick facts, best time to call, nearby cities ----
+// src/city-data.json: slug → [lat, lng, metro population in millions]. Cities
+// missing there (or countries missing a calling code) just skip that piece.
+const CITY_DATA = JSON.parse(readFileSync(filePath('src/city-data.json'), 'utf8'));
+
+const CALLING = {
+  'United Kingdom': '+44', 'United States': '+1', 'Japan': '+81', 'France': '+33',
+  'United Arab Emirates': '+971', 'Australia': '+61', 'Singapore': '+65', 'Hong Kong': '+852',
+  'China': '+86', 'India': '+91', 'Canada': '+1', 'Germany': '+49', 'Spain': '+34',
+  'Russia': '+7', 'Turkey': '+90', 'Brazil': '+55', 'South Korea': '+82', 'New Zealand': '+64',
+  'Mexico': '+52', 'Colombia': '+57', 'Peru': '+51', 'Chile': '+56', 'Argentina': '+54',
+  'Venezuela': '+58', 'Panama': '+507', 'Cuba': '+53', 'Uruguay': '+598', 'Italy': '+39',
+  'Netherlands': '+31', 'Austria': '+43', 'Switzerland': '+41', 'Belgium': '+32',
+  'Portugal': '+351', 'Ireland': '+353', 'Sweden': '+46', 'Norway': '+47', 'Denmark': '+45',
+  'Finland': '+358', 'Poland': '+48', 'Czechia': '+420', 'Hungary': '+36', 'Greece': '+30',
+  'Romania': '+40', 'Ukraine': '+380', 'Iceland': '+354', 'Egypt': '+20', 'Nigeria': '+234',
+  'Kenya': '+254', 'South Africa': '+27', 'Morocco': '+212', 'Ghana': '+233', 'Ethiopia': '+251',
+  'Saudi Arabia': '+966', 'Qatar': '+974', 'Kuwait': '+965', 'Iran': '+98', 'Iraq': '+964',
+  'Israel': '+972', 'Lebanon': '+961', 'Jordan': '+962', 'Pakistan': '+92', 'Bangladesh': '+880',
+  'Thailand': '+66', 'Indonesia': '+62', 'Philippines': '+63', 'Vietnam': '+84', 'Malaysia': '+60',
+  'Taiwan': '+886', 'Fiji': '+679', 'Guatemala': '+502', 'Costa Rica': '+506',
+  'Dominican Republic': '+1', 'Puerto Rico': '+1', 'Jamaica': '+1', 'Ecuador': '+593',
+  'Bolivia': '+591', 'Paraguay': '+595', 'Bulgaria': '+359', 'Serbia': '+381', 'Croatia': '+385',
+  'Slovakia': '+421', 'Slovenia': '+386', 'Lithuania': '+370', 'Latvia': '+371', 'Estonia': '+372',
+  'Belarus': '+375', 'Luxembourg': '+352', 'Oman': '+968', 'Bahrain': '+973', 'Azerbaijan': '+994',
+  'Georgia': '+995', 'Armenia': '+374', 'Tunisia': '+216', 'Algeria': '+213', 'Sudan': '+249',
+  'Tanzania': '+255', 'Uganda': '+256', 'Rwanda': '+250', 'Senegal': '+221', 'Ivory Coast': '+225',
+  'DR Congo': '+243', 'Angola': '+244', 'Zimbabwe': '+263', 'Mozambique': '+258',
+  'Sri Lanka': '+94', 'Nepal': '+977', 'Myanmar': '+95', 'Cambodia': '+855',
+};
+
+const offLabel = (min) => {
+  const sign = min < 0 ? '−' : '+';
+  const a = Math.abs(min);
+  return `UTC${sign}${Math.floor(a / 60)}${a % 60 ? ':' + String(a % 60).padStart(2, '0') : ''}`;
+};
+
+// January vs July offsets — a season-proof, static way to state the UTC offset.
+function seasonalOffsets(tz) {
+  const y = DST_NOW.getUTCFullYear();
+  return {
+    jan: offsetMinutes(new Date(Date.UTC(y, 0, 15)), tz),
+    jul: offsetMinutes(new Date(Date.UTC(y, 6, 15)), tz),
+  };
+}
+const offsetFacts = (tz, esLang) => {
+  const { jan, jul } = seasonalOffsets(tz);
+  if (jan === jul) return esLang ? `${offLabel(jan)} todo el año` : `${offLabel(jan)} all year`;
+  return esLang ? `${offLabel(jan)} (enero) / ${offLabel(jul)} (julio)` : `${offLabel(jan)} (January) / ${offLabel(jul)} (July)`;
+};
+
+// Minutes-of-day → "9:30 AM" (handles half-hour zones; wraps past midnight).
+const fmtMin = (m) => {
+  m = ((m % 1440) + 1440) % 1440;
+  const h = Math.floor(m / 60), mm = m % 60;
+  const ap = h < 12 ? 'AM' : 'PM';
+  const hh = h % 12 === 0 ? 12 : h % 12;
+  return `${hh}:${String(mm).padStart(2, '0')} ${ap}`;
+};
+
+// Largest overlap between the city-local window [s, s+480] (ref 9-17 mapped into
+// city time) and local business hours 9:00-17:00. Split when it wraps midnight.
+function businessOverlap(s) {
+  const a = ((s % 1440) + 1440) % 1440, b = a + 480;
+  const segs = b <= 1440 ? [[a, b]] : [[a, 1440], [0, b - 1440]];
+  let best = null;
+  for (const [x, y] of segs) {
+    const lo = Math.max(x, 540), hi = Math.min(y, 1020);
+    if (hi - lo >= 60 && (!best || hi - lo > best[1] - best[0])) best = [lo, hi];
+  }
+  return best;
+}
+
+// Static "best time to call" facts vs a reference city. Offsets are taken at
+// build time; they drift at most 1h between deploys around DST switches, and
+// the live clocks on the page always show the exact current times.
+function callInfo(name, tz, refName, refTz, esLang) {
+  const d = offsetMinutes(DST_NOW, tz) - offsetMinutes(DST_NOW, refTz);
+  const s = 9 * 60 + d;
+  const window = `${fmtMin(s)}–${fmtMin(s + 480)}`;
+  const ov = businessOverlap(s);
+  if (esLang) {
+    const sentence = `Cuando en ${refName} son las 9:00 AM–5:00 PM, en ${name} son las ${window}.`;
+    const rec = ov
+      ? `La mejor franja para llamadas de trabajo es aproximadamente ${fmtMin(ov[0])}–${fmtMin(ov[1])}, hora de ${name}.`
+      : `Apenas hay solapamiento en horario laboral: apunta a primera hora de la mañana o última de la tarde.`;
+    return { sentence, rec };
+  }
+  const sentence = `When it's 9:00 AM–5:00 PM in ${refName}, it's ${window} in ${name}.`;
+  const rec = ov
+    ? `The best window for business calls is roughly ${fmtMin(ov[0])}–${fmtMin(ov[1])} ${name} time.`
+    : `There is little or no business-hours overlap — aim for early morning or late evening instead.`;
+  return { sentence, rec };
+}
+
+const havKm = ([la1, lo1], [la2, lo2]) => {
+  const r = Math.PI / 180;
+  const x = Math.sin(((la2 - la1) * r) / 2) ** 2 +
+    Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin(((lo2 - lo1) * r) / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(x));
+};
+
+// Enrichment HTML for a city page. x = { d: [lat,lng,popM]|undefined, call,
+// nearby: [{o, km}] }. Returns static sections + an extra best-time-to-call FAQ
+// (HTML + JSON-LD fragment) + lat/lng meta tags for the island's sun times.
+function cityEnrichment(c, x, esLang) {
+  const name = esc(esLang ? x.esName : c.name);
+  const country = esc(esLang ? x.esCountry : c.country);
+  const L = esLang
+    ? { facts: `Datos rápidos de ${name}`, country: 'País', tz: 'Zona horaria', off: 'Offset UTC', code: 'Prefijo telefónico', pop: 'Población (área metro, aprox.)', coords: 'Coordenadas', call: `Mejor hora para llamar a ${name}`, near: `Ciudades cerca de ${name}`, faqQ: (ref) => `¿Cuál es la mejor hora para llamar a ${name} desde ${ref}?` }
+    : { facts: `${name} quick facts`, country: 'Country', tz: 'Time zone', off: 'UTC offset', code: 'Calling code', pop: 'Population (metro area, approx.)', coords: 'Coordinates', call: `Best time to call ${name}`, near: `Cities near ${name}`, faqQ: (ref) => `What is the best time to call ${name} from ${ref}?` };
+
+  const metas = x.d ? `\n    <meta name="ct-lat" content="${x.d[0]}" />\n    <meta name="ct-lng" content="${x.d[1]}" />` : '';
+
+  const row = (dt, dd) => `<div class="flex justify-between gap-4 border-b border-white/5 pb-2"><dt class="text-zinc-500">${dt}</dt><dd class="text-zinc-200 text-right">${dd}</dd></div>`;
+  const rows = [
+    row(L.country, country),
+    row(L.tz, esc(c.tz)),
+    row(L.off, offsetFacts(c.tz, esLang)),
+    x.call ? row(L.code, x.call) : '',
+    x.d ? row(L.pop, `≈ ${x.d[2]} ${esLang ? 'millones' : 'million'}`) : '',
+    x.d ? row(L.coords, `${Math.abs(x.d[0])}°${x.d[0] < 0 ? 'S' : 'N'}, ${Math.abs(x.d[1])}°${x.d[1] < 0 ? 'W' : 'E'}`) : '',
+  ].filter(Boolean).join('\n          ');
+  const factsHtml = `<section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-5">${L.facts}</h2>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+          ${rows}
+        </dl>
+      </section>`;
+
+  // Reference cities: Madrid + New York for ES readers, New York + London for EN.
+  const refs = (esLang
+    ? [['Madrid', 'Europe/Madrid'], ['Nueva York', 'America/New_York']]
+    : [['New York', 'America/New_York'], ['London', 'Europe/London']]
+  ).filter(([, tz]) => tz !== c.tz);
+  const calls = refs.map(([rn, rtz]) => callInfo(name, c.tz, rn, rtz, esLang));
+  const callHtml = refs.length ? `<section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">${L.call}</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          ${calls.map((ci) => `<p>${esc(ci.sentence)} ${esc(ci.rec)}</p>`).join('\n          ')}
+        </div>
+      </section>` : '';
+
+  const nearHtml = x.nearby.length ? `<section class="max-w-2xl w-full mx-auto mb-14 reveal text-center">
+        <h2 class="text-xl font-semibold text-white mb-5">${L.near}</h2>
+        <div class="flex flex-wrap gap-2 justify-center">
+          ${x.nearby.map(({ o, km }) => {
+            const href = esLang && ES_CITY[o.slug] ? `/es/time/${o.slug}` : `/time/${o.slug}`;
+            const oname = esLang && ES_CITY[o.slug] ? ES_CITY[o.slug].name : o.name;
+            return `<a href="${href}" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">${esc(oname)} <span class="text-zinc-500">· ${Math.round(km / 10) * 10} km</span></a>`;
+          }).join('\n          ')}
+        </div>
+      </section>` : '';
+
+  // Extra FAQ: best time to call from the first reference city.
+  let faqHtml = '', faqLd = '';
+  if (refs.length) {
+    const q = L.faqQ(refs[0][0]);
+    const a = `${calls[0].sentence} ${calls[0].rec}`;
+    faqHtml = `<details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>${esc(q)}</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${esc(a)}</p>
+          </details>`;
+    faqLd = `,\n          { "@type": "Question", "name": "${q}", "acceptedAnswer": { "@type": "Answer", "text": "${a}" } }`;
+  }
+
+  return { metas, sectionsHtml: `${factsHtml}\n\n      ${callHtml}\n\n      ${nearHtml}`, faqHtml, faqLd };
+}
+
 // Spanish per-city page for /es/time/{slug}. Same React island (city-page.tsx)
 // reads the ct-* meta; only the static SEO content is translated.
-function cityPageEs(c, es) {
+function cityPageEs(c, es, x) {
   const name = esc(es.name), country = esc(es.country), tz = esc(c.tz);
   const tzLabel = tzLabelOf(tz);
   const dst = dstSentenceEs(name, c.tz);
+  const enr = cityEnrichment(c, { ...x, esName: es.name, esCountry: es.country }, true);
   return `<!DOCTYPE html>
 <html lang="es" class="dark scroll-smooth">
   <head>
@@ -218,7 +388,7 @@ function cityPageEs(c, es) {
     <link rel="alternate" hreflang="x-default" href="${SITE}/time/${c.slug}" />
     <meta name="ct-city" content="${name}" />
     <meta name="ct-country" content="${country}" />
-    <meta name="ct-tz" content="${tz}" />
+    <meta name="ct-tz" content="${tz}" />${enr.metas}
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${SITE}/es/time/${c.slug}" />
     <meta property="og:title" content="Hora actual en ${name} — Hora local en vivo" />
@@ -234,7 +404,7 @@ function cityPageEs(c, es) {
         "mainEntity": [
           { "@type": "Question", "name": "¿En qué zona horaria está ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${name} está en la zona horaria ${tz}. El reloj en vivo de arriba muestra su offset UTC actual, que ya tiene en cuenta el horario de verano donde aplica." } },
           { "@type": "Question", "name": "¿${name} observa el horario de verano?", "acceptedAnswer": { "@type": "Answer", "text": "Las horas mostradas para ${name} usan su zona horaria IANA actual (${tz}), así que el horario de verano se refleja automáticamente cuando ${country} lo observa." } },
-          { "@type": "Question", "name": "¿Cuándo cambian los relojes en ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${dst}" } }
+          { "@type": "Question", "name": "¿Cuándo cambian los relojes en ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${dst}" } }${enr.faqLd}
         ]
       }
     </script>
@@ -271,6 +441,8 @@ function cityPageEs(c, es) {
         </div>
       </section>
 
+      ${enr.sectionsHtml}
+
       <section class="max-w-2xl w-full mx-auto mb-14 reveal">
         <h2 class="text-xl font-semibold text-white mb-5 text-center">Preguntas frecuentes</h2>
         <div class="space-y-3">
@@ -286,6 +458,7 @@ function cityPageEs(c, es) {
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cuándo cambian los relojes en ${name}?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
             <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${dst}</p>
           </details>
+          ${enr.faqHtml}
         </div>
       </section>
 
@@ -314,10 +487,11 @@ function cityPageEs(c, es) {
 `;
 }
 
-function cityPage(c, hasEs) {
+function cityPage(c, hasEs, x) {
   const name = esc(c.name), country = esc(c.country), tz = esc(c.tz);
   const tzLabel = tzLabelOf(tz);
   const dst = dstSentence(name, c.tz);
+  const enr = cityEnrichment(c, x, false);
   const esAlt = hasEs
     ? `\n    <link rel="alternate" hreflang="en" href="${SITE}/time/${c.slug}" />\n    <link rel="alternate" hreflang="es" href="${SITE}/es/time/${c.slug}" />\n    <link rel="alternate" hreflang="x-default" href="${SITE}/time/${c.slug}" />`
     : '';
@@ -339,7 +513,7 @@ function cityPage(c, hasEs) {
     <link rel="canonical" href="${SITE}/time/${c.slug}" />${esAlt}
     <meta name="ct-city" content="${name}" />
     <meta name="ct-country" content="${country}" />
-    <meta name="ct-tz" content="${tz}" />
+    <meta name="ct-tz" content="${tz}" />${enr.metas}
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${SITE}/time/${c.slug}" />
     <meta property="og:title" content="Current Time in ${name} — Live Local Time" />
@@ -353,7 +527,7 @@ function cityPage(c, hasEs) {
         "mainEntity": [
           { "@type": "Question", "name": "What time zone is ${name} in?", "acceptedAnswer": { "@type": "Answer", "text": "${name} is in the ${tz} time zone. The live clock above shows its current UTC offset, which already accounts for daylight saving time where it applies." } },
           { "@type": "Question", "name": "Does ${name} observe daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "The times shown for ${name} use its current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it." } },
-          { "@type": "Question", "name": "When do the clocks change in ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${dst}" } }
+          { "@type": "Question", "name": "When do the clocks change in ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${dst}" } }${enr.faqLd}
         ]
       }
     </script>
@@ -381,6 +555,8 @@ function cityPage(c, hasEs) {
         </div>
       </section>
 
+      ${enr.sectionsHtml}
+
       <section class="max-w-2xl w-full mx-auto mb-14 reveal">
         <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
         <div class="space-y-3">
@@ -396,6 +572,7 @@ function cityPage(c, hasEs) {
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>When do the clocks change in ${name}?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
             <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${dst}</p>
           </details>
+          ${enr.faqHtml}
         </div>
       </section>
 
@@ -685,12 +862,27 @@ export function generate() {
 
   const entries = [];
 
+  // Enrichment inputs per city: coords/population + calling code + 6 nearest
+  // cities (haversine over city-data.json; cities without data get none).
+  const enrichOf = (c) => {
+    const d = CITY_DATA[c.slug];
+    const nearby = d
+      ? cities
+          .filter((o) => o.slug !== c.slug && CITY_DATA[o.slug])
+          .map((o) => ({ o, km: havKm(d, CITY_DATA[o.slug]) }))
+          .sort((p, q) => p.km - q.km)
+          .slice(0, 6)
+      : [];
+    return { d, call: CALLING[c.country] || null, nearby };
+  };
+
   for (const c of cities) {
     const es = ES_CITY[c.slug];
-    writeFileSync(filePath(`time/${c.slug}.html`), cityPage(c, !!es));
+    const x = enrichOf(c);
+    writeFileSync(filePath(`time/${c.slug}.html`), cityPage(c, !!es, x));
     entries.push({ name: `time-${c.slug}`, file: filePath(`time/${c.slug}.html`) });
     if (es) {
-      writeFileSync(filePath(`es/time/${c.slug}.html`), cityPageEs(c, es));
+      writeFileSync(filePath(`es/time/${c.slug}.html`), cityPageEs(c, es, x));
       entries.push({ name: `es-time-${c.slug}`, file: filePath(`es/time/${c.slug}.html`) });
     }
   }
