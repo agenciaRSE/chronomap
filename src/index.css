@@ -18,6 +18,49 @@ body {
   background-size: 24px 24px;
 }
 
+/* PWA window-controls-overlay support.
+   When installed with `display_override: window-controls-overlay`, the top bar
+   sits where the OS titlebar used to be, so it has to provide the drag surface
+   itself and stay clear of the window control buttons. */
+.app-drag {
+  -webkit-app-region: drag;
+  app-region: drag;
+  /* A drag region can't be text-selected anyway; avoid the selection flicker. */
+  user-select: none;
+}
+
+.app-no-drag {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  user-select: auto;
+}
+
+/* Titlebar strip: full width in a browser tab, inset to the overlay's safe
+   area (past the traffic lights / window buttons) when installed. */
+.titlebar-strip {
+  height: max(2.5rem, env(titlebar-area-height, 0px));
+}
+
+/* Keep the app content below the strip, whatever height the overlay reports. */
+.titlebar-offset {
+  padding-top: max(2.5rem, env(titlebar-area-height, 0px));
+}
+
+.titlebar-safe-area {
+  margin-left: env(titlebar-area-x, 0px);
+  width: env(titlebar-area-width, 100%);
+}
+
+.wco-only {
+  display: none;
+}
+
+@media (display-mode: window-controls-overlay) {
+  .wco-only {
+    display: flex;
+  }
+}
+
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }

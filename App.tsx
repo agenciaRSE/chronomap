@@ -509,7 +509,7 @@ const App: React.FC = () => {
   const offsetInfo = getOffsetDisplay();
 
   return (
-    <div className="flex flex-col h-[100dvh] text-foreground font-sans overflow-hidden selection:bg-primary/30 relative bg-black pt-10">
+    <div className="flex flex-col h-[100dvh] text-foreground font-sans overflow-hidden selection:bg-primary/30 relative bg-black titlebar-offset">
       <NewsTicker />
       
       {/* Header */}
