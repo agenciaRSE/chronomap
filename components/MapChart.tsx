@@ -638,7 +638,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   };
 
   return (
-    <div ref={containerRef} className="w-full h-full min-h-[400px] relative overflow-hidden bg-black shadow-inner">
+    <div ref={containerRef} className="w-full h-full md:min-h-[400px] relative overflow-hidden bg-black shadow-inner">
       <div className="absolute inset-0 pointer-events-none dot-pattern opacity-20" />
       
       {isGlobe && (
@@ -710,7 +710,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
          </g>
       </svg>
       
-      <div className="absolute bottom-40 md:bottom-6 right-4 md:right-6 flex flex-col gap-2 z-40">
+      <div className="absolute bottom-4 md:bottom-6 right-4 md:right-6 flex flex-col gap-2 z-40">
         <button 
           onClick={() => {
             const nextIsGlobe = !isGlobe;

@@ -719,7 +719,7 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 items-center gap-4 p-4">
           
           {/* Left: Time Stepping */}
-          <div className="flex items-center justify-center md:justify-start gap-3">
+          <div className="hidden md:flex items-center justify-start gap-3">
             <button 
               onClick={() => handleTimeShift(-1)} 
               className="p-2.5 bg-zinc-900/50 hover:bg-zinc-800 rounded-xl text-zinc-400 hover:text-white transition-all border border-zinc-800 hover:border-zinc-700 shadow-sm"
