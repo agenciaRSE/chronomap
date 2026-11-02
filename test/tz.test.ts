@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { offsetMin, hm24, ymdInTz, hourInTz, timeLabel, dayLabel, wallToUtc } from '../src/lib/tz';
+import { offsetMin, hm24, ymdInTz, hourInTz, timeLabel, dayLabel, wallToUtc, dayDelta, utcLabel } from '../src/lib/tz';
 
 // Fixed instants (UTC) so results are deterministic regardless of when tests run.
 const SUMMER = new Date('2026-07-06T12:00:00Z'); // northern-hemisphere DST active
@@ -51,4 +51,26 @@ test('timeLabel / dayLabel format for humans', () => {
   const t = wallToUtc(2026, 7, 6, 15, 0, 'Europe/London'); // 15:00 BST
   assert.equal(timeLabel(t, 'Europe/London'), '3:00 PM');
   assert.equal(dayLabel(t, 'Europe/London'), 'Mon, Jul 6');
+});
+
+test('wallToUtc resolves wall times close to a DST change', () => {
+  // Sydney leaves DST at 16:00 UTC on 2026-04-04 (03:00 local on the 5th). 01:00 local is
+  // still +11, even though 01:00 read as UTC falls after the change.
+  assert.equal(wallToUtc(2026, 4, 5, 1, 0, 'Australia/Sydney').toISOString(), '2026-04-04T14:00:00.000Z');
+  assert.equal(wallToUtc(2026, 4, 5, 9, 0, 'Australia/Sydney').toISOString(), '2026-04-04T23:00:00.000Z');
+  // New York's change is at 06:00 UTC on 2026-11-01; 03:00 local read as UTC falls before it.
+  assert.equal(wallToUtc(2026, 11, 1, 3, 0, 'America/New_York').toISOString(), '2026-11-01T08:00:00.000Z');
+});
+
+test('dayDelta and utcLabel describe a conversion', () => {
+  // 9:00 PM PST = 05:00 UTC next day = 2:00 PM JST next day.
+  const i = wallToUtc(2026, 1, 15, 21, 0, 'America/Los_Angeles');
+  assert.equal(hm24(i, 'Asia/Tokyo'), '14:00');
+  assert.equal(dayDelta(i, 'America/Los_Angeles', 'Asia/Tokyo'), 1);
+  assert.equal(dayDelta(i, 'Asia/Tokyo', 'America/Los_Angeles'), -1);
+  // 2:00 PM AEST (winter in Sydney, no DST) = 12:00 PM SGT.
+  assert.equal(hm24(wallToUtc(2026, 7, 6, 14, 0, 'Australia/Sydney'), 'Asia/Singapore'), '12:00');
+  assert.equal(utcLabel(-240), 'UTC−4');
+  assert.equal(utcLabel(330), 'UTC+5:30');
+  assert.equal(utcLabel(0), 'UTC+0');
 });

@@ -86,6 +86,8 @@ export default defineConfig({
         jetlag_es: fileURLToPath(new URL('./es/jet-lag-calculator.html', import.meta.url)),
         route: fileURLToPath(new URL('./flight-route-map.html', import.meta.url)),
         route_es: fileURLToPath(new URL('./es/flight-route-map.html', import.meta.url)),
+        converter: fileURLToPath(new URL('./time-zone-converter.html', import.meta.url)),
+        converter_es: fileURLToPath(new URL('./es/time-zone-converter.html', import.meta.url)),
         about: fileURLToPath(new URL('./about.html', import.meta.url)),
         about_es: fileURLToPath(new URL('./es/about.html', import.meta.url)),
         privacy: fileURLToPath(new URL('./privacy.html', import.meta.url)),

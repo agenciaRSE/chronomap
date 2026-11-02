@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Time Zone Converter: EST, PST, GMT, IST, SGT and 200 Cities | ChronoMap</title>
+    <meta name="description" content="Convert any time and date between time zones and cities. See the result with UTC offsets, the day it falls on and how daylight saving changes it." />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/time-zone-converter" />
+    <link rel="alternate" hreflang="en" href="https://www.chronomap.top/time-zone-converter" />
+    <link rel="alternate" hreflang="es" href="https://www.chronomap.top/es/time-zone-converter" />
+    <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/time-zone-converter" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/time-zone-converter" />
+    <meta property="og:title" content="Time Zone Converter" />
+    <meta property="og:description" content="Convert any time and date between time zones and cities. See the result with UTC offsets, the day it falls on and how daylight saving changes it." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+      {"@context": "https://schema.org", "@type": "WebApplication", "name": "Time Zone Converter", "url": "https://www.chronomap.top/time-zone-converter", "inLanguage": "en", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "description": "Convert any time and date between time zones and cities. See the result with UTC offsets, the day it falls on and how daylight saving changes it.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@id": "https://agenciarse.com/#organization"}}
+    </script>
+    <script type="application/ld+json">
+      {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "en", "mainEntity": [{"@type": "Question", "name": "What is the difference between EST and EDT?", "acceptedAnswer": {"@type": "Answer", "text": "EST is UTC−5 and EDT is UTC−4. New York uses EDT from March to November and EST the rest of the year. Many people write EST all year, so this converter follows the clock in New York on your chosen date."}}, {"@type": "Question", "name": "Does the converter handle daylight saving time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It uses the rules in the IANA Time Zone Database for the date you pick, so a conversion for January and one for July can give different results."}}, {"@type": "Question", "name": "Why does the result say next day or previous day?", "acceptedAnswer": {"@type": "Answer", "text": "The two places can be on different calendar dates at the same moment. The label shows the date in the second place compared with the first."}}, {"@type": "Question", "name": "Can I share a conversion?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The page address updates as you change the zones, time and date, so you can copy the link and the other person sees the same conversion."}}]}
+    </script>
+    <script type="application/ld+json">
+      {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chronomap.top/"}, {"@type": "ListItem", "position": 2, "name": "Time Zone Converter", "item": "https://www.chronomap.top/time-zone-converter"}]}
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/" class="inline-flex items-center gap-2 group shrink-0" aria-label="ChronoMap home">
+          <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Time zones</a>
+          <a href="/time-zone-converter" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Converter</a>
+          <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Planner</a>
+          <a href="/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Flight time</a>
+          <a href="/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Jet lag</a>
+          <a href="/flight-route-map" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Route</a>
+          <a href="/es/time-zone-converter" hreflang="es" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">ES</a>
+        </div>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-8 reveal">
+        <h1 class="text-4xl sm:text-5xl leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Time Zone Converter</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">Pick two zones or cities, a time and a date. The result accounts for daylight saving on that exact date.</p>
+      </header>
+
+      <div class="w-full max-w-2xl mx-auto mb-14 reveal" style="animation-delay:.1s" id="converter-app">
+        <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading the converter…</div>
+      </div>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">How to convert a time by hand</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <p>Move through UTC: subtract the first zone's offset from the time, then add the second zone's offset.</p>
+          <p><strong class="text-zinc-200">Example: 2:00 PM AEST to SGT.</strong> AEST is UTC+10, so 14:00 minus 10 hours is 04:00 UTC. SGT is UTC+8, so 04:00 plus 8 hours is 12:00 PM.</p>
+          <p><strong class="text-zinc-200">Example: 9:00 PM PST to JST.</strong> PST is UTC−8, so 21:00 plus 8 hours is 05:00 UTC the next day. JST is UTC+9, so the result is 2:00 PM the next day.</p>
+          <p>The offset depends on the date. New York is UTC−5 in January and UTC−4 in July, which is why this converter asks for a date as well as a time.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Common abbreviations</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <p>In this converter, EST, CST, MST, PST, CET and AEST follow the real clock of their region on the date you choose. EST on a July date therefore uses UTC−4, which is strictly EDT, because that is what most people mean when they write EST all year.</p>
+          <div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead><tr class="text-zinc-500 border-b border-white/10"><th scope="col" class="py-2 pr-3 font-medium">Abbreviation</th><th scope="col" class="py-2 pr-3 font-medium">Name</th><th scope="col" class="py-2 pr-3 font-medium">Standard offset</th><th scope="col" class="py-2 pr-3 font-medium">During daylight saving</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">EST</td><td class="py-2 pr-3">Eastern Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC−5</td><td class="py-2 font-mono text-xs">EDT (UTC−4)</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">CST</td><td class="py-2 pr-3">Central Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC−6</td><td class="py-2 font-mono text-xs">CDT (UTC−5)</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">MST</td><td class="py-2 pr-3">Mountain Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC−7</td><td class="py-2 font-mono text-xs">MDT (UTC−6)</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">PST</td><td class="py-2 pr-3">Pacific Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC−8</td><td class="py-2 font-mono text-xs">PDT (UTC−7)</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">GMT</td><td class="py-2 pr-3">Greenwich Mean Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+0</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">UTC</td><td class="py-2 pr-3">Coordinated Universal Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+0</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">BST</td><td class="py-2 pr-3">British Summer Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+1</td><td class="py-2 font-mono text-xs">Summer only; GMT in winter</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">CET</td><td class="py-2 pr-3">Central European Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+1</td><td class="py-2 font-mono text-xs">CEST (UTC+2)</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">IST</td><td class="py-2 pr-3">India Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+5:30</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">GST</td><td class="py-2 pr-3">Gulf Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+4</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">SGT</td><td class="py-2 pr-3">Singapore Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+8</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">HKT</td><td class="py-2 pr-3">Hong Kong Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+8</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">JST</td><td class="py-2 pr-3">Japan Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+9</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">KST</td><td class="py-2 pr-3">Korea Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+9</td><td class="py-2 font-mono text-xs">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3 font-mono text-zinc-200">AEST</td><td class="py-2 pr-3">Australian Eastern Standard Time</td><td class="py-2 pr-3 font-mono whitespace-nowrap">UTC+10</td><td class="py-2 font-mono text-xs">AEDT (UTC+11)</td></tr></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Abbreviations that mean more than one zone</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong class="text-zinc-200">CST</strong>: US Central (UTC−6), China (UTC+8) or Cuba (UTC−5). This converter uses US Central. For China, choose Shanghai.</li>
+            <li><strong class="text-zinc-200">IST</strong>: India (UTC+5:30), Israel (UTC+2) or Irish Summer Time (UTC+1). This converter uses India. For the others, choose Jerusalem or Dublin if listed.</li>
+            <li><strong class="text-zinc-200">BST</strong>: British Summer Time (UTC+1) or Bangladesh (UTC+6). This converter uses a fixed UTC+1. For the UK all year, choose London.</li>
+            <li><strong class="text-zinc-200">GST</strong>: Gulf (UTC+4) or South Georgia (UTC−2). This converter uses Gulf.</li>
+          </ul>
+          <p>When a message only gives an abbreviation, ask which zone is meant, or choose the city instead.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal text-center">
+        <h2 class="text-xl font-semibold text-white mb-5">Popular conversions</h2>
+        <div class="flex flex-wrap gap-2 justify-center">
+          <a href="/time/est-to-sgt" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">EST → SGT</a>
+          <a href="/time/gmt-to-sgt" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">GMT → SGT</a>
+          <a href="/time/bst-to-sgt" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">BST → SGT</a>
+          <a href="/time/cet-to-ist" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">CET → IST</a>
+          <a href="/time/aest-to-sgt" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">AEST → SGT</a>
+          <a href="/time/cet-to-sgt" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">CET → SGT</a>
+          <a href="/time/est-to-bst" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">EST → BST</a>
+          <a href="/time/gmt-to-pst" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">GMT → PST</a>
+          <a href="/time/cet-to-est" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">CET → EST</a>
+          <a href="/time/ist-to-bst" class="glass-card card-hover rounded-lg px-3 py-2 text-sm text-zinc-300 hover:text-blue-300 transition-colors">IST → BST</a>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal">
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
+        <div class="space-y-3">
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>What is the difference between EST and EDT?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">EST is UTC−5 and EDT is UTC−4. New York uses EDT from March to November and EST the rest of the year. Many people write EST all year, so this converter follows the clock in New York on your chosen date.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does the converter handle daylight saving time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. It uses the rules in the IANA Time Zone Database for the date you pick, so a conversion for January and one for July can give different results.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Why does the result say next day or previous day?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">The two places can be on different calendar dates at the same moment. The label shows the date in the second place compared with the first.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Can I share a conversion?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. The page address updates as you change the zones, time and date, so you can copy the link and the other person sees the same conversion.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="w-full text-center mt-2">
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+          <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
+          <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
+          <a href="/meeting-planner" class="hover:text-zinc-300 transition-colors">Meeting planner</a>
+          <a href="/about" class="hover:text-zinc-300 transition-colors">About</a>
+          <a href="/privacy" class="hover:text-zinc-300 transition-colors">Privacy</a>
+          <a href="/es/time-zone-converter" class="hover:text-zinc-300 transition-colors" hreflang="es">Español</a>
+        </nav>
+      </footer>
+    </main>
+    <script type="module" src="/src/converter-page.tsx"></script>
+  </body>
+</html>

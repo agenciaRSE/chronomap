@@ -1,0 +1,17 @@
+[
+  { "slug": "est", "abbr": "EST", "name": "Eastern Standard Time", "tz": "America/New_York", "min": -300, "off": "UTC−5", "dst": "EDT (UTC−4)" },
+  { "slug": "cst", "abbr": "CST", "name": "Central Standard Time", "tz": "America/Chicago", "min": -360, "off": "UTC−6", "dst": "CDT (UTC−5)", "note": "CST can also refer to China Standard Time (UTC+8); this page covers North American Central Time." },
+  { "slug": "mst", "abbr": "MST", "name": "Mountain Standard Time", "tz": "America/Denver", "min": -420, "off": "UTC−7", "dst": "MDT (UTC−6)" },
+  { "slug": "pst", "abbr": "PST", "name": "Pacific Standard Time", "tz": "America/Los_Angeles", "min": -480, "off": "UTC−8", "dst": "PDT (UTC−7)" },
+  { "slug": "gmt", "abbr": "GMT", "name": "Greenwich Mean Time", "tz": "Etc/GMT", "min": 0, "off": "UTC+0", "dst": null },
+  { "slug": "utc", "abbr": "UTC", "name": "Coordinated Universal Time", "tz": "Etc/UTC", "min": 0, "off": "UTC+0", "dst": null },
+  { "slug": "bst", "abbr": "BST", "name": "British Summer Time", "tz": "Etc/GMT-1", "min": 60, "off": "UTC+1", "dst": null, "dstText": "BST is the summer time of the United Kingdom; in winter the UK is on GMT (UTC+0). This page compares against a fixed UTC+1." },
+  { "slug": "cet", "abbr": "CET", "name": "Central European Time", "tz": "Europe/Paris", "min": 60, "off": "UTC+1", "dst": "CEST (UTC+2)" },
+  { "slug": "ist", "abbr": "IST", "name": "India Standard Time", "tz": "Asia/Kolkata", "min": 330, "off": "UTC+5:30", "dst": null },
+  { "slug": "gst", "abbr": "GST", "name": "Gulf Standard Time", "tz": "Asia/Dubai", "min": 240, "off": "UTC+4", "dst": null },
+  { "slug": "sgt", "abbr": "SGT", "name": "Singapore Time", "tz": "Asia/Singapore", "min": 480, "off": "UTC+8", "dst": null },
+  { "slug": "hkt", "abbr": "HKT", "name": "Hong Kong Time", "tz": "Asia/Hong_Kong", "min": 480, "off": "UTC+8", "dst": null },
+  { "slug": "jst", "abbr": "JST", "name": "Japan Standard Time", "tz": "Asia/Tokyo", "min": 540, "off": "UTC+9", "dst": null },
+  { "slug": "kst", "abbr": "KST", "name": "Korea Standard Time", "tz": "Asia/Seoul", "min": 540, "off": "UTC+9", "dst": null },
+  { "slug": "aest", "abbr": "AEST", "name": "Australian Eastern Standard Time", "tz": "Australia/Sydney", "min": 600, "off": "UTC+10", "dst": "AEDT (UTC+11)" }
+]

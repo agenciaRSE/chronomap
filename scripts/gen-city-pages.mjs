@@ -1,7 +1,9 @@
-// Generates static, crawlable pages from src/cities.json:
-//   - one per city:            time/{slug}.html          (/time/{slug})
-//   - directional comparators: time/{a}-to-{b}.html      (/time/{a}-to-{b})
-//     for ordered pairs among the top PAIR_COUNT cities.
+// Generates static, crawlable pages from src/cities.json and src/zones.json:
+//   - one per city:       time/{slug}.html      (/time/{slug})
+//   - zone conversions:   time/{a}-to-{b}.html  (/time/{a}-to-{b}), only ZONE_KEEP
+// Only INDEXED_CITIES and ZONE_KEEP are offered to search engines. The rest of the
+// cities stay available to visitors with noindex; every other {a}-to-{b} URL
+// redirects to /time-zone-converter (vercel.json, kept in sync by test/redirects.test.ts).
 // Also writes public/sitemap.xml and returns the Vite MPA entry list. Called
 // from vite.config (runs at the start of every build) and runnable directly
 // (`node scripts/gen-city-pages.mjs`). Live clocks are React islands
@@ -12,15 +14,18 @@ import { argv } from 'node:process';
 
 const root = new URL('..', import.meta.url);
 const SITE = 'https://www.chronomap.top';
-const PAIR_COUNT = 10; // comparators are generated among the first N cities
+
+// Pages worth indexing. Chosen from Search Console history (2026-11 audit) and global
+// demand. Only add a page here once its content is worth more than the template.
+export const INDEXED_CITIES = ["london", "new-york", "tokyo", "los-angeles", "paris", "dubai", "sydney", "singapore", "hong-kong", "chicago", "shanghai", "mumbai", "new-delhi", "toronto", "berlin", "madrid", "moscow", "istanbul", "sao-paulo", "seoul", "auckland", "san-francisco", "mexico-city", "buenos-aires", "bangkok", "cairo", "johannesburg", "lagos", "jakarta", "manila", "kigali", "luanda", "muscat", "cologne", "nairobi", "addis-ababa", "caracas", "ho-chi-minh-city", "hyderabad", "honolulu"];
+export const ZONE_KEEP = ["est-to-sgt", "gmt-to-sgt", "bst-to-sgt", "cet-to-ist", "aest-to-sgt", "cet-to-sgt", "est-to-bst", "gmt-to-pst", "cet-to-est", "ist-to-bst"];
 
 // Sitemap lastmod: the date the page's content really changed. Never use the build
 // date: Google stops trusting lastmod if it moves on every deploy. Bump by hand when
 // the copy changes, including the template dates below for generated pages.
 const CITY_UPDATED = '2026-11-02';
-const ZONE_UPDATED = '2026-11-02';
-const PAIR_UPDATED = '2026-07-12';
-const HUB_UPDATED = '2026-07-12';
+const ZONE_UPDATED = '2026-11-03';
+const HUB_UPDATED = '2026-11-03';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const tzLabelOf = (tz) => tz.split('/').pop().replace(/_/g, ' ');
@@ -68,6 +73,7 @@ function headerEn(alt) {
         </a>
         <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
           <a href="/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Time zones</a>
+          <a href="/time-zone-converter" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Converter</a>
           <a href="/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Planner</a>
           <a href="/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Flight time</a>
           <a href="/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Jet lag</a>
@@ -85,6 +91,7 @@ function headerEs(alt) {
         </a>
         <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
           <a href="/es/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Husos horarios</a>
+          <a href="/es/time-zone-converter" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Conversor</a>
           <a href="/es/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Planificador</a>
           <a href="/es/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Vuelos</a>
           <a href="/es/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Jet lag</a>
@@ -107,7 +114,7 @@ const FOOTER = `<footer class="w-full text-center mt-2 reveal">
           </a>
           <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
             <a href="/" class="hover:text-zinc-300 transition-colors">World clock map</a>
-            <a href="/time" class="hover:text-zinc-300 transition-colors">All cities</a>
+            <a href="/time" class="hover:text-zinc-300 transition-colors">Cities</a>
             <a href="/time-zone-map" class="hover:text-zinc-300 transition-colors">Time zone map</a>
             <a href="/meeting-planner" class="hover:text-zinc-300 transition-colors">Meeting planner</a>
             <a href="/flight-time-calculator" class="hover:text-zinc-300 transition-colors">Flight time</a>
@@ -116,6 +123,7 @@ const FOOTER = `<footer class="w-full text-center mt-2 reveal">
             <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
             <a href="/clock-widget" class="hover:text-zinc-300 transition-colors">Clock widget</a>
             <a href="/windows" class="hover:text-zinc-300 transition-colors">Windows app</a>
+            <a href="/time-zone-converter" class="hover:text-zinc-300 transition-colors">Time zone converter</a>
             <a href="/about" class="hover:text-zinc-300 transition-colors">About</a>
             <a href="/privacy" class="hover:text-zinc-300 transition-colors">Privacy</a>
           </nav>
@@ -406,12 +414,9 @@ function cityPageEs(c, es, x) {
     <title>Hora actual en ${name} — Hora local en vivo y zona horaria | ChronoMap</title>
     <meta name="description" content="¿Qué hora es en ${name}, ${country}? Consulta la hora local actual en vivo en ${name}, su zona horaria ${tz} y su offset UTC, y compárala con las principales ciudades del mundo." />
     <meta name="keywords" content="hora actual en ${name}, qué hora es en ${name}, hora en ${name} ahora, zona horaria de ${name}, hora local de ${name}" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="noindex, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="${SITE}/es/time/${c.slug}" />
-    <link rel="alternate" hreflang="en" href="${SITE}/time/${c.slug}" />
-    <link rel="alternate" hreflang="es" href="${SITE}/es/time/${c.slug}" />
-    <link rel="alternate" hreflang="x-default" href="${SITE}/time/${c.slug}" />
     <meta name="ct-city" content="${name}" />
     <meta name="ct-country" content="${country}" />
     <meta name="ct-tz" content="${tz}" />${enr.metas}
@@ -502,6 +507,7 @@ function cityPageEs(c, es, x) {
             <a href="/es" class="hover:text-zinc-300 transition-colors">Reloj mundial</a>
             <a href="/es/time-zone-map" class="hover:text-zinc-300 transition-colors">Mapa de husos horarios</a>
             <a href="/es/meeting-planner" class="hover:text-zinc-300 transition-colors">Planificador de reuniones</a>
+            <a href="/es/time-zone-converter" class="hover:text-zinc-300 transition-colors">Conversor de husos horarios</a>
             <a href="/es/about" class="hover:text-zinc-300 transition-colors">Sobre ChronoMap</a>
             <a href="/es/privacy" class="hover:text-zinc-300 transition-colors">Privacidad</a>
             <a href="/time/${c.slug}" class="hover:text-zinc-300 transition-colors" hreflang="en">English</a>
@@ -520,9 +526,7 @@ function cityPage(c, hasEs, x) {
   const tzLabel = tzLabelOf(tz);
   const dst = dstSentence(name, c.tz);
   const enr = cityEnrichment(c, x, false);
-  const esAlt = hasEs
-    ? `\n    <link rel="alternate" hreflang="en" href="${SITE}/time/${c.slug}" />\n    <link rel="alternate" hreflang="es" href="${SITE}/es/time/${c.slug}" />\n    <link rel="alternate" hreflang="x-default" href="${SITE}/time/${c.slug}" />`
-    : '';
+  const robots = INDEXED_CITIES.includes(c.slug) ? 'index, follow' : 'noindex, follow';
   // Add a visible "Español" language link to the footer when a Spanish twin exists.
   const footer = hasEs
     ? FOOTER.replace('</nav>', `<a href="/es/time/${c.slug}" class="hover:text-zinc-300 transition-colors" hreflang="es">Español</a>\n          </nav>`)
@@ -536,9 +540,9 @@ function cityPage(c, hasEs, x) {
     <title>Current Time in ${name} — Live Local Time &amp; Time Zone | ChronoMap</title>
     <meta name="description" content="What time is it in ${name}, ${country}? See the live current local time in ${name}, its ${tz} time zone and UTC offset, and compare it with major cities around the world." />
     <meta name="keywords" content="current time in ${name}, what time is it in ${name}, ${name} time now, ${name} time zone, ${name} local time" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="${robots}" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href="${SITE}/time/${c.slug}" />${esAlt}
+    <link rel="canonical" href="${SITE}/time/${c.slug}" />
     <meta name="ct-city" content="${name}" />
     <meta name="ct-country" content="${country}" />
     <meta name="ct-tz" content="${tz}" />${enr.metas}
@@ -559,7 +563,7 @@ function cityPage(c, hasEs, x) {
         ]
       }
     </script>
-    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `Time in ${c.name}`, path: `/time/${c.slug}` }])}
+    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'Cities', path: '/time' }, { name: `Time in ${c.name}`, path: `/time/${c.slug}` }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
     ${headerEn(hasEs ? `/es/time/${c.slug}` : '')}
@@ -612,93 +616,11 @@ function cityPage(c, hasEs, x) {
 `;
 }
 
-function comparePage(a, b) {
-  const an = esc(a.name), bn = esc(b.name), atz = esc(a.tz), btz = esc(b.tz);
-  const slug = `${a.slug}-to-${b.slug}`;
-  return `<!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#09090b" />
-    <title>${an} to ${bn} Time Difference &amp; Converter | ChronoMap</title>
-    <meta name="description" content="Time difference between ${an} and ${bn}. See the current local time in both cities side by side, how many hours apart they are, and convert any time from ${an} to ${bn}." />
-    <meta name="keywords" content="${a.name} to ${b.name} time, time difference ${a.name} ${b.name}, ${a.name} ${b.name} time converter, what time is it in ${b.name} when it is in ${a.name}" />
-    <meta name="robots" content="index, follow" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href="${SITE}/time/${slug}" />
-    <meta name="ct-a-city" content="${an}" />
-    <meta name="ct-a-tz" content="${atz}" />
-    <meta name="ct-b-city" content="${bn}" />
-    <meta name="ct-b-tz" content="${btz}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="${SITE}/time/${slug}" />
-    <meta property="og:title" content="${an} to ${bn} Time Difference" />
-    <meta property="og:description" content="Current time in ${an} and ${bn} side by side, with the exact time difference." />
-    <meta property="og:image" content="https://www.chronomap.top/og.png" />
-    ${HEAD_FONTS}
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          { "@type": "Question", "name": "What is the time difference between ${an} and ${bn}?", "acceptedAnswer": { "@type": "Answer", "text": "The live tool above shows the current time in both ${an} (${atz}) and ${bn} (${btz}) and the exact difference in hours, which already accounts for daylight saving time on either side." } },
-          { "@type": "Question", "name": "How do I convert a time from ${an} to ${bn}?", "acceptedAnswer": { "@type": "Answer", "text": "Read the current time in ${an} and ${bn} from the two clocks above, or pin both cities on the interactive ChronoMap world clock to convert any specific time between them." } }
-        ]
-      }
-    </script>
-    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `${a.name} to ${b.name}`, path: `/time/${slug}` }])}
-  </head>
-  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
-    ${headerEn('')}
-    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
-      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
-        <h1 class="text-4xl sm:text-5xl md:text-[52px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">${an} to ${bn} Time</h1>
-        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">The current time difference between ${an} and ${bn}, live. See both clocks side by side below, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
-      </header>
-
-      <div class="w-full max-w-2xl mx-auto mb-14 reveal" style="animation-delay:.1s" id="compare-app">
-        <div class="glass-panel rounded-2xl p-8 text-center text-zinc-500">Loading live times for ${an} and ${bn}…</div>
-      </div>
-
-      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
-        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">${an} and ${bn} time difference</h2>
-        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>${an} follows the <strong class="text-zinc-200">${atz}</strong> time zone and ${bn} follows <strong class="text-zinc-200">${btz}</strong>. The gap between them shifts across the year as each city enters or leaves daylight saving time, so the live clocks above always show the real current difference.</p>
-          <p>Need to convert a specific time? Pin both cities on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a>, or turn a moment into a code everyone reads in their own zone with the <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a>.</p>
-        </div>
-      </section>
-
-      ${FOOTER}
-    </main>
-    <script type="module" src="/src/compare-page.tsx"></script>
-  </body>
-</html>
-`;
-}
-
 // Time-zone abbreviation comparators (/time/est-to-ist, /time/pst-to-gmt, …).
 // `tz` is the IANA zone users MEAN by the abbreviation (colloquial "EST" = US
 // Eastern Time including DST), `min` its STANDARD offset in minutes (for the
 // "normally X hours ahead" prose — the live island always shows the real gap).
-const ZONES = [
-  { slug: 'est',  abbr: 'EST',  name: 'Eastern Standard Time',             tz: 'America/New_York',    min: -300, off: 'UTC−5',    dst: 'EDT (UTC−4)' },
-  { slug: 'cst',  abbr: 'CST',  name: 'Central Standard Time',             tz: 'America/Chicago',     min: -360, off: 'UTC−6',    dst: 'CDT (UTC−5)', note: 'CST can also refer to China Standard Time (UTC+8); this page covers North American Central Time.' },
-  { slug: 'mst',  abbr: 'MST',  name: 'Mountain Standard Time',            tz: 'America/Denver',      min: -420, off: 'UTC−7',    dst: 'MDT (UTC−6)' },
-  { slug: 'pst',  abbr: 'PST',  name: 'Pacific Standard Time',             tz: 'America/Los_Angeles', min: -480, off: 'UTC−8',    dst: 'PDT (UTC−7)' },
-  { slug: 'gmt',  abbr: 'GMT',  name: 'Greenwich Mean Time',               tz: 'Etc/GMT',             min: 0,    off: 'UTC+0',    dst: null },
-  { slug: 'utc',  abbr: 'UTC',  name: 'Coordinated Universal Time',        tz: 'Etc/UTC',             min: 0,    off: 'UTC+0',    dst: null },
-  { slug: 'bst',  abbr: 'BST',  name: 'British Summer Time',               tz: 'Etc/GMT-1',           min: 60,   off: 'UTC+1',    dst: null, dstText: 'BST is the summer time of the United Kingdom; in winter the UK is on GMT (UTC+0). This page compares against a fixed UTC+1.' },
-  { slug: 'cet',  abbr: 'CET',  name: 'Central European Time',             tz: 'Europe/Paris',        min: 60,   off: 'UTC+1',    dst: 'CEST (UTC+2)' },
-  { slug: 'ist',  abbr: 'IST',  name: 'India Standard Time',               tz: 'Asia/Kolkata',        min: 330,  off: 'UTC+5:30', dst: null },
-  { slug: 'gst',  abbr: 'GST',  name: 'Gulf Standard Time',                tz: 'Asia/Dubai',          min: 240,  off: 'UTC+4',    dst: null },
-  { slug: 'sgt',  abbr: 'SGT',  name: 'Singapore Time',                    tz: 'Asia/Singapore',      min: 480,  off: 'UTC+8',    dst: null },
-  { slug: 'hkt',  abbr: 'HKT',  name: 'Hong Kong Time',                    tz: 'Asia/Hong_Kong',      min: 480,  off: 'UTC+8',    dst: null },
-  { slug: 'jst',  abbr: 'JST',  name: 'Japan Standard Time',               tz: 'Asia/Tokyo',          min: 540,  off: 'UTC+9',    dst: null },
-  { slug: 'kst',  abbr: 'KST',  name: 'Korea Standard Time',               tz: 'Asia/Seoul',          min: 540,  off: 'UTC+9',    dst: null },
-  { slug: 'aest', abbr: 'AEST', name: 'Australian Eastern Standard Time',  tz: 'Australia/Sydney',    min: 600,  off: 'UTC+10',   dst: 'AEDT (UTC+11)' },
-];
+const ZONES = JSON.parse(readFileSync(filePath('src/zones.json'), 'utf8'));
 
 // "IST is normally 10 hours 30 minutes ahead of EST" (standard offsets; live
 // island shows the real current gap including DST).
@@ -756,7 +678,7 @@ function zoneComparePage(a, b) {
         ]
       }
     </script>
-    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }, { name: `${a.abbr} to ${b.abbr}`, path: `/time/${slug}` }])}
+    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'Cities', path: '/time' }, { name: `${a.abbr} to ${b.abbr}`, path: `/time/${slug}` }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
     ${headerEn('')}
@@ -777,7 +699,7 @@ function zoneComparePage(a, b) {
           <p><strong class="text-zinc-200">${an}</strong> (${esc(a.name)}) runs at <strong class="text-zinc-200">${esc(a.off)}</strong> and <strong class="text-zinc-200">${bn}</strong> (${esc(b.name)}) at <strong class="text-zinc-200">${esc(b.off)}</strong>. ${esc(gap)}</p>
           <p>${esc(zoneDstSentence(a))} ${esc(zoneDstSentence(b))}</p>
           ${notes.length ? `<p>${notes.join(' ')}</p>` : ''}
-          <p>Looking for the reverse conversion? See <a href="/time/${b.slug}-to-${a.slug}" class="text-blue-400 hover:text-blue-300 transition-colors">${bn} to ${an}</a>. You can also browse every offset on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a> or line up several zones at once with the <a href="/meeting-planner" class="text-blue-400 hover:text-blue-300 transition-colors">meeting planner</a>.</p>
+          <p>Need the reverse, another date, or a different zone? Use the <a href="/time-zone-converter?from=${b.slug}&amp;to=${a.slug}" class="text-blue-400 hover:text-blue-300 transition-colors">time zone converter</a>. You can also browse every offset on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a> or line up several zones at once with the <a href="/meeting-planner" class="text-blue-400 hover:text-blue-300 transition-colors">meeting planner</a>.</p>
         </div>
       </section>
 
@@ -799,7 +721,7 @@ function regionOf(tz) {
   return 'Oceania'; // Australia/ + Pacific/
 }
 
-function timeIndexPage(cities, pairs, zonePairs) {
+function timeIndexPage(cities, zonePairs) {
   const byRegion = {};
   for (const c of cities) (byRegion[regionOf(c.tz)] ||= []).push(c);
   const regionsHtml = REGION_ORDER.filter((r) => byRegion[r]).map((r) => {
@@ -816,10 +738,6 @@ function timeIndexPage(cities, pairs, zonePairs) {
         </div>`;
   }).join('\n        ');
 
-  const cmpHtml = pairs
-    .map(([a, b]) => `<a href="/time/${a.slug}-to-${b.slug}" class="text-sm text-zinc-400 hover:text-blue-300 transition-colors py-1 truncate">${esc(a.name)} → ${esc(b.name)}</a>`)
-    .join('\n          ');
-
   const zoneHtml = zonePairs
     .map(([a, b]) => `<a href="/time/${a.slug}-to-${b.slug}" class="text-sm text-zinc-400 hover:text-blue-300 transition-colors py-1 truncate">${esc(a.abbr)} → ${esc(b.abbr)}</a>`)
     .join('\n          ');
@@ -831,7 +749,7 @@ function timeIndexPage(cities, pairs, zonePairs) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#09090b" />
     <title>World Clock — Current Time in Cities Around the World | ChronoMap</title>
-    <meta name="description" content="Find the current local time in any major city. Browse or search ${cities.length}+ cities worldwide and popular time-zone comparisons, with live clocks and UTC offsets." />
+    <meta name="description" content="The current local time in ${cities.length} major cities, with live clocks, UTC offsets and daylight saving dates, plus popular time zone conversions." />
     <meta name="keywords" content="world clock, current time in cities, local time by city, time zone by city, city time list" />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -839,17 +757,17 @@ function timeIndexPage(cities, pairs, zonePairs) {
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${SITE}/time" />
     <meta property="og:title" content="World Clock — Current Time in Cities Around the World" />
-    <meta property="og:description" content="Browse or search current local time in ${cities.length}+ cities worldwide." />
+    <meta property="og:description" content="The current local time in ${cities.length} major cities, with live clocks and UTC offsets." />
     <meta property="og:image" content="https://www.chronomap.top/og.png" />
     ${HEAD_FONTS}
-    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'All cities', path: '/time' }])}
+    ${breadcrumb([{ name: 'Home', path: '/' }, { name: 'Cities', path: '/time' }])}
   </head>
   <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
     ${headerEn('')}
     <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
       <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
         <h1 class="text-4xl sm:text-5xl md:text-[52px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">World Clock by City</h1>
-        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl mb-6">The current local time in cities around the world. Search a city to jump to its live clock, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl mb-6">The current local time in major cities around the world. Search this list, or open the full <a href="/" class="text-blue-400 hover:text-blue-300 transition-colors">world clock map</a>.</p>
         <input id="city-search" type="search" placeholder="Search a city…" autocomplete="off" class="w-full max-w-sm bg-zinc-800/60 text-zinc-100 border border-white/10 rounded-lg px-4 py-2.5 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all" />
       </header>
 
@@ -861,15 +779,8 @@ function timeIndexPage(cities, pairs, zonePairs) {
       </section>
 
       <section class="max-w-4xl w-full mx-auto mb-14 reveal">
-        <h2 class="text-xl font-semibold text-white mb-5 text-center">Popular time comparisons</h2>
-        <div class="glass-panel rounded-2xl p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4">
-          ${cmpHtml}
-        </div>
-      </section>
-
-      <section class="max-w-4xl w-full mx-auto mb-14 reveal">
-        <h2 class="text-xl font-semibold text-white mb-5 text-center">Time zone converters</h2>
-        <p class="text-sm text-zinc-500 text-center mb-5 max-w-xl mx-auto">Convert between time zone abbreviations — EST, PST, GMT, IST and more — with live clocks and exact current differences.</p>
+        <h2 class="text-xl font-semibold text-white mb-5 text-center">Popular time zone conversions</h2>
+        <p class="text-sm text-zinc-500 text-center mb-5 max-w-xl mx-auto">For any other pair of cities or zones, use the <a href="/time-zone-converter" class="text-blue-400 hover:text-blue-300 transition-colors">time zone converter</a>.</p>
         <div class="glass-panel rounded-2xl p-5 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-4">
           ${zoneHtml}
         </div>
@@ -915,34 +826,26 @@ export function generate() {
     }
   }
 
-  // Directional comparators among the top cities (a≠b).
-  const top = cities.slice(0, PAIR_COUNT);
-  const pairs = [];
-  for (const a of top) for (const b of top) if (a.slug !== b.slug) pairs.push([a, b]);
-  for (const [a, b] of pairs) {
-    const slug = `${a.slug}-to-${b.slug}`;
-    writeFileSync(filePath(`time/${slug}.html`), comparePage(a, b));
-    entries.push({ name: `cmp-${slug}`, file: filePath(`time/${slug}.html`) });
-  }
-
   // Time-zone abbreviation comparators (a≠b) — reuse the same compare island.
-  const zonePairs = [];
-  for (const a of ZONES) for (const b of ZONES) if (a.slug !== b.slug) zonePairs.push([a, b]);
+  const zoneOf = (slug) => ZONES.find((z) => z.slug === slug);
+  const zonePairs = ZONE_KEEP.map((k) => k.split('-to-').map(zoneOf));
   for (const [a, b] of zonePairs) {
     const slug = `${a.slug}-to-${b.slug}`;
     writeFileSync(filePath(`time/${slug}.html`), zoneComparePage(a, b));
     entries.push({ name: `zcmp-${slug}`, file: filePath(`time/${slug}.html`) });
   }
 
-  // Index/hub page served at /time — search + links to every city and comparison.
+  // Index/hub page served at /time: links to the pages offered to search engines.
   // time/index.html so it coexists with the time/{slug}.html pages; Vercel's
   // cleanUrls serves it at /time.
-  writeFileSync(filePath('time/index.html'), timeIndexPage(cities, pairs, zonePairs));
+  const indexedCities = cities.filter((c) => INDEXED_CITIES.includes(c.slug));
+  writeFileSync(filePath('time/index.html'), timeIndexPage(indexedCities, zonePairs));
   entries.push({ name: 'time-index', file: filePath('time/index.html') });
 
   const urls = [
     { loc: `${SITE}/`, mod: '2026-07-06' },
     { loc: `${SITE}/es`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/time-zone-converter`, mod: '2026-11-03' },
     { loc: `${SITE}/es/time-zone-map`, mod: '2026-07-06' },
     { loc: `${SITE}/es/meeting-planner`, mod: '2026-07-06' },
     { loc: `${SITE}/es/discord-timestamp-generator`, mod: '2026-07-06' },
@@ -953,6 +856,7 @@ export function generate() {
     { loc: `${SITE}/es/about`, mod: '2026-11-02' },
     { loc: `${SITE}/es/privacy`, mod: '2026-11-02' },
     { loc: `${SITE}/time`, mod: HUB_UPDATED },
+    { loc: `${SITE}/time-zone-converter`, mod: '2026-11-03' },
     { loc: `${SITE}/time-zone-map`, mod: '2026-07-06' },
     { loc: `${SITE}/discord-timestamp-generator`, mod: '2026-07-06' },
     { loc: `${SITE}/meeting-planner`, mod: '2026-07-06' },
@@ -963,9 +867,7 @@ export function generate() {
     { loc: `${SITE}/windows`, mod: '2026-07-06' },
     { loc: `${SITE}/about`, mod: '2026-11-02' },
     { loc: `${SITE}/privacy`, mod: '2026-11-02' },
-    ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, mod: CITY_UPDATED })),
-    ...cities.filter((c) => ES_CITY[c.slug]).map((c) => ({ loc: `${SITE}/es/time/${c.slug}`, mod: CITY_UPDATED })),
-    ...pairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, mod: PAIR_UPDATED })),
+    ...indexedCities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, mod: CITY_UPDATED })),
     ...zonePairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, mod: ZONE_UPDATED })),
   ];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -977,7 +879,7 @@ ${urls.map((u) => `  <url>
 </urlset>
 `;
   writeFileSync(filePath('public/sitemap.xml'), sitemap);
-  console.log(`[gen-city-pages] ${cities.length} cities + ${pairs.length} comparators + ${zonePairs.length} zone converters, sitemap ${urls.length} urls.`);
+  console.log(`[gen-city-pages] ${cities.length} cities (${indexedCities.length} indexed) + ${zonePairs.length} zone conversions, sitemap ${urls.length} urls.`);
   return entries;
 }
 

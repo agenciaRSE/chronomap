@@ -5,17 +5,21 @@ import citiesData from '../cities.json';
 // Shared city search-picker used by the flight and jet-lag tool islands.
 type City = { slug: string; name: string; country: string; tz: string };
 export const CITIES = citiesData as City[];
-export type Endpoint = { name: string; tz: string };
+export type Endpoint = { name: string; tz: string; slug?: string };
 
 export const cityByTz = (tz: string) => CITIES.find((c) => c.tz === tz);
 export const cityLabel = (tz: string) => cityByTz(tz)?.name ?? tz.split('/').pop()!.replace(/_/g, ' ');
 
-export const CityPicker: React.FC<{ value: Endpoint; onChange: (e: Endpoint) => void; label: string }> = ({ value, onChange, label }) => {
+export const CityPicker: React.FC<{ value: Endpoint; onChange: (e: Endpoint) => void; label: string; options?: City[] }> = ({ value, onChange, label, options }) => {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const results = useMemo(
-    () => (query.trim() ? CITIES.filter((c) => c.name.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 6) : []),
-    [query]
+    () => {
+      const q = query.trim().toLowerCase();
+      if (!q) return options ? options.slice(0, 6) : [];
+      return (options ?? CITIES).filter((c) => `${c.name} ${c.country}`.toLowerCase().includes(q)).slice(0, 6);
+    },
+    [query, options]
   );
   return (
     <div className="relative">
@@ -37,7 +41,7 @@ export const CityPicker: React.FC<{ value: Endpoint; onChange: (e: Endpoint) => 
           {results.map((c) => (
             <button
               key={c.slug}
-              onMouseDown={() => { onChange({ name: c.name, tz: c.tz }); setOpen(false); }}
+              onMouseDown={() => { onChange({ name: c.name, tz: c.tz, slug: c.slug }); setOpen(false); }}
               className="block w-full text-left px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
             >
               {c.name}<span className="text-zinc-600"> · {c.country}</span>

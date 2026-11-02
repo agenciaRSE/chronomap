@@ -39,10 +39,24 @@ export const timeLabel = (d: Date, tz: string): string =>
 export const dayLabel = (d: Date, tz: string): string =>
   new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric' }).format(d);
 
-// Resolve a wall-clock time in `tz` (mo is 1-based) to a real UTC instant.
-// Single-pass; the once-a-year ambiguous DST-transition hour (~02:00) may be off
-// by 1h — acceptable without a full tz database on the client.
+// Resolve a wall-clock time in `tz` (mo is 1-based) to a real UTC instant. Two passes:
+// the offset at the wall time read as UTC can be on the wrong side of a DST change
+// that happens within the zone's offset of it. A time skipped or repeated by the
+// change itself resolves to one of its valid readings.
 export function wallToUtc(y: number, mo: number, d: number, hh: number, mm: number, tz: string): Date {
   const asUTC = Date.UTC(y, mo - 1, d, hh, mm);
-  return new Date(asUTC - offsetMin(new Date(asUTC), tz) * 60000);
+  const guess = new Date(asUTC - offsetMin(new Date(asUTC), tz) * 60000);
+  return new Date(asUTC - offsetMin(guess, tz) * 60000);
+}
+
+// Calendar days between the same instant seen from two zones (+1 = `to` is on the next day).
+export function dayDelta(d: Date, from: string, to: string): number {
+  const a = ymdInTz(d, from), b = ymdInTz(d, to);
+  return Math.round((Date.UTC(b.y, b.mo - 1, b.d) - Date.UTC(a.y, a.mo - 1, a.d)) / 86400000);
+}
+
+// "UTC+5:30" / "UTC−4" from minutes east of UTC.
+export function utcLabel(min: number): string {
+  const a = Math.abs(min);
+  return `UTC${min < 0 ? '−' : '+'}${Math.floor(a / 60)}${a % 60 ? `:${String(a % 60).padStart(2, '0')}` : ''}`;
 }

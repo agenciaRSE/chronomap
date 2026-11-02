@@ -70,7 +70,8 @@ const decodeShareState = (s: string): SharePayload => {
 // visually collapsed), which links these pages from the app's top-authority page.
 const NAV_LINKS: { href: string; label: string }[] = [
   { href: isES ? '/es' : '/', label: t('World clock map') },
-  { href: '/time', label: t('All cities') },
+  { href: '/time', label: t('Cities') },
+  { href: isES ? '/es/time-zone-converter' : '/time-zone-converter', label: t('Time zone converter') },
   { href: isES ? '/es/time-zone-map' : '/time-zone-map', label: t('Time zone map') },
   { href: isES ? '/es/meeting-planner' : '/meeting-planner', label: t('Meeting planner') },
   { href: isES ? '/es/flight-time-calculator' : '/flight-time-calculator', label: t('Flight calculator') },

@@ -1,5 +1,17 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/time/:from((?!est-to-sgt$|gmt-to-sgt$|bst-to-sgt$|cet-to-ist$|aest-to-sgt$|cet-to-sgt$|est-to-bst$|gmt-to-pst$|cet-to-est$|ist-to-bst$)(?:est|cst|mst|pst|gmt|utc|bst|cet|ist|gst|sgt|hkt|jst|kst|aest))-to-:to(est|cst|mst|pst|gmt|utc|bst|cet|ist|gst|sgt|hkt|jst|kst|aest)",
+      "destination": "/time-zone-converter?from=:from&to=:to",
+      "statusCode": 301
+    },
+    {
+      "source": "/time/:from(london|new-york|tokyo|los-angeles|paris|dubai|sydney|singapore|hong-kong|chicago)-to-:to(london|new-york|tokyo|los-angeles|paris|dubai|sydney|singapore|hong-kong|chicago)",
+      "destination": "/time-zone-converter?from=:from&to=:to",
+      "statusCode": 301
+    }
+  ],
   "headers": [
     {
       "source": "/((?!embed).*)",

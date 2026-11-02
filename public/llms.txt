@@ -13,9 +13,9 @@ All times use each location's live IANA time zone, so daylight saving time is al
 
 ## Cities and comparisons
 
-- [All cities index](https://www.chronomap.top/time): Browse or search the current local time in 200+ cities worldwide, grouped by region.
-- Per-city pages: https://www.chronomap.top/time/{city} — live local time, UTC offset, and daylight-saving info for a single city (e.g. /time/london, /time/tokyo, /time/new-york).
-- City comparators: https://www.chronomap.top/time/{city-a}-to-{city-b} — the live time difference and a time converter between two cities (e.g. /time/london-to-new-york).
+- [Time zone converter](https://www.chronomap.top/time-zone-converter): Convert any time and date between time zone abbreviations (EST, PST, GMT, IST, SGT and more) or 200 cities, handling daylight saving.
+- [Cities](https://www.chronomap.top/time): The current local time in major cities worldwide, with popular time zone conversions.
+- Per-city pages: https://www.chronomap.top/time/{city} — live local time, UTC offset, and daylight saving dates.
 
 ## Apps
 

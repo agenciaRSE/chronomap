@@ -13,7 +13,14 @@ export const dateLocale = isES ? es : enUS;
 const ES: Record<string, string> = {
   // Nav / menu
   'World clock map': 'Mapa reloj mundial',
-  'All cities': 'Todas las ciudades',
+  'Cities': 'Ciudades',
+  'Time zone converter': 'Conversor de husos horarios',
+  'Swap time zones': 'Intercambiar husos horarios',
+  'Time': 'Hora',
+  'Date': 'Fecha',
+  'Link copied': 'Enlace copiado',
+  'Copy link to this conversion': 'Copiar enlace a esta conversión',
+  'Through the day': 'A lo largo del día',
   'Time zone map': 'Mapa de husos horarios',
   'Meeting planner': 'Planificador de reuniones',
   'Flight calculator': 'Calculadora de vuelo',
@@ -96,7 +103,6 @@ const ES: Record<string, string> = {
   'Add a city…': 'Añade una ciudad…',
   'Add a city to the planner': 'Añade una ciudad al planificador',
   'Share this plan': 'Compartir este plan',
-  'Link copied': 'Enlace copiado',
   'Everyone available': 'Todos disponibles',
   'Everyone available (•)': 'Todos disponibles (•)',
   'Working hours (9–18)': 'Horario laboral (9–18)',
