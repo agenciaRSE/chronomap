@@ -65,6 +65,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const rotationRef = useRef(rotation);
   const globeZoomRef = useRef(globeZoom);
   const inertiaRef = useRef<number | null>(null);
+  const behaviorModeRef = useRef(isGlobe);
   const velocityRef = useRef<[number, number]>([0, 0]);
 
 
@@ -102,10 +103,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
 
     const handleResize = () => {
       if (containerRef.current) {
-        setDimensions({
-          width: containerRef.current.clientWidth,
-          height: containerRef.current.clientHeight
-        });
+        const { clientWidth: width, clientHeight: height } = containerRef.current;
+        setDimensions(prev => (prev.width === width && prev.height === height ? prev : { width, height }));
       }
     };
 
@@ -320,7 +319,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     const svg = d3.select(svgRef.current);
     const g = d3.select(mapGroupRef.current);
     
-    svg.interrupt("centering");
+    // Only a map type switch cancels centering: this effect also re-runs on resize,
+    // which on phones fires mid-animation when the keyboard or URL bar moves.
+    if (behaviorModeRef.current !== isGlobe) {
+      behaviorModeRef.current = isGlobe;
+      svg.interrupt("centering");
+    }
     svg.on(".zoom", null);
     svg.on(".drag", null);
     
@@ -431,7 +435,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           // Don't allow single-touch zoom (panning) on globe
           return false;
         })
-        .on("start", () => svg.interrupt("centering"))
+        // sourceEvent is null for programmatic zooms: only a user gesture cancels centering.
+        .on("start", (event) => { if (event.sourceEvent) svg.interrupt("centering"); })
         .on("zoom", (event) => {
           setGlobeZoom(event.transform.k);
         });
@@ -485,7 +490,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([1, 12])
         .translateExtent([[-100, -100], [dimensions.width + 100, dimensions.height + 100]])
-        .on("start", () => svg.interrupt("centering"))
+        .on("start", (event) => { if (event.sourceEvent) svg.interrupt("centering"); })
         .on("zoom", handle2DZoom);
 
       zoomBehaviorRef.current = zoom;
