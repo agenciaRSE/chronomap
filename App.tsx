@@ -513,29 +513,29 @@ const App: React.FC = () => {
       <NewsTicker />
       
       {/* Header */}
-      <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-6 bg-black/80 backdrop-blur-md z-20">
-        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3">
-          <AnimatedLogo className="w-10 h-10 md:w-12 md:h-12" />
-          
-          {/* Mobile Left Actions Row */}
-          <div className="flex md:hidden items-center gap-3">
-             <button 
-                onClick={() => setShowAbout(true)}
-                className="flex items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
-                title={t('About & Changelog')}
-                aria-label={t('About ChronoMap')}
-              >
-                <Info className="w-3 h-3" />
-              </button>
+      <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-4 md:px-6 bg-black/80 backdrop-blur-md z-20">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-2">
+            <AnimatedLogo className="w-10 h-10 md:w-12 md:h-12" />
 
-              <button
-                onClick={() => setIsMobileListOpen(!isMobileListOpen)}
-                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
-              >
-                {isMobileListOpen ? <MapIcon className="w-3 h-3" /> : <List className="w-3 h-3" />}
-                <span>{isMobileListOpen ? t('Map') : t('List')}</span>
-              </button>
+            <button
+              onClick={() => setShowAbout(true)}
+              className="flex md:hidden items-center justify-center p-1.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-md transition-all"
+              title={t('About & Changelog')}
+              aria-label={t('About ChronoMap')}
+            >
+              <Info className="w-3 h-3" />
+            </button>
           </div>
+
+          {/* Mobile list toggle sits under the logo so it clears the centered clock */}
+          <button
+            onClick={() => setIsMobileListOpen(!isMobileListOpen)}
+            className={`flex md:hidden items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all ${isMobileListOpen ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}`}
+          >
+            {isMobileListOpen ? <MapIcon className="w-3 h-3" /> : <List className="w-3 h-3" />}
+            <span>{isMobileListOpen ? t('Map') : t('List')}</span>
+          </button>
 
           <div className="hidden md:block">
             <div className="flex items-center gap-2">
@@ -555,7 +555,7 @@ const App: React.FC = () => {
            </div>
 
            <div className="flex items-baseline gap-3">
-              <div className={`text-4xl md:text-5xl font-mono font-bold tabular-nums tracking-tighter leading-none ${timeState.mode === 'live' ? 'text-white' : offsetInfo.color} drop-shadow-2xl`}>
+              <div className={`max-[339px]:text-3xl text-4xl md:text-5xl font-mono font-bold tabular-nums tracking-tighter leading-none ${timeState.mode === 'live' ? 'text-white' : offsetInfo.color} drop-shadow-2xl`}>
                 {timeState.formattedTime}
               </div>
            </div>
