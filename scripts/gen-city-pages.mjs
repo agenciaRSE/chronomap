@@ -14,6 +14,14 @@ const root = new URL('..', import.meta.url);
 const SITE = 'https://www.chronomap.top';
 const PAIR_COUNT = 10; // comparators are generated among the first N cities
 
+// Sitemap lastmod: the date the page's content really changed. Never use the build
+// date: Google stops trusting lastmod if it moves on every deploy. Bump by hand when
+// the copy changes, including the template dates below for generated pages.
+const CITY_UPDATED = '2026-11-02';
+const ZONE_UPDATED = '2026-11-02';
+const PAIR_UPDATED = '2026-07-12';
+const HUB_UPDATED = '2026-07-12';
+
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const tzLabelOf = (tz) => tz.split('/').pop().replace(/_/g, ' ');
 const filePath = (rel) => fileURLToPath(new URL(rel, root));
@@ -108,6 +116,8 @@ const FOOTER = `<footer class="w-full text-center mt-2 reveal">
             <a href="/discord-timestamp-generator" class="hover:text-zinc-300 transition-colors">Discord timestamps</a>
             <a href="/clock-widget" class="hover:text-zinc-300 transition-colors">Clock widget</a>
             <a href="/windows" class="hover:text-zinc-300 transition-colors">Windows app</a>
+            <a href="/about" class="hover:text-zinc-300 transition-colors">About</a>
+            <a href="/privacy" class="hover:text-zinc-300 transition-colors">Privacy</a>
           </nav>
         </div>
       </footer>`;
@@ -246,6 +256,19 @@ const offsetFacts = (tz, esLang) => {
   return esLang ? `${offLabel(jan)} (enero) / ${offLabel(jul)} (julio)` : `${offLabel(jan)} (January) / ${offLabel(jul)} (July)`;
 };
 
+// Direct answers for the city copy, so zones without DST never read as if they had it.
+const observesDst = (tz) => nextTransition(tz) !== null;
+function dstAnswer(name, tz, esLang) {
+  const { jan, jul } = seasonalOffsets(tz);
+  if (!observesDst(tz)) return esLang ? `No. ${name} se mantiene en ${offLabel(jan)} todo el año.` : `No. ${name} stays on ${offLabel(jan)} all year.`;
+  return esLang ? `Sí. ${name} alterna entre ${offLabel(jan)} y ${offLabel(jul)} a lo largo del año.` : `Yes. ${name} moves between ${offLabel(jan)} and ${offLabel(jul)} during the year.`;
+}
+function offsetSentence(tz, esLang) {
+  const { jan } = seasonalOffsets(tz);
+  if (!observesDst(tz)) return esLang ? `Se mantiene en ${offLabel(jan)} todo el año, así que su diferencia con el Tiempo Universal Coordinado (UTC) no cambia.` : `It stays on ${offLabel(jan)} all year, so its difference from Coordinated Universal Time (UTC) never changes.`;
+  return esLang ? `Su offset respecto al Tiempo Universal Coordinado (UTC) cambia cuando empieza o termina el horario de verano, así que el reloj en vivo de arriba siempre muestra la hora local real.` : `Its offset from Coordinated Universal Time (UTC) changes when daylight saving time starts or ends, so the live clock above always shows the real local time.`;
+}
+
 // Minutes-of-day → "9:30 AM" (handles half-hour zones; wraps past midnight).
 const fmtMin = (m) => {
   m = ((m % 1440) + 1440) % 1440;
@@ -331,10 +354,13 @@ function cityEnrichment(c, x, esLang) {
     : [['New York', 'America/New_York'], ['London', 'Europe/London']]
   ).filter(([, tz]) => tz !== c.tz);
   const calls = refs.map(([rn, rtz]) => callInfo(name, c.tz, rn, rtz, esLang));
+  // Windows use offsets from build time, and every reference city observes DST.
+  const callNote = esLang ? 'El horario de verano puede mover estas franjas una hora en algunas épocas del año.' : 'Daylight saving time can move these windows by an hour at some times of year.';
   const callHtml = refs.length ? `<section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8">
         <h2 class="text-xl font-semibold text-white mb-4">${L.call}</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
           ${calls.map((ci) => `<p>${esc(ci.sentence)} ${esc(ci.rec)}</p>`).join('\n          ')}
+          <p class="text-zinc-500">${callNote}</p>
         </div>
       </section>` : '';
 
@@ -353,7 +379,7 @@ function cityEnrichment(c, x, esLang) {
   let faqHtml = '', faqLd = '';
   if (refs.length) {
     const q = L.faqQ(refs[0][0]);
-    const a = `${calls[0].sentence} ${calls[0].rec}`;
+    const a = `${calls[0].sentence} ${calls[0].rec} ${callNote}`;
     faqHtml = `<details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>${esc(q)}</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
             <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${esc(a)}</p>
@@ -402,8 +428,8 @@ function cityPageEs(c, es, x) {
         "@type": "FAQPage",
         "inLanguage": "es",
         "mainEntity": [
-          { "@type": "Question", "name": "¿En qué zona horaria está ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${name} está en la zona horaria ${tz}. El reloj en vivo de arriba muestra su offset UTC actual, que ya tiene en cuenta el horario de verano donde aplica." } },
-          { "@type": "Question", "name": "¿${name} observa el horario de verano?", "acceptedAnswer": { "@type": "Answer", "text": "Las horas mostradas para ${name} usan su zona horaria IANA actual (${tz}), así que el horario de verano se refleja automáticamente cuando ${country} lo observa." } },
+          { "@type": "Question", "name": "¿En qué zona horaria está ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${name} está en la zona horaria ${tz} (${offsetFacts(c.tz, true)})." } },
+          { "@type": "Question", "name": "¿${name} observa el horario de verano?", "acceptedAnswer": { "@type": "Answer", "text": "${dstAnswer(name, c.tz, true)}" } },
           { "@type": "Question", "name": "¿Cuándo cambian los relojes en ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${dst}" } }${enr.faqLd}
         ]
       }
@@ -435,7 +461,7 @@ function cityPageEs(c, es, x) {
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
         <h2 class="text-xl font-semibold text-white mb-4 relative z-10">La hora en ${name}</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>${name} sigue la zona horaria <strong class="text-zinc-200">${tz}</strong>. Su offset respecto al Tiempo Universal Coordinado (UTC) cambia cuando está en vigor el horario de verano, así que el reloj en vivo de arriba siempre muestra la hora local real en este momento.</p>
+          <p>${name} sigue la zona horaria <strong class="text-zinc-200">${tz}</strong>. ${offsetSentence(c.tz, true)}</p>
           <p><strong class="text-zinc-200">Horario de verano:</strong> ${dst}</p>
           <p>Para planificar una llamada o evento entre zonas, compara ${name} con otras ciudades de la lista de arriba, explora cada offset en el <a href="/es/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">mapa de husos horarios interactivo</a>, o convierte cualquier momento en un código compartible con el <a href="/es/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">generador de timestamps de Discord</a>.</p>
         </div>
@@ -448,11 +474,11 @@ function cityPageEs(c, es, x) {
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿En qué zona horaria está ${name}?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${name} está en la zona horaria ${tz}. El reloj en vivo muestra su offset UTC actual, que ya tiene en cuenta el horario de verano donde aplica.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${name} está en la zona horaria ${tz} (${offsetFacts(c.tz, true)}).</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿${name} observa el horario de verano?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Las horas mostradas usan la zona horaria IANA actual (${tz}), así que el horario de verano se refleja automáticamente cuando ${country} lo observa.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${dstAnswer(name, c.tz, true)}</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cuándo cambian los relojes en ${name}?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
@@ -476,6 +502,8 @@ function cityPageEs(c, es, x) {
             <a href="/es" class="hover:text-zinc-300 transition-colors">Reloj mundial</a>
             <a href="/es/time-zone-map" class="hover:text-zinc-300 transition-colors">Mapa de husos horarios</a>
             <a href="/es/meeting-planner" class="hover:text-zinc-300 transition-colors">Planificador de reuniones</a>
+            <a href="/es/about" class="hover:text-zinc-300 transition-colors">Sobre ChronoMap</a>
+            <a href="/es/privacy" class="hover:text-zinc-300 transition-colors">Privacidad</a>
             <a href="/time/${c.slug}" class="hover:text-zinc-300 transition-colors" hreflang="en">English</a>
           </nav>
         </div>
@@ -525,8 +553,8 @@ function cityPage(c, hasEs, x) {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
-          { "@type": "Question", "name": "What time zone is ${name} in?", "acceptedAnswer": { "@type": "Answer", "text": "${name} is in the ${tz} time zone. The live clock above shows its current UTC offset, which already accounts for daylight saving time where it applies." } },
-          { "@type": "Question", "name": "Does ${name} observe daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "The times shown for ${name} use its current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it." } },
+          { "@type": "Question", "name": "What time zone is ${name} in?", "acceptedAnswer": { "@type": "Answer", "text": "${name} is in the ${tz} time zone (${offsetFacts(c.tz, false)})." } },
+          { "@type": "Question", "name": "Does ${name} observe daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "${dstAnswer(name, c.tz, false)}" } },
           { "@type": "Question", "name": "When do the clocks change in ${name}?", "acceptedAnswer": { "@type": "Answer", "text": "${dst}" } }${enr.faqLd}
         ]
       }
@@ -549,7 +577,7 @@ function cityPage(c, hasEs, x) {
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
         <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Time in ${name}</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>${name} follows the <strong class="text-zinc-200">${tz}</strong> time zone. Its offset from Coordinated Universal Time (UTC) changes when daylight saving time is in effect, so the live clock above always shows the real local time right now.</p>
+          <p>${name} follows the <strong class="text-zinc-200">${tz}</strong> time zone. ${offsetSentence(c.tz, false)}</p>
           <p><strong class="text-zinc-200">Daylight saving:</strong> ${dst}</p>
           <p>To plan a call or event across zones, compare ${name} with other cities in the list above, browse every offset on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a>, or turn any moment into a shareable code with the <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a>.</p>
         </div>
@@ -562,11 +590,11 @@ function cityPage(c, hasEs, x) {
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>What time zone is ${name} in?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${name} is in the ${tz} time zone. The live clock shows its current UTC offset, which already accounts for daylight saving where it applies.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${name} is in the ${tz} time zone (${offsetFacts(c.tz, false)}).</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does ${name} observe daylight saving time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">The times shown use the current IANA time zone (${tz}), so daylight saving is reflected automatically whenever ${country} observes it.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">${dstAnswer(name, c.tz, false)}</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&amp;::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>When do the clocks change in ${name}?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
@@ -661,7 +689,7 @@ const ZONES = [
   { slug: 'pst',  abbr: 'PST',  name: 'Pacific Standard Time',             tz: 'America/Los_Angeles', min: -480, off: 'UTC−8',    dst: 'PDT (UTC−7)' },
   { slug: 'gmt',  abbr: 'GMT',  name: 'Greenwich Mean Time',               tz: 'Etc/GMT',             min: 0,    off: 'UTC+0',    dst: null },
   { slug: 'utc',  abbr: 'UTC',  name: 'Coordinated Universal Time',        tz: 'Etc/UTC',             min: 0,    off: 'UTC+0',    dst: null },
-  { slug: 'bst',  abbr: 'BST',  name: 'British Summer Time',               tz: 'Etc/GMT-1',           min: 60,   off: 'UTC+1',    dst: null, note: 'BST is the summer time of the United Kingdom; in winter the UK is on GMT (UTC+0).' },
+  { slug: 'bst',  abbr: 'BST',  name: 'British Summer Time',               tz: 'Etc/GMT-1',           min: 60,   off: 'UTC+1',    dst: null, dstText: 'BST is the summer time of the United Kingdom; in winter the UK is on GMT (UTC+0). This page compares against a fixed UTC+1.' },
   { slug: 'cet',  abbr: 'CET',  name: 'Central European Time',             tz: 'Europe/Paris',        min: 60,   off: 'UTC+1',    dst: 'CEST (UTC+2)' },
   { slug: 'ist',  abbr: 'IST',  name: 'India Standard Time',               tz: 'Asia/Kolkata',        min: 330,  off: 'UTC+5:30', dst: null },
   { slug: 'gst',  abbr: 'GST',  name: 'Gulf Standard Time',                tz: 'Asia/Dubai',          min: 240,  off: 'UTC+4',    dst: null },
@@ -684,6 +712,7 @@ function zoneGapSentence(a, b) {
 }
 
 function zoneDstSentence(z) {
+  if (z.dstText) return z.dstText;
   return z.dst
     ? `${z.abbr} is the standard time (${z.off}); when daylight saving is in effect it becomes ${z.dst}. The live clock on this page always shows the current offset.`
     : `${z.abbr} stays at ${z.off} all year round — it does not observe daylight saving time.`;
@@ -856,7 +885,6 @@ function timeIndexPage(cities, pairs, zonePairs) {
 
 export function generate() {
   const cities = JSON.parse(readFileSync(filePath('src/cities.json'), 'utf8'));
-  const today = new Date().toISOString().slice(0, 10);
   mkdirSync(filePath('time'), { recursive: true });
   mkdirSync(filePath('es/time'), { recursive: true });
 
@@ -913,36 +941,38 @@ export function generate() {
   entries.push({ name: 'time-index', file: filePath('time/index.html') });
 
   const urls = [
-    { loc: `${SITE}/`, pri: '1.0', freq: 'weekly' },
-    { loc: `${SITE}/es`, pri: '0.9', freq: 'weekly' },
-    { loc: `${SITE}/es/time-zone-map`, pri: '0.8', freq: 'weekly' },
-    { loc: `${SITE}/es/meeting-planner`, pri: '0.7', freq: 'monthly' },
-    { loc: `${SITE}/es/discord-timestamp-generator`, pri: '0.7', freq: 'monthly' },
-    { loc: `${SITE}/es/flight-time-calculator`, pri: '0.7', freq: 'monthly' },
-    { loc: `${SITE}/es/jet-lag-calculator`, pri: '0.6', freq: 'monthly' },
-    { loc: `${SITE}/es/flight-route-map`, pri: '0.6', freq: 'monthly' },
-    { loc: `${SITE}/es/clock-widget`, pri: '0.6', freq: 'monthly' },
-    { loc: `${SITE}/time`, pri: '0.9', freq: 'weekly' },
-    { loc: `${SITE}/time-zone-map`, pri: '0.9', freq: 'weekly' },
-    { loc: `${SITE}/discord-timestamp-generator`, pri: '0.8', freq: 'monthly' },
-    { loc: `${SITE}/meeting-planner`, pri: '0.8', freq: 'monthly' },
-    { loc: `${SITE}/flight-time-calculator`, pri: '0.8', freq: 'monthly' },
-    { loc: `${SITE}/jet-lag-calculator`, pri: '0.7', freq: 'monthly' },
-    { loc: `${SITE}/flight-route-map`, pri: '0.7', freq: 'monthly' },
-    { loc: `${SITE}/clock-widget`, pri: '0.7', freq: 'monthly' },
-    { loc: `${SITE}/windows`, pri: '0.7', freq: 'monthly' },
-    ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, pri: '0.7', freq: 'weekly' })),
-    ...cities.filter((c) => ES_CITY[c.slug]).map((c) => ({ loc: `${SITE}/es/time/${c.slug}`, pri: '0.6', freq: 'weekly' })),
-    ...pairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, pri: '0.6', freq: 'weekly' })),
-    ...zonePairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, pri: '0.6', freq: 'weekly' })),
+    { loc: `${SITE}/`, mod: '2026-07-06' },
+    { loc: `${SITE}/es`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/time-zone-map`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/meeting-planner`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/discord-timestamp-generator`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/flight-time-calculator`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/jet-lag-calculator`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/flight-route-map`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/clock-widget`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/about`, mod: '2026-11-02' },
+    { loc: `${SITE}/es/privacy`, mod: '2026-11-02' },
+    { loc: `${SITE}/time`, mod: HUB_UPDATED },
+    { loc: `${SITE}/time-zone-map`, mod: '2026-07-06' },
+    { loc: `${SITE}/discord-timestamp-generator`, mod: '2026-07-06' },
+    { loc: `${SITE}/meeting-planner`, mod: '2026-07-06' },
+    { loc: `${SITE}/flight-time-calculator`, mod: '2026-07-06' },
+    { loc: `${SITE}/jet-lag-calculator`, mod: '2026-07-06' },
+    { loc: `${SITE}/flight-route-map`, mod: '2026-07-06' },
+    { loc: `${SITE}/clock-widget`, mod: '2026-07-06' },
+    { loc: `${SITE}/windows`, mod: '2026-07-06' },
+    { loc: `${SITE}/about`, mod: '2026-11-02' },
+    { loc: `${SITE}/privacy`, mod: '2026-11-02' },
+    ...cities.map((c) => ({ loc: `${SITE}/time/${c.slug}`, mod: CITY_UPDATED })),
+    ...cities.filter((c) => ES_CITY[c.slug]).map((c) => ({ loc: `${SITE}/es/time/${c.slug}`, mod: CITY_UPDATED })),
+    ...pairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, mod: PAIR_UPDATED })),
+    ...zonePairs.map(([a, b]) => ({ loc: `${SITE}/time/${a.slug}-to-${b.slug}`, mod: ZONE_UPDATED })),
   ];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url>
     <loc>${u.loc}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${u.freq}</changefreq>
-    <priority>${u.pri}</priority>
+    <lastmod>${u.mod}</lastmod>
   </url>`).join('\n')}
 </urlset>
 `;

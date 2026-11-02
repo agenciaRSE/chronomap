@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Sobre ChronoMap: cómo se calculan las horas | ChronoMap</title>
+    <meta name="description" content="Quién hace ChronoMap, cómo calcula las horas, de dónde salen los datos y qué no pueden hacer sus herramientas." />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.chronomap.top/es/about" />
+    <link rel="alternate" hreflang="en" href="https://www.chronomap.top/about" />
+    <link rel="alternate" hreflang="es" href="https://www.chronomap.top/es/about" />
+    <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/about" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.chronomap.top/es/about" />
+    <meta property="og:title" content="Sobre ChronoMap: cómo se calculan las horas" />
+    <meta property="og:description" content="Quién hace ChronoMap, cómo calcula las horas, de dónde salen los datos y qué no pueden hacer sus herramientas." />
+    <meta property="og:image" content="https://www.chronomap.top/og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+      {"@context": "https://schema.org", "@type": "AboutPage", "name": "Sobre ChronoMap", "url": "https://www.chronomap.top/es/about", "inLanguage": "es", "dateModified": "2026-11-02", "publisher": {"@type": "Organization", "@id": "https://agenciarse.com/#organization", "name": "Agenciarse", "url": "https://agenciarse.com"}}
+    </script>
+  </head>
+  <body class="min-h-screen antialiased relative overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <header class="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-md">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+        <a href="/es" class="inline-flex items-center gap-2 group shrink-0" aria-label="Inicio de ChronoMap">
+          <span class="relative w-6 h-6 flex items-center justify-center shrink-0">
+            <span class="absolute inset-0 rounded-full border-[1.5px] border-zinc-700/50 animate-[spin_12s_linear_infinite]"></span>
+            <span class="absolute inset-1 rounded-full border-[1.5px] border-blue-500/80 border-t-transparent animate-[spin_8s_linear_infinite_reverse]"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 drop-shadow-[0_0_5px_rgba(59,130,246,0.9)]"></span>
+          </span>
+          <span class="text-[15px] font-semibold tracking-tight text-white group-hover:text-blue-400 transition-colors">ChronoMap</span>
+        </a>
+        <div class="flex items-center gap-x-4 sm:gap-x-5 text-[13px] text-zinc-400">
+          <a href="/es/time-zone-map" class="hover:text-white transition-colors whitespace-nowrap">Husos horarios</a>
+          <a href="/es/meeting-planner" class="hover:text-white transition-colors whitespace-nowrap hidden sm:inline">Planificador</a>
+          <a href="/es/flight-time-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden md:inline">Vuelos</a>
+          <a href="/es/jet-lag-calculator" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Jet lag</a>
+          <a href="/es/flight-route-map" class="hover:text-white transition-colors whitespace-nowrap hidden lg:inline">Ruta</a>
+          <a href="/about" hreflang="en" class="text-zinc-500 hover:text-white transition-colors border-l border-white/10 pl-4">EN</a>
+        </div>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
+      <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
+        <h1 class="text-4xl sm:text-5xl leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Sobre ChronoMap</h1>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">ChronoMap es un conjunto de herramientas gratuitas para trabajar entre husos horarios: un mapa del reloj mundial, un planificador de reuniones, calculadoras de vuelos y jet lag, y timestamps de Discord.</p>
+        <p class="text-xs text-zinc-500 mt-4">Última actualización: 2 de noviembre de 2026</p>
+      </header>
+
+      <section class="max-w-2xl w-full mx-auto mb-6 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Quién lo hace</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <p>ChronoMap lo crea y publica <a href="https://agenciarse.com" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">Agenciarse</a> (Agencia RSE). Todas las herramientas son gratuitas y no necesitan cuenta.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-6 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Cómo se calculan las horas</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <p>Los relojes en vivo leen el reloj de tu dispositivo y lo convierten con la API <code class="text-zinc-200">Intl</code> del navegador, que usa la <a href="https://www.iana.org/time-zones" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">base de datos de zonas horarias de IANA</a>. Esa base recoge los offsets UTC y las reglas de horario de verano de cada región. ChronoMap no tiene reglas horarias propias.</p>
+          <p>Si el reloj de tu dispositivo está mal, los relojes en vivo fallan en la misma medida. Si un gobierno cambia sus reglas con poco margen, el resultado depende de cuándo reciban la actualización tu navegador o tu sistema.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-6 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Cómo se hacen las páginas</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <p>Las páginas de ciudades y husos horarios se generan a partir de plantillas y un archivo de datos estructurados, y se publican sin redactarlas una a una. Los offsets y el próximo cambio de hora se calculan al construir el sitio, así que, si alguna vez no coinciden, el reloj en vivo de la página está más al día que su texto.</p>
+          <p>Las franjas para llamar suponen un horario laboral de 9:00 a 17:00 y pueden moverse una hora cerca de los cambios de hora. Las cifras de población son estimaciones redondeadas del área metropolitana y solo sirven de orientación.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-6 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Qué no pueden hacer las herramientas</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong class="text-zinc-200">Herramientas de vuelos:</strong> hacen el cálculo horario con las horas que introduces. No tienen datos de vuelos en vivo, así que consulta los horarios reales con tu aerolínea.</li>
+            <li><strong class="text-zinc-200">Calculadora de jet lag:</strong> es una estimación aproximada según los husos cruzados y el sentido del viaje. No es consejo médico.</li>
+            <li><strong class="text-zinc-200">Amanecer y atardecer:</strong> se calculan con una aproximación de la fórmula solar de NOAA, así que pueden diferir unos minutos de las tablas oficiales.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-6 reveal glass-panel rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold text-white mb-4">Avísanos de un error</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+          <p>¿Has visto una hora, un offset o un dato de ciudad incorrecto? Escribe a <a href="mailto:dev@agenciarse.com" class="text-blue-400 hover:text-blue-300 transition-colors">dev@agenciarse.com</a> con la dirección de la página y lo que esperabas ver.</p>
+        </div>
+      </section>
+
+      <div class="h-8"></div>
+      <footer class="w-full text-center mt-2">
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-zinc-500">
+            <a href="/es" class="hover:text-zinc-300 transition-colors">Reloj mundial</a>
+            <a href="/es/time-zone-map" class="hover:text-zinc-300 transition-colors">Mapa de husos horarios</a>
+            <a href="/es/meeting-planner" class="hover:text-zinc-300 transition-colors">Planificador de reuniones</a>
+            <a href="/es/about" class="hover:text-zinc-300 transition-colors">Sobre ChronoMap</a>
+            <a href="/es/privacy" class="hover:text-zinc-300 transition-colors">Privacidad</a>
+            <a href="/about" class="hover:text-zinc-300 transition-colors" hreflang="en">English</a>
+        </nav>
+      </footer>
+    </main>
+    <script type="module" src="/src/static-page.tsx"></script>
+  </body>
+</html>

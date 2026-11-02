@@ -24,4 +24,5 @@ All times use each location's live IANA time zone, so daylight saving time is al
 ## About
 
 - Publisher: Agenciarse (https://agenciarse.com)
+- How the times are calculated, sources and limits: https://www.chronomap.top/about
 - All features are free and run client-side; time math uses the browser's IANA time zone database.

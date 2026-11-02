@@ -33,6 +33,7 @@ const ES: Record<string, string> = {
   'Discord timestamps': 'Timestamps de Discord',
   'Windows app': 'App de Windows',
   'Embed a clock': 'Insertar un reloj',
+  'About': 'Sobre ChronoMap',
   'Explore': 'Explorar',
   'Explore pages': 'Explorar páginas',
   'ChronoMap pages': 'Páginas de ChronoMap',

@@ -12,8 +12,8 @@ import { generate } from './scripts/gen-city-pages.mjs';
 const generatedPages: { name: string; file: string }[] = generate();
 const generatedInputs = Object.fromEntries(generatedPages.map((p) => [p.name, p.file]));
 
-// IndexNow: after each PRODUCTION build, notify Bing/Yandex of all URLs so the
-// ~200 pages get crawled promptly. Ownership is proven by public/<key>.txt.
+// IndexNow: after each PRODUCTION build, notify Bing/Yandex of the URLs whose
+// lastmod is recent. IndexNow is for changed URLs, not the whole site. Ownership is proven by public/<key>.txt.
 // Runs in closeBundle so it fires whether Vercel runs `vite build` or the npm
 // script; gated to VERCEL_ENV=production so previews/local don't ping.
 const INDEXNOW_KEY = '6b1f0a9c7d3e42588a0c5f4b2e9d17c3';
@@ -24,7 +24,11 @@ function indexNowPlugin() {
       if (process.env.VERCEL_ENV !== 'production') return;
       try {
         const sitemap = readFileSync(fileURLToPath(new URL('./public/sitemap.xml', import.meta.url)), 'utf8');
-        const urlList = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
+        const since = new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10);
+        const urlList = [...sitemap.matchAll(/<loc>(.*?)<\/loc>\s*<lastmod>(.*?)<\/lastmod>/g)]
+          .filter((m) => m[2] >= since)
+          .map((m) => m[1]);
+        if (!urlList.length) return;
         const res = await fetch('https://api.indexnow.org/indexnow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -82,6 +86,10 @@ export default defineConfig({
         jetlag_es: fileURLToPath(new URL('./es/jet-lag-calculator.html', import.meta.url)),
         route: fileURLToPath(new URL('./flight-route-map.html', import.meta.url)),
         route_es: fileURLToPath(new URL('./es/flight-route-map.html', import.meta.url)),
+        about: fileURLToPath(new URL('./about.html', import.meta.url)),
+        about_es: fileURLToPath(new URL('./es/about.html', import.meta.url)),
+        privacy: fileURLToPath(new URL('./privacy.html', import.meta.url)),
+        privacy_es: fileURLToPath(new URL('./es/privacy.html', import.meta.url)),
         notfound: fileURLToPath(new URL('./404.html', import.meta.url)),
         ...generatedInputs,
       },
