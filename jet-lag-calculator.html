@@ -42,11 +42,11 @@
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
-          { "@type": "Question", "name": "How is jet lag calculated?", "acceptedAnswer": { "@type": "Answer", "text": "Jet lag is driven by how many time zones you cross and the direction. Enter your origin and destination and the calculator shows the number of zones crossed, whether you travel east or west, and a rough estimate of how many days it takes to adjust." } },
-          { "@type": "Question", "name": "How long does jet lag last?", "acceptedAnswer": { "@type": "Answer", "text": "A common rule of thumb is that your body clock shifts about one hour per day, so recovery takes roughly one day per time zone crossed when flying east, and a bit faster when flying west. It varies a lot between people." } },
-          { "@type": "Question", "name": "Is east or west jet lag worse?", "acceptedAnswer": { "@type": "Answer", "text": "Eastward travel is usually harder because it shortens your day and asks your body to fall asleep earlier, which most people find more difficult than staying up later when flying west." } },
-          { "@type": "Question", "name": "Does it need my flight details?", "acceptedAnswer": { "@type": "Answer", "text": "No. It only needs your origin and destination cities to compare their time zones — no flight number, no API, no personal data." } },
-          { "@type": "Question", "name": "Is the jet lag calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is completely free, needs no signup, and runs entirely in your browser. It gives a rough estimate and is not medical advice." } }
+          {"@type": "Question", "name": "How long does jet lag last?", "acceptedAnswer": {"@type": "Answer", "text": "On average, about one day per time zone after flying east and about two days for every three zones after flying west, based on the rates in the CDC Yellow Book. It varies a lot between people."}},
+          {"@type": "Question", "name": "Is east or west jet lag worse?", "acceptedAnswer": {"@type": "Answer", "text": "East is usually harder. It requires moving your body clock earlier, and most people find that more difficult than moving it later."}},
+          {"@type": "Question", "name": "How many time zones cause jet lag?", "acceptedAnswer": {"@type": "Answer", "text": "Jet lag disorder is defined as involving travel across at least two time zones. A one-hour change is unlikely to cause more than a slightly off night."}},
+          {"@type": "Question", "name": "How is this different from an app with a personal plan?", "acceptedAnswer": {"@type": "Answer", "text": "This calculator gives averages and a simple sleep schedule. Dedicated apps use your flight times to suggest when to seek or avoid light. The CDC suggests considering such calculators for personal timing."}},
+          {"@type": "Question", "name": "Does it need my flight details?", "acceptedAnswer": {"@type": "Answer", "text": "No. It only compares the time zones of the two cities and uses your usual bedtime. Nothing is sent to us."}}
         ]
       }
     </script>
@@ -86,7 +86,7 @@
     <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
       <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
         <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Jet Lag Calculator</h1>
-        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">See how many time zones your trip crosses, which direction is harder, roughly how long it takes to adjust, and what to do about it.</p>
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">See how many time zones your trip crosses, which direction is harder, roughly how long it takes to adjust, and how to plan your sleep around it.</p>
       </header>
 
       <div class="w-full max-w-2xl mx-auto mb-16 reveal" style="animation-delay:.1s">
@@ -97,10 +97,27 @@
 
       <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
-        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">What causes jet lag</h2>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">How the estimate works</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>Jet lag happens when your internal body clock is still on home time while the world around you runs on a different schedule. The more time zones you cross, the bigger the gap, and it takes a few days for your clock to catch up — shifting roughly an hour per day.</p>
-          <p>Direction matters: flying <strong class="text-zinc-200">east</strong> shortens your day and usually feels worse, while flying <strong class="text-zinc-200">west</strong> lengthens it and is often easier. Once you know the arrival time, plan your trip with the <a href="/flight-time-calculator" class="text-blue-400 hover:text-blue-300 transition-colors">flight time calculator</a> or check the destination on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">time zone map</a>. This tool gives a rough estimate and is not medical advice.</p>
+          <p>Jet lag happens when your body clock is still on home time after you arrive. According to the <a href="https://www.cdc.gov/yellow-book/hcp/travel-air-sea/jet-lag-disorder.html" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">CDC Yellow Book</a>, people adapt at an average of about 1 hour per day after flying east and 1.5 hours per day after flying west. This calculator divides the time difference by those rates.</p>
+          <p>East is harder because most people's internal clock runs slightly longer than 24 hours, so going to bed later comes more easily than going to bed earlier.</p>
+          <p>If the gap is more than 12 hours, it is counted the shorter way round the clock. Los Angeles to Sydney is treated as about 5 or 6 hours west, not 18 or 19 hours east. Jet lag is usually defined as starting from two time zones, and the number of zones is only one factor: time cues at the destination, individual genetics and medication also matter.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">What the evidence supports</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong class="text-zinc-200">Before you fly:</strong> moving your sleep 1 hour per day for 2 or 3 days can shorten the adjustment. Go earlier when flying east and later when flying west.</li>
+            <li><strong class="text-zinc-200">On the plane:</strong> stay hydrated and limit alcohol and caffeine, which can disturb sleep.</li>
+            <li><strong class="text-zinc-200">On arrival:</strong> stay awake during the local day. Naps of 20 to 30 minutes can help, but longer ones can make the night harder.</li>
+            <li><strong class="text-zinc-200">Light:</strong> bright morning light moves your clock earlier and evening light moves it later. The best timing depends on how many zones you crossed, which this calculator does not model.</li>
+            <li><strong class="text-zinc-200">Melatonin:</strong> timing matters, and the wrong time can make things worse. The CDC notes that 0.5 to 1 mg is often enough, advises against more than 5 mg, and warns that doses on labels may be inaccurate. Ask a doctor first, especially if you take other medication.</li>
+            <li><strong class="text-zinc-200">Short trips:</strong> if you are only away for a short time, keeping your home sleep hours may be better than adapting.</li>
+          </ul>
+          <p class="text-xs text-zinc-500">Source: <a href="https://www.cdc.gov/yellow-book/hcp/travel-air-sea/jet-lag-disorder.html" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">CDC Yellow Book 2026, Jet Lag Disorder</a>. ChronoMap is not a medical service and this page is not medical advice.</p>
         </div>
       </section>
 
@@ -108,24 +125,24 @@
         <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How is jet lag calculated?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">From the number of time zones you cross and the direction. Enter origin and destination and it shows zones crossed, east or west, and a rough number of days to adjust.</p>
-          </details>
-          <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How long does jet lag last?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Roughly one day per time zone flying east, and a bit faster flying west — your clock shifts about an hour a day. It varies between people.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">On average, about one day per time zone after flying east and about two days for every three zones after flying west, based on the rates in the CDC Yellow Book. It varies a lot between people.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is east or west jet lag worse?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">East is usually harder — it shortens your day and asks you to sleep earlier, which most people find tougher than staying up later.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">East is usually harder. It requires moving your body clock earlier, and most people find that more difficult than moving it later.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How many time zones cause jet lag?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Jet lag disorder is defined as involving travel across at least two time zones. A one-hour change is unlikely to cause more than a slightly off night.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How is this different from an app with a personal plan?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">This calculator gives averages and a simple sleep schedule. Dedicated apps use your flight times to suggest when to seek or avoid light. The CDC suggests considering such calculators for personal timing.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it need my flight details?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No — just origin and destination cities. No flight number, no API, no personal data.</p>
-          </details>
-          <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is it free?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — free, no signup, runs in your browser. It is a rough estimate, not medical advice.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. It only compares the time zones of the two cities and uses your usual bedtime. Nothing is sent to us.</p>
           </details>
         </div>
       </section>

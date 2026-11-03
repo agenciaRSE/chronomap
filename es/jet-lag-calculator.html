@@ -45,11 +45,11 @@
         "@type": "FAQPage",
         "inLanguage": "es",
         "mainEntity": [
-          { "@type": "Question", "name": "¿Cómo se calcula el jet lag?", "acceptedAnswer": { "@type": "Answer", "text": "El jet lag depende de cuántas zonas horarias cruzas y de la dirección. Introduce origen y destino y la calculadora muestra el número de zonas cruzadas, si viajas al este o al oeste, y una estimación aproximada de cuántos días tardas en adaptarte." } },
-          { "@type": "Question", "name": "¿Cuánto dura el jet lag?", "acceptedAnswer": { "@type": "Answer", "text": "Una regla común es que tu reloj interno se ajusta alrededor de una hora al día, así que la recuperación tarda aproximadamente un día por zona horaria al volar al este, y algo más rápido al volar al oeste. Varía mucho de una persona a otra." } },
-          { "@type": "Question", "name": "¿El jet lag es peor hacia el este o el oeste?", "acceptedAnswer": { "@type": "Answer", "text": "Viajar al este suele ser más duro porque acorta el día y pide a tu cuerpo dormirse antes, algo que la mayoría encuentra más difícil que quedarse despierto más tarde al volar al oeste." } },
-          { "@type": "Question", "name": "¿Necesita los datos de mi vuelo?", "acceptedAnswer": { "@type": "Answer", "text": "No. Solo necesita tus ciudades de origen y destino para comparar sus zonas horarias — sin número de vuelo, sin API, sin datos personales." } },
-          { "@type": "Question", "name": "¿La calculadora de jet lag es gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Es totalmente gratis, no necesita registro y funciona por completo en tu navegador. Da una estimación aproximada y no es consejo médico." } }
+          {"@type": "Question", "name": "¿Cuánto dura el jet lag?", "acceptedAnswer": {"@type": "Answer", "text": "De media, un día por huso horario tras volar al este y unos dos días por cada tres husos tras volar al oeste, según las tasas del CDC Yellow Book. Varía mucho entre personas."}},
+          {"@type": "Question", "name": "¿Es peor el jet lag hacia el este o hacia el oeste?", "acceptedAnswer": {"@type": "Answer", "text": "Suele ser peor hacia el este. Exige adelantar el reloj interno, y a la mayoría le cuesta más que retrasarlo."}},
+          {"@type": "Question", "name": "¿Cuántos husos horarios provocan jet lag?", "acceptedAnswer": {"@type": "Answer", "text": "El trastorno por jet lag se define a partir de viajes que cruzan al menos dos husos horarios. Con una hora de cambio es poco probable notar más que una noche algo peor."}},
+          {"@type": "Question", "name": "¿En qué se diferencia de una app con plan personal?", "acceptedAnswer": {"@type": "Answer", "text": "Esta calculadora da medias y un horario de sueño sencillo. Las apps específicas usan tus horas de vuelo para indicar cuándo buscar o evitar la luz. Los CDC sugieren valorar estas calculadoras para ajustar los horarios a cada persona."}},
+          {"@type": "Question", "name": "¿Necesita los datos de mi vuelo?", "acceptedAnswer": {"@type": "Answer", "text": "No. Solo compara los husos horarios de las dos ciudades y usa tu hora habitual de acostarte. No nos llega ningún dato."}}
         ]
       }
     </script>
@@ -100,10 +100,27 @@
 
       <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
-        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Qué causa el jet lag</h2>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Cómo funciona la estimación</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>El jet lag ocurre cuando tu reloj interno sigue en la hora de casa mientras el mundo alrededor funciona con otro horario. Cuantas más zonas horarias cruces, mayor es el desfase, y tu reloj tarda unos días en ponerse al día — desplazándose alrededor de una hora al día.</p>
-          <p>La dirección importa: volar al <strong class="text-zinc-200">este</strong> acorta el día y suele sentirse peor, mientras que volar al <strong class="text-zinc-200">oeste</strong> lo alarga y suele ser más llevadero. Cuando sepas la hora de llegada, planifica el viaje con la <a href="/es/flight-time-calculator" class="text-blue-400 hover:text-blue-300 transition-colors">calculadora de hora de vuelo</a> o consulta el destino en el <a href="/es/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">mapa de husos horarios</a>. Esta herramienta da una estimación aproximada y no es consejo médico.</p>
+          <p>El jet lag aparece cuando tu reloj interno sigue en la hora de casa después de llegar. Según el <a href="https://www.cdc.gov/yellow-book/hcp/travel-air-sea/jet-lag-disorder.html" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">CDC Yellow Book</a>, las personas se adaptan de media a unas 1 hora por día tras volar al este y 1,5 horas por día tras volar al oeste. Esta calculadora divide la diferencia horaria entre esas tasas.</p>
+          <p>El este cuesta más porque el reloj interno de la mayoría dura algo más de 24 horas, así que acostarse más tarde resulta más fácil que acostarse antes.</p>
+          <p>Si la diferencia supera las 12 horas, se cuenta por el camino corto del reloj. Los Ángeles a Sídney se trata como unas 5 o 6 horas al oeste, no 18 o 19 al este. Se suele hablar de jet lag a partir de dos husos horarios, y el número de husos es solo un factor: también influyen las señales horarias en destino, la genética de cada persona y la medicación.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Lo que respalda la evidencia</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong class="text-zinc-200">Antes de volar:</strong> mover el sueño 1 hora al día durante 2 o 3 días puede acortar la adaptación. Acuéstate antes si vuelas al este y más tarde si vuelas al oeste.</li>
+            <li><strong class="text-zinc-200">En el avión:</strong> hidrátate y limita el alcohol y la cafeína, que pueden alterar el sueño.</li>
+            <li><strong class="text-zinc-200">Al llegar:</strong> mantente despierto durante el día local. Las siestas de 20 a 30 minutos pueden ayudar, pero las largas pueden dificultar la noche.</li>
+            <li><strong class="text-zinc-200">Luz:</strong> la luz intensa de la mañana adelanta el reloj y la de la tarde lo retrasa. El mejor momento depende de los husos cruzados, algo que esta calculadora no modela.</li>
+            <li><strong class="text-zinc-200">Melatonina:</strong> el momento importa y una toma a destiempo puede empeorar el desfase. Los CDC indican que 0,5 a 1 mg suele bastar, desaconsejan más de 5 mg y avisan de que la dosis de la etiqueta puede no ser exacta. Consulta antes a un médico, sobre todo si tomas otra medicación.</li>
+            <li><strong class="text-zinc-200">Viajes cortos:</strong> si vas a estar poco tiempo fuera, mantener tu horario de sueño de casa puede ser mejor que adaptarte.</li>
+          </ul>
+          <p class="text-xs text-zinc-500">Fuente: <a href="https://www.cdc.gov/yellow-book/hcp/travel-air-sea/jet-lag-disorder.html" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">CDC Yellow Book 2026, Jet Lag Disorder</a>. ChronoMap no es un servicio médico y esta página no es consejo médico.</p>
         </div>
       </section>
 
@@ -111,24 +128,24 @@
         <h2 class="text-xl font-semibold text-white mb-5 text-center">Preguntas frecuentes</h2>
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cómo se calcula el jet lag?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">A partir de cuántas zonas horarias cruzas y la dirección. Introduce origen y destino y muestra zonas cruzadas, este u oeste, y un número aproximado de días para adaptarte.</p>
-          </details>
-          <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cuánto dura el jet lag?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Aproximadamente un día por zona horaria al volar al este, y algo más rápido al oeste — tu reloj se ajusta cerca de una hora al día. Varía entre personas.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">De media, un día por huso horario tras volar al este y unos dos días por cada tres husos tras volar al oeste, según las tasas del CDC Yellow Book. Varía mucho entre personas.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Es peor hacia el este o el oeste?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">El este suele ser más duro — acorta el día y te pide dormir antes, algo que la mayoría encuentra más difícil que quedarse despierto más tarde.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Es peor el jet lag hacia el este o hacia el oeste?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Suele ser peor hacia el este. Exige adelantar el reloj interno, y a la mayoría le cuesta más que retrasarlo.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cuántos husos horarios provocan jet lag?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">El trastorno por jet lag se define a partir de viajes que cruzan al menos dos husos horarios. Con una hora de cambio es poco probable notar más que una noche algo peor.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿En qué se diferencia de una app con plan personal?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Esta calculadora da medias y un horario de sueño sencillo. Las apps específicas usan tus horas de vuelo para indicar cuándo buscar o evitar la luz. Los CDC sugieren valorar estas calculadoras para ajustar los horarios a cada persona.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Necesita los datos de mi vuelo?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No — solo origen y destino. Sin número de vuelo, sin API, sin datos personales.</p>
-          </details>
-          <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Es gratis?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí — gratis, sin registro, funciona en tu navegador. Es una estimación aproximada, no consejo médico.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. Solo compara los husos horarios de las dos ciudades y usa tu hora habitual de acostarte. No nos llega ningún dato.</p>
           </details>
         </div>
       </section>

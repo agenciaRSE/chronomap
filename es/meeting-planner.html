@@ -46,9 +46,10 @@
         "@type": "FAQPage",
         "inLanguage": "es",
         "mainEntity": [
-          { "@type": "Question", "name": "¿Cómo encuentro la mejor hora para reunirme entre zonas horarias?", "acceptedAnswer": { "@type": "Answer", "text": "Añade la ciudad de cada participante al planificador. Cada ciudad muestra una banda de 24 horas con su horario laboral resaltado; las columnas donde todas las ciudades están dentro del horario laboral se marcan en verde — esas son las mejores horas para programar una reunión." } },
-          { "@type": "Question", "name": "¿El planificador tiene en cuenta el horario de verano?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Cada ciudad usa su zona horaria IANA actual, así que el horario de verano se refleja automáticamente y el solape siempre se basa en la hora local real." } },
-          { "@type": "Question", "name": "¿El planificador de reuniones es gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. El planificador de reuniones de ChronoMap es totalmente gratis, no necesita registro y funciona por completo en tu navegador." } }
+          {"@type": "Question", "name": "¿Cómo encuentro la mejor hora para una reunión entre husos?", "acceptedAnswer": {"@type": "Answer", "text": "Añade la ciudad de cada participante. Las columnas en las que todos están en horario laboral se ponen en verde. Si no hay ninguna, el planificador propone la hora más cercana."}},
+          {"@type": "Question", "name": "¿Y si ninguna hora le va bien a todos?", "acceptedAnswer": {"@type": "Answer", "text": "El planificador elige la hora con más gente en horario laboral y menos en plena noche. Rotar quién asume la franja incómoda hace el reparto más justo."}},
+          {"@type": "Question", "name": "¿El planificador tiene en cuenta el horario de verano?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Usa las reglas de la fecha que elijas, así que una reunión del mes que viene refleja cualquier cambio de hora hasta entonces."}},
+          {"@type": "Question", "name": "¿Puedo compartir el plan?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Compartir este plan copia un enlace con tus ciudades. Quien lo abra puede añadirlas a su planificador."}}
         ]
       }
     </script>
@@ -99,10 +100,20 @@
 
       <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
-        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Cómo planificar una reunión entre zonas horarias</h2>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Cómo planificar una reunión entre husos horarios</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>Añade la ciudad de cada participante con el buscador. Cada ciudad tiene su propia fila de 24 horas, con el horario laboral (9:00–18:00) sombreado y las horas de madrugada atenuadas. Las columnas donde <strong class="text-zinc-200">todos</strong> están dentro del horario laboral se resaltan en verde — esas son las mejores horas para programar tu llamada.</p>
-          <p>Haz clic en cualquier columna para ver la hora local y la fecha exactas de cada ciudad en ese momento. Como cada ciudad usa su zona horaria IANA en vivo, el horario de verano siempre se calcula correctamente. Para profundizar en un par concreto de ciudades, abre el <a href="/es/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">mapa de husos horarios interactivo</a>, o convierte el momento acordado en un código que cada uno lee en su zona con el <a href="/es/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">generador de timestamps de Discord</a>.</p>
+          <p>Añade la ciudad de cada participante. Cada ciudad tiene una fila de 24 horas con el horario laboral (9:00 a 18:00) sombreado y las horas de noche atenuadas. Elige una fecha, porque el solapamiento puede cambiar cuando un país cambia la hora. Las columnas en las que todos trabajan se ponen en verde.</p>
+          <p>Si ninguna hora le va bien a todos, el planificador propone la más cercana, con más gente en horario laboral y menos durmiendo. Pulsa cualquier columna para ver la hora local de cada persona y añadirla a un calendario.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Cuánto solapamiento esperar</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>El solapamiento cae rápido con la distancia. Estas son las horas laborales compartidas en enero, contando de 9:00 a 18:00 en hora local:</p>
+          <div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead><tr class="text-zinc-500 border-b border-white/10"><th scope="col" class="py-2 pr-3 font-medium">Ciudades</th><th scope="col" class="py-2 pr-3 font-medium">Horas compartidas</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="py-2 pr-3">Nueva York y Londres</td><td class="py-2 pr-3">4</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">Madrid y Ciudad de México</td><td class="py-2 pr-3">2</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">Londres y Singapur</td><td class="py-2 pr-3">1</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">Nueva York y Dubái</td><td class="py-2 pr-3">Ninguna, por poco</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">Los Ángeles y Bangalore</td><td class="py-2 pr-3">Ninguna</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">Nueva York, Londres y Tokio</td><td class="py-2 pr-3">Ninguna</td></tr></tbody></table></div>
+          <p>Sin horas compartidas, alguien tiene que ceder. Rotar la franja temprana o tardía reparte el coste, y con tres husos tan alejados suele ser mejor dividir en dos reuniones que hacer una que no le va bien a nadie.</p>
         </div>
       </section>
 
@@ -110,12 +121,20 @@
         <h2 class="text-xl font-semibold text-white mb-5 text-center">Preguntas frecuentes</h2>
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cómo encuentro la mejor hora para reunirme entre zonas horarias?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Añade la ciudad de cada participante. Cada ciudad muestra una banda de 24 horas con su horario laboral resaltado; las columnas donde todas las ciudades están dentro del horario laboral se marcan en verde — las mejores horas para reunirse.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cómo encuentro la mejor hora para una reunión entre husos?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Añade la ciudad de cada participante. Las columnas en las que todos están en horario laboral se ponen en verde. Si no hay ninguna, el planificador propone la hora más cercana.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Y si ninguna hora le va bien a todos?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">El planificador elige la hora con más gente en horario laboral y menos en plena noche. Rotar quién asume la franja incómoda hace el reparto más justo.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿El planificador tiene en cuenta el horario de verano?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí. Cada ciudad usa su zona horaria IANA actual, así que el horario de verano se refleja automáticamente y el solape siempre se basa en la hora local real.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí. Usa las reglas de la fecha que elijas, así que una reunión del mes que viene refleja cualquier cambio de hora hasta entonces.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Puedo compartir el plan?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí. Compartir este plan copia un enlace con tus ciudades. Quien lo abra puede añadirlas a su planificador.</p>
           </details>
         </div>
       </section>

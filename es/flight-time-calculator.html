@@ -45,11 +45,11 @@
         "@type": "FAQPage",
         "inLanguage": "es",
         "mainEntity": [
-          { "@type": "Question", "name": "¿Cómo calculo mi hora de llegada del vuelo?", "acceptedAnswer": { "@type": "Answer", "text": "Introduce tu ciudad y fecha/hora de salida, elige la ciudad de llegada y escribe la duración del vuelo. La calculadora muestra la hora de llegada local en la ciudad de destino e indica si aterrizas el mismo día o al día siguiente." } },
-          { "@type": "Question", "name": "¿Cómo calculo la duración real del vuelo?", "acceptedAnswer": { "@type": "Answer", "text": "Cambia al modo 'Duración del vuelo' e introduce la hora local de salida y la hora local de llegada. La calculadora las convierte a una referencia común y devuelve la duración real, ajustada por la diferencia horaria." } },
-          { "@type": "Question", "name": "¿Tiene en cuenta las zonas horarias y el horario de verano?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Cada ciudad usa su zona horaria IANA actual, así que la diferencia horaria y el horario de verano se gestionan automáticamente y el día de llegada (mismo o siguiente) es correcto." } },
-          { "@type": "Question", "name": "¿Necesito un número de vuelo o una API?", "acceptedAnswer": { "@type": "Answer", "text": "No. Funciona con las horas que introduces — no usa horarios de vuelo en vivo ni datos externos, así que es instantánea y privada." } },
-          { "@type": "Question", "name": "¿La calculadora de hora de vuelo es gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Es totalmente gratis, no necesita registro y funciona por completo en tu navegador." } }
+          {"@type": "Question", "name": "¿La duración del vuelo incluye la diferencia horaria?", "acceptedAnswer": {"@type": "Answer", "text": "No. La duración del billete es el tiempo real que pasas viajando y no cambia con los husos horarios. La diferencia horaria solo cambia el reloj local con el que aterrizas."}},
+          {"@type": "Question", "name": "¿Por qué mi vuelo aterriza antes de despegar?", "acceptedAnswer": {"@type": "Answer", "text": "Volar hacia el oeste cruzando varios husos puede atrasar el reloj local más horas de las que dura el vuelo. Un vuelo de 10 horas de Tokio a Los Ángeles aterriza a una hora anterior a la de salida, normalmente en la misma fecha."}},
+          {"@type": "Question", "name": "¿Las horas de llegada del billete son locales?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Las aerolíneas muestran la salida en hora local del aeropuerto de origen y la llegada en hora local del aeropuerto de destino."}},
+          {"@type": "Question", "name": "¿Tiene en cuenta el horario de verano?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Usa las reglas de la fecha que introduces en las dos ciudades. Si la hora cambia el día de tu viaje, comprueba el resultado con tu billete."}},
+          {"@type": "Question", "name": "¿Necesito un número de vuelo?", "acceptedAnswer": {"@type": "Answer", "text": "No. Funciona solo con las horas y la duración que introduces. No tiene datos de vuelos en vivo, así que consulta los horarios reales con tu aerolínea."}}
         ]
       }
     </script>
@@ -100,10 +100,29 @@
 
       <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
-        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Por qué las horas de llegada confunden</h2>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Cómo calcular tu hora de llegada</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>Cuando vuelas entre zonas horarias, la hora de llegada del billete está en la hora local del destino — por eso un vuelo "corto" puede parecer que llega antes de salir, o uno largo parece saltarse un día. El reloj al aterrizar no es el reloj del despegue.</p>
-          <p>Esta calculadora hace el cálculo por ti. Introduce desde dónde y cuándo sales y cuánto dura el vuelo, y te muestra la hora local exacta a la que llegas, y si es el mismo día o el siguiente. Cambia de modo para calcular la duración real a partir de dos horas locales. Para comparar las dos ciudades directamente, abre el <a href="/es/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">mapa de husos horarios</a> o una <a href="/time" class="text-blue-400 hover:text-blue-300 transition-colors">página de ciudad</a>.</p>
+          <p>Las horas de salida y llegada de un billete son locales, pero la duración del vuelo es tiempo real transcurrido. Para saber la hora de llegada, pasa la salida a UTC, suma la duración y conviértela al offset del destino.</p>
+          <p><strong class="text-zinc-200">Nueva York a Londres, 7 horas.</strong> Sales a las 20:00 del 15 de enero, cuando Nueva York está en UTC−5. Son las 01:00 UTC del día 16. Si sumas 7 horas, son las 08:00 UTC. Londres está en UTC+0, así que aterrizas a las 08:00 del día 16.</p>
+          <p><strong class="text-zinc-200">Tokio a Los Ángeles, 10 horas.</strong> Sales a las 17:00 del 15 de enero, que son las 08:00 UTC. Si sumas 10 horas, son las 18:00 UTC. Los Ángeles está en UTC−8, así que aterrizas a las 10:00 del día 15, siete horas antes de la hora a la que despegaste.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Cómo calcular la duración real del vuelo</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>Restar las dos horas del billete da un resultado erróneo, porque están en relojes distintos. Pasa primero las dos a UTC.</p>
+          <p><strong class="text-zinc-200">Madrid a Nueva York, de 10:00 a 12:30 en enero.</strong> Parecen 2 horas y 30 minutos. Madrid está en UTC+1, así que sales a las 09:00 UTC. Nueva York está en UTC−5, así que aterrizas a las 17:30 UTC. El vuelo dura 8 horas y 30 minutos.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Cuando la fecha cambia el resultado</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>La diferencia entre dos ciudades puede cambiar durante el año. Nueva York y Londres suelen estar a 5 horas, pero en primavera EE. UU. cambia la hora unas tres semanas antes que Reino Unido. A mediados de marzo de 2026 están a solo 4 horas, así que un cálculo de memoria fallaría por una hora. Esta calculadora usa la fecha que introduces.</p>
+          <p>No conoce tu vuelo. No tiene horarios, retrasos ni rutas, así que usa la duración de tu billete. Para un viaje con conexiones, usa el <a href="/es/flight-route-map" class="text-blue-400 hover:text-blue-300 transition-colors">mapa de rutas de vuelo</a>, que calcula cada tramo y escala.</p>
         </div>
       </section>
 
@@ -111,24 +130,24 @@
         <h2 class="text-xl font-semibold text-white mb-5 text-center">Preguntas frecuentes</h2>
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cómo calculo mi hora de llegada del vuelo?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Introduce tu ciudad y hora de salida, elige la ciudad de llegada y escribe la duración del vuelo. Muestra la hora de llegada local y si aterrizas el mismo día o al siguiente.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿La duración del vuelo incluye la diferencia horaria?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. La duración del billete es el tiempo real que pasas viajando y no cambia con los husos horarios. La diferencia horaria solo cambia el reloj local con el que aterrizas.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Cómo calculo la duración real del vuelo?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Cambia al modo "Duración del vuelo" e introduce la hora local de salida y la de llegada — devuelve la duración real, ajustada por la diferencia horaria.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Por qué mi vuelo aterriza antes de despegar?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Volar hacia el oeste cruzando varios husos puede atrasar el reloj local más horas de las que dura el vuelo. Un vuelo de 10 horas de Tokio a Los Ángeles aterriza a una hora anterior a la de salida, normalmente en la misma fecha.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Tiene en cuenta zonas horarias y horario de verano?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí. Cada ciudad usa su zona horaria IANA actual, así que la diferencia y el horario de verano se gestionan automáticamente y el día de llegada es correcto.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Las horas de llegada del billete son locales?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí. Las aerolíneas muestran la salida en hora local del aeropuerto de origen y la llegada en hora local del aeropuerto de destino.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Necesito un número de vuelo o una API?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. Funciona con las horas que introduces — sin datos de vuelo en vivo — así que es instantánea y privada.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Tiene en cuenta el horario de verano?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí. Usa las reglas de la fecha que introduces en las dos ciudades. Si la hora cambia el día de tu viaje, comprueba el resultado con tu billete.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Es gratis?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Sí — gratis, sin registro y funciona por completo en tu navegador.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>¿Necesito un número de vuelo?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. Funciona solo con las horas y la duración que introduces. No tiene datos de vuelos en vivo, así que consulta los horarios reales con tu aerolínea.</p>
           </details>
         </div>
       </section>

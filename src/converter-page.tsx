@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ArrowLeftRight, Check, Link2 } from 'lucide-react';
-import { CITIES, CityPicker, cityByTz, type Endpoint } from './lib/city-picker';
+import { CityPicker, cityByTz, type Endpoint } from './lib/city-picker';
+import { PLACES } from './lib/places';
 import { dayDelta, hm24, offsetMin, utcLabel, wallToUtc, ymdInTz } from './lib/tz';
 import { isES, t } from './lib/i18n';
-import zones from './zones.json';
 import './lib/analytics';
 import './page.css';
 
@@ -12,11 +12,7 @@ import './page.css';
 // (?from=&to=&t=&d=) so a result can be shared and old comparator pages can
 // redirect here with their two places already selected.
 
-const OPTIONS = [
-  ...zones.map((z) => ({ slug: z.slug, name: z.abbr, country: z.name, tz: z.tz })),
-  ...CITIES,
-];
-const bySlug = (slug: string | null) => OPTIONS.find((o) => o.slug === slug);
+const bySlug = (slug: string | null) => PLACES.find((o) => o.slug === slug);
 
 const LOCALE = isES ? 'es-ES' : 'en-US';
 const timeIn = (d: Date, tz: string) =>
@@ -84,7 +80,7 @@ const Converter: React.FC = () => {
   return (
     <div className="glass-panel rounded-2xl p-5 sm:p-6 glow-line">
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-3 sm:items-end">
-        <CityPicker value={from} onChange={setFrom} label={t('From')} options={OPTIONS} />
+        <CityPicker value={from} onChange={setFrom} label={t('From')} options={PLACES} />
         <button
           onClick={swap}
           aria-label={t('Swap time zones')}
@@ -93,7 +89,7 @@ const Converter: React.FC = () => {
         >
           <ArrowLeftRight className="w-4 h-4" />
         </button>
-        <CityPicker value={to} onChange={setTo} label={t('To')} options={OPTIONS} />
+        <CityPicker value={to} onChange={setTo} label={t('To')} options={PLACES} />
       </div>
 
       <div className="grid grid-cols-2 gap-3 mt-3">

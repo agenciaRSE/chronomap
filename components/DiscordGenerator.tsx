@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { Copy, Check, Clock } from 'lucide-react';
-import { format, formatDistanceToNow } from 'date-fns';
-import { t, dateLocale } from '../src/lib/i18n';
+import { format } from 'date-fns';
+import { STYLES, preview } from '../src/lib/discord';
+import { t, dateLocale, isES } from '../src/lib/i18n';
 
 interface DiscordGeneratorProps {
   targetDate: Date;
@@ -15,15 +16,7 @@ export const DiscordGenerator: React.FC<DiscordGeneratorProps> = ({ targetDate, 
 
   const unixTimestamp = Math.floor(targetDate.getTime() / 1000);
 
-  const formats = [
-    { code: 't', label: t('Short Time'), preview: format(targetDate, 'p', { locale: dateLocale }) },
-    { code: 'T', label: t('Long Time'), preview: format(targetDate, 'pp', { locale: dateLocale }) },
-    { code: 'd', label: t('Short Date'), preview: format(targetDate, 'P', { locale: dateLocale }) },
-    { code: 'D', label: t('Long Date'), preview: format(targetDate, 'PP', { locale: dateLocale }) },
-    { code: 'f', label: t('Short Date/Time'), preview: format(targetDate, 'Pp', { locale: dateLocale }) },
-    { code: 'F', label: t('Long Date/Time'), preview: format(targetDate, 'PPpp', { locale: dateLocale }) },
-    { code: 'R', label: t('Relative'), preview: formatDistanceToNow(targetDate, { addSuffix: true, locale: dateLocale }) },
-  ];
+  const formats = STYLES.map((f) => ({ code: f.code, label: t(f.label), preview: preview(targetDate, f.code, isES ? 'es-ES' : undefined) }));
 
   const handleCopy = (code: string) => {
     const str = `<t:${unixTimestamp}:${code}>`;

@@ -42,11 +42,11 @@
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
-          { "@type": "Question", "name": "How do I calculate my flight arrival time?", "acceptedAnswer": { "@type": "Answer", "text": "Enter your departure city and departure date/time, choose the arrival city, and type the flight duration. The calculator shows the local arrival time in the destination city and tells you if you land the same day or the next day." } },
-          { "@type": "Question", "name": "How do I work out the real flight duration?", "acceptedAnswer": { "@type": "Answer", "text": "Switch to the 'Flight duration' mode and enter the local departure time and the local arrival time. The calculator converts both to a common reference and returns the true flight duration, adjusted for the time-zone difference." } },
-          { "@type": "Question", "name": "Does it account for time zones and daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Each city uses its current IANA time zone, so the time-zone difference and daylight saving time are handled automatically, and the arrival day (same or next day) is correct." } },
-          { "@type": "Question", "name": "Do I need a flight number or an API?", "acceptedAnswer": { "@type": "Answer", "text": "No. This is a calculator that works from the times you enter — it does not use live flight schedules or any external data, so it works instantly and offline." } },
-          { "@type": "Question", "name": "Is the flight time calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is completely free, needs no signup, and runs entirely in your browser." } }
+          {"@type": "Question", "name": "Does flight time include the time difference?", "acceptedAnswer": {"@type": "Answer", "text": "No. The duration on a ticket is the real time you spend travelling, and it does not change with time zones. The time difference only changes the local clock you land under."}},
+          {"@type": "Question", "name": "Why does my flight land before it took off?", "acceptedAnswer": {"@type": "Answer", "text": "Flying west across several time zones can move the local clock back by more hours than the flight lasts. A 10-hour flight from Tokyo to Los Angeles lands at an earlier clock time than it left, usually on the same date."}},
+          {"@type": "Question", "name": "Are arrival times on a ticket local?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Airlines show departure in the local time of the departure airport and arrival in the local time of the arrival airport."}},
+          {"@type": "Question", "name": "Does it account for daylight saving time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It uses the rules for the date you enter, in both cities. If the clocks change on your travel date, check the result against your ticket."}},
+          {"@type": "Question", "name": "Do I need a flight number?", "acceptedAnswer": {"@type": "Answer", "text": "No. It works only from the times and duration you enter. It has no live flight data, so check real schedules with your airline."}}
         ]
       }
     </script>
@@ -97,10 +97,29 @@
 
       <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
-        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Why arrival times are confusing</h2>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">How to work out your arrival time</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>When you fly across time zones, the arrival time on your ticket is in the destination's local time — which is why a "short" flight can look like it arrives before it left, or a long one seems to skip a day. The clock you land under is not the clock you took off from.</p>
-          <p>This calculator does the mental math for you. Enter where and when you leave and how long the flight is, and it shows the exact local time you'll arrive, plus whether it's the same day or the next. Switch modes to instead find the real flight duration from two local times. To compare the two cities directly, open the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">time zone map</a> or a <a href="/time" class="text-blue-400 hover:text-blue-300 transition-colors">city page</a>.</p>
+          <p>Departure and arrival times on a ticket are both local, but the flight duration is real elapsed time. To find the arrival time, convert the departure to UTC, add the duration, then convert to the destination's offset.</p>
+          <p><strong class="text-zinc-200">New York to London, 7 hours.</strong> You leave at 8:00 PM on 15 January, when New York is UTC−5. That is 01:00 UTC on the 16th. Add 7 hours to get 08:00 UTC. London is on UTC+0, so you land at 8:00 AM on the 16th.</p>
+          <p><strong class="text-zinc-200">Tokyo to Los Angeles, 10 hours.</strong> You leave at 5:00 PM on 15 January, which is 08:00 UTC. Add 10 hours to get 18:00 UTC. Los Angeles is on UTC−8, so you land at 10:00 AM on the 15th, seven hours before the time you took off.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">How to work out the real flight duration</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>Subtracting the two times on a ticket gives the wrong answer, because they are on different clocks. Convert both to UTC first.</p>
+          <p><strong class="text-zinc-200">Madrid to New York, 10:00 to 12:30 in January.</strong> It looks like 2 hours 30 minutes. Madrid is on UTC+1, so you leave at 09:00 UTC. New York is on UTC−5, so you land at 17:30 UTC. The flight takes 8 hours 30 minutes.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">When the date changes the answer</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>The gap between two cities can change during the year. New York and London are normally 5 hours apart, but the US changes its clocks about three weeks before the UK in spring. In mid-March 2026 they are only 4 hours apart, so a time worked out from memory would be an hour off. This calculator uses the date you enter.</p>
+          <p>It does not know your flight. It has no schedules, delays or routes, so use the duration on your ticket. For a trip with connections, use the <a href="/flight-route-map" class="text-blue-400 hover:text-blue-300 transition-colors">flight route map</a>, which handles each leg and layover.</p>
         </div>
       </section>
 
@@ -108,24 +127,24 @@
         <h2 class="text-xl font-semibold text-white mb-5 text-center">Frequently asked questions</h2>
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I calculate my flight arrival time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Enter your departure city and time, choose the arrival city, and type the flight duration. The calculator shows the local arrival time and whether you land the same or the next day.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does flight time include the time difference?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. The duration on a ticket is the real time you spend travelling, and it does not change with time zones. The time difference only changes the local clock you land under.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I work out the real flight duration?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Switch to "Flight duration" mode and enter the local departure time and the local arrival time — it returns the true duration, adjusted for the time-zone difference.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Why does my flight land before it took off?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Flying west across several time zones can move the local clock back by more hours than the flight lasts. A 10-hour flight from Tokyo to Los Angeles lands at an earlier clock time than it left, usually on the same date.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it account for time zones and daylight saving?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. Each city uses its current IANA time zone, so the difference and daylight saving are handled automatically and the arrival day is correct.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Are arrival times on a ticket local?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. Airlines show departure in the local time of the departure airport and arrival in the local time of the arrival airport.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Do I need a flight number or an API?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. It works from the times you enter — no live flight data — so it is instant and private.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does it account for daylight saving time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. It uses the rules for the date you enter, in both cities. If the clocks change on your travel date, check the result against your ticket.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
-            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is it free?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes — free, no signup, and it runs entirely in your browser.</p>
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Do I need a flight number?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. It works only from the times and duration you enter. It has no live flight data, so check real schedules with your airline.</p>
           </details>
         </div>
       </section>

@@ -23,7 +23,7 @@ export const ZONE_KEEP = ["est-to-sgt", "gmt-to-sgt", "bst-to-sgt", "cet-to-ist"
 // Sitemap lastmod: the date the page's content really changed. Never use the build
 // date: Google stops trusting lastmod if it moves on every deploy. Bump by hand when
 // the copy changes, including the template dates below for generated pages.
-const CITY_UPDATED = '2026-11-02';
+const CITY_UPDATED = '2026-11-03';
 const ZONE_UPDATED = '2026-11-03';
 const HUB_UPDATED = '2026-11-03';
 
@@ -217,6 +217,8 @@ const LOGO_ES = LOGO.replace('href="/"', 'href="/es"');
 // src/city-data.json: slug → [lat, lng, metro population in millions]. Cities
 // missing there (or countries missing a calling code) just skip that piece.
 const CITY_DATA = JSON.parse(readFileSync(filePath('src/city-data.json'), 'utf8'));
+// Facts about each indexed city's clock, checked against tzdata in test/content.test.ts.
+const CITY_NOTES = JSON.parse(readFileSync(filePath('src/city-notes.json'), 'utf8'));
 
 const CALLING = {
   'United Kingdom': '+44', 'United States': '+1', 'Japan': '+81', 'France': '+33',
@@ -468,7 +470,7 @@ function cityPageEs(c, es, x) {
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
           <p>${name} sigue la zona horaria <strong class="text-zinc-200">${tz}</strong>. ${offsetSentence(c.tz, true)}</p>
           <p><strong class="text-zinc-200">Horario de verano:</strong> ${dst}</p>
-          <p>Para planificar una llamada o evento entre zonas, compara ${name} con otras ciudades de la lista de arriba, explora cada offset en el <a href="/es/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">mapa de husos horarios interactivo</a>, o convierte cualquier momento en un código compartible con el <a href="/es/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">generador de timestamps de Discord</a>.</p>
+          <p>Para convertir una hora concreta, usa el <a href="/es/time-zone-converter?from=${c.slug}" class="text-blue-400 hover:text-blue-300 transition-colors">conversor de husos horarios</a>. Para buscar hueco para una llamada, usa el <a href="/es/meeting-planner" class="text-blue-400 hover:text-blue-300 transition-colors">planificador de reuniones</a>.</p>
         </div>
       </section>
 
@@ -583,7 +585,8 @@ function cityPage(c, hasEs, x) {
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
           <p>${name} follows the <strong class="text-zinc-200">${tz}</strong> time zone. ${offsetSentence(c.tz, false)}</p>
           <p><strong class="text-zinc-200">Daylight saving:</strong> ${dst}</p>
-          <p>To plan a call or event across zones, compare ${name} with other cities in the list above, browse every offset on the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a>, or turn any moment into a shareable code with the <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a>.</p>
+          ${CITY_NOTES[c.slug] ? `<p>${esc(CITY_NOTES[c.slug])}</p>` : ''}
+          <p>To convert a specific time, use the <a href="/time-zone-converter?from=${c.slug}" class="text-blue-400 hover:text-blue-300 transition-colors">time zone converter</a>. To find a slot for a call, use the <a href="/meeting-planner" class="text-blue-400 hover:text-blue-300 transition-colors">meeting planner</a>.</p>
         </div>
       </section>
 
@@ -847,10 +850,10 @@ export function generate() {
     { loc: `${SITE}/es`, mod: '2026-07-06' },
     { loc: `${SITE}/es/time-zone-converter`, mod: '2026-11-03' },
     { loc: `${SITE}/es/time-zone-map`, mod: '2026-07-06' },
-    { loc: `${SITE}/es/meeting-planner`, mod: '2026-07-06' },
-    { loc: `${SITE}/es/discord-timestamp-generator`, mod: '2026-07-06' },
-    { loc: `${SITE}/es/flight-time-calculator`, mod: '2026-07-06' },
-    { loc: `${SITE}/es/jet-lag-calculator`, mod: '2026-07-06' },
+    { loc: `${SITE}/es/meeting-planner`, mod: '2026-11-03' },
+    { loc: `${SITE}/es/discord-timestamp-generator`, mod: '2026-11-03' },
+    { loc: `${SITE}/es/flight-time-calculator`, mod: '2026-11-03' },
+    { loc: `${SITE}/es/jet-lag-calculator`, mod: '2026-11-03' },
     { loc: `${SITE}/es/flight-route-map`, mod: '2026-07-06' },
     { loc: `${SITE}/es/clock-widget`, mod: '2026-07-06' },
     { loc: `${SITE}/es/about`, mod: '2026-11-02' },
@@ -858,10 +861,10 @@ export function generate() {
     { loc: `${SITE}/time`, mod: HUB_UPDATED },
     { loc: `${SITE}/time-zone-converter`, mod: '2026-11-03' },
     { loc: `${SITE}/time-zone-map`, mod: '2026-07-06' },
-    { loc: `${SITE}/discord-timestamp-generator`, mod: '2026-07-06' },
-    { loc: `${SITE}/meeting-planner`, mod: '2026-07-06' },
-    { loc: `${SITE}/flight-time-calculator`, mod: '2026-07-06' },
-    { loc: `${SITE}/jet-lag-calculator`, mod: '2026-07-06' },
+    { loc: `${SITE}/discord-timestamp-generator`, mod: '2026-11-03' },
+    { loc: `${SITE}/meeting-planner`, mod: '2026-11-03' },
+    { loc: `${SITE}/flight-time-calculator`, mod: '2026-11-03' },
+    { loc: `${SITE}/jet-lag-calculator`, mod: '2026-11-03' },
     { loc: `${SITE}/flight-route-map`, mod: '2026-07-06' },
     { loc: `${SITE}/clock-widget`, mod: '2026-07-06' },
     { loc: `${SITE}/windows`, mod: '2026-07-06' },

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Plane } from 'lucide-react';
-import { wallToUtc, timeLabel, dayLabel, ymdInTz } from './lib/tz';
+import { wallToUtc, timeLabel, dayLabel, ymdInTz, offsetMin } from './lib/tz';
 import { CityPicker, CITIES, cityLabel, type Endpoint } from './lib/city-picker';
 import { t } from './lib/i18n';
 import './lib/analytics';
@@ -64,6 +64,11 @@ const Flight: React.FC = () => {
   const durMins = result.mins;
   const durText = durMins >= 0 ? `${Math.floor(durMins / 60)}h ${durMins % 60}m` : t('arrival before departure');
   const dayTag = result.delta > 0 ? t('(next day)') : result.delta < 0 ? t('(prev. day)') : '';
+  const gapMin = offsetMin(result.arrUTC, arr.tz) - offsetMin(result.arrUTC, dep.tz);
+  const gapH = Math.abs(gapMin) / 60;
+  const gap = gapMin === 0
+    ? `${dep.name} ${t('and')} ${arr.name} ${t('are in the same time')}`
+    : `${arr.name} ${t('is')} ${gapH} ${gapH === 1 ? t('hour') : t('hours')} ${gapMin > 0 ? t('ahead of') : t('behind')} ${dep.name}`;
 
   return (
     <div className="glass-panel rounded-2xl overflow-hidden relative glow-line isolate">
@@ -120,13 +125,14 @@ const Flight: React.FC = () => {
             <div className="text-sm text-zinc-500 mb-1">{t('You arrive at')}</div>
             <div className="text-3xl sm:text-4xl font-mono font-light text-white tabular-nums">{timeLabel(result.arrUTC, arr.tz)}</div>
             <div className="text-sm text-zinc-400 mt-1">{dayLabel(result.arrUTC, arr.tz)} {dayTag && <span className="text-blue-300">{dayTag}</span>}</div>
-            <div className="text-xs text-zinc-600 mt-3">{t('local time in')} {arr.name} · {t('flight')} {durText}</div>
+            <div className="text-xs text-zinc-500 mt-3">{t('local time in')} {arr.name} · {t('flight')} {durText}</div>
+            <div className="text-xs text-zinc-500 mt-1">{t('When you land, it is')} {timeLabel(result.arrUTC, dep.tz)} {t('in')} {dep.name} · {gap}</div>
           </>
         ) : (
           <>
             <div className="text-sm text-zinc-500 mb-1">{t('Flight duration')}</div>
             <div className={`text-3xl sm:text-4xl font-mono font-light tabular-nums ${durMins >= 0 ? 'text-white' : 'text-amber-400'}`}>{durText}</div>
-            <div className="text-xs text-zinc-600 mt-3">{t('based on local departure and arrival times, adjusted for the time-zone difference')}</div>
+            <div className="text-xs text-zinc-500 mt-3">{t('based on local departure and arrival times, adjusted for the time-zone difference')} · {gap}</div>
           </>
         )}
       </div>

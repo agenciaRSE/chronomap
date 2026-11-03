@@ -41,9 +41,10 @@
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
-          { "@type": "Question", "name": "How do I find the best time to meet across time zones?", "acceptedAnswer": { "@type": "Answer", "text": "Add each participant's city to the planner. Each city shows a 24-hour band with its working hours highlighted; the columns where every city is inside working hours are marked green — those are the best times to schedule a meeting." } },
-          { "@type": "Question", "name": "Does the planner account for daylight saving time?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every city uses its current IANA time zone, so daylight saving time is reflected automatically and the overlap is always based on the real local time." } },
-          { "@type": "Question", "name": "Is the meeting planner free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The ChronoMap meeting planner is completely free, needs no account, and runs entirely in your browser." } }
+          {"@type": "Question", "name": "How do I find the best time to meet across time zones?", "acceptedAnswer": {"@type": "Answer", "text": "Add each participant's city. Columns where everyone is in working hours turn green. If there are none, the planner suggests the closest hour."}},
+          {"@type": "Question", "name": "What if there is no time that works for everyone?", "acceptedAnswer": {"@type": "Answer", "text": "The planner picks the hour with the most people in working hours and the fewest in the middle of the night. Rotating who takes the inconvenient slot keeps it fair."}},
+          {"@type": "Question", "name": "Does the planner account for daylight saving time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It uses the rules for the date you pick, so a meeting planned for next month reflects any clock change before then."}},
+          {"@type": "Question", "name": "Can I share the plan?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Share this plan copies a link with your cities. Anyone who opens it can add them to their own planner."}}
         ]
       }
     </script>
@@ -96,8 +97,18 @@
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
         <h2 class="text-xl font-semibold text-white mb-4 relative z-10">How to plan a meeting across time zones</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
-          <p>Add every participant's city with the search box. Each city gets its own 24-hour row, with working hours (9:00–18:00) shaded and the deep-night hours dimmed. The columns where <strong class="text-zinc-200">everyone</strong> is inside working hours are highlighted in green — those are the best times to schedule your call.</p>
-          <p>Click any column to see the exact local time and date for every city at that moment. Because each city uses its live IANA time zone, daylight saving time is always handled correctly. To dig into a single pair of cities, open the <a href="/time-zone-map" class="text-blue-400 hover:text-blue-300 transition-colors">interactive time zone map</a>, or turn the agreed moment into a code everyone reads in their own zone with the <a href="/discord-timestamp-generator" class="text-blue-400 hover:text-blue-300 transition-colors">Discord timestamp generator</a>.</p>
+          <p>Add every participant's city. Each city gets a 24-hour row with working hours (9:00 to 18:00) shaded and night hours dimmed. Pick a date, because the overlap can change when a country changes its clocks. Columns where everyone is working turn green.</p>
+          <p>When no hour suits everyone, the planner suggests the closest one, with the most people in working hours and the fewest asleep. Click any column to see each person's local time and add it to a calendar.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">How much overlap to expect</h2>
+        <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
+          <p>Overlap falls quickly with distance. These are the shared working hours in January, counting 9:00 to 18:00 local time:</p>
+          <div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead><tr class="text-zinc-500 border-b border-white/10"><th scope="col" class="py-2 pr-3 font-medium">Cities</th><th scope="col" class="py-2 pr-3 font-medium">Shared hours</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="py-2 pr-3">New York and London</td><td class="py-2 pr-3">4</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">Madrid and Mexico City</td><td class="py-2 pr-3">2</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">London and Singapore</td><td class="py-2 pr-3">1</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">New York and Dubai</td><td class="py-2 pr-3">None, just misses</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">Los Angeles and Bangalore</td><td class="py-2 pr-3">None</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">New York, London and Tokyo</td><td class="py-2 pr-3">None</td></tr></tbody></table></div>
+          <p>With no shared hours, someone has to move. Rotating the early or late slot shares the cost fairly, and for three zones this far apart, splitting into two meetings is often better than one that suits nobody.</p>
         </div>
       </section>
 
@@ -106,11 +117,19 @@
         <div class="space-y-3">
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I find the best time to meet across time zones?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Add each participant's city. Every city shows a 24-hour band with its working hours highlighted; the columns where all cities are inside working hours are marked green — the best times to meet.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Add each participant's city. Columns where everyone is in working hours turn green. If there are none, the planner suggests the closest hour.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>What if there is no time that works for everyone?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">The planner picks the hour with the most people in working hours and the fewest in the middle of the night. Rotating who takes the inconvenient slot keeps it fair.</p>
           </details>
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does the planner account for daylight saving time?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
-            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. Every city uses its current IANA time zone, so daylight saving is reflected automatically and the overlap is always based on real local time.</p>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. It uses the rules for the date you pick, so a meeting planned for next month reflects any clock change before then.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Can I share the plan?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. Share this plan copies a link with your cities. Anyone who opens it can add them to their own planner.</p>
           </details>
         </div>
       </section>

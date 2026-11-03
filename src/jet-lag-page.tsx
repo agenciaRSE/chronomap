@@ -3,14 +3,20 @@ import ReactDOM from 'react-dom/client';
 import { Sunrise, Sunset, ArrowRight } from 'lucide-react';
 import { offsetMin } from './lib/tz';
 import { CityPicker, CITIES, cityLabel, type Endpoint } from './lib/city-picker';
-import { t } from './lib/i18n';
+import { dailyPlan, estimate, preFlightBedtimes } from './lib/jetlag';
+import { isES, t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
 
-// Jet-lag estimator for /jet-lag-calculator. Estimates time zones crossed,
-// direction, rough recovery days and tips. Heuristic, clearly labelled.
+// Jet-lag estimator for /jet-lag-calculator: time zones crossed, direction, recovery
+// days and a day-by-day plan. Rates and advice follow the CDC Yellow Book (see lib/jetlag.ts).
 
 const myTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const clock = (min: number) => {
+  const h = Math.floor(min / 60), m = min % 60;
+  if (isES) return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+};
 
 const JetLag: React.FC = () => {
   const [from, setFrom] = useState<Endpoint>({ name: cityLabel(myTz), tz: myTz });
@@ -18,14 +24,14 @@ const JetLag: React.FC = () => {
     const other = CITIES.find((c) => c.tz !== myTz) ?? CITIES[0];
     return { name: other.name, tz: other.tz };
   });
+  const [bedtime, setBedtime] = useState('23:00');
 
   const now = new Date();
-  const diffH = (offsetMin(now, to.tz) - offsetMin(now, from.tz)) / 60;
-  const crossed = Math.round(Math.abs(diffH));
-  const east = diffH > 0;
-  // ponytail: rough heuristic — ~1 zone/day eastward (harder), ~1.5 zones/day west.
-  const days = crossed === 0 ? 0 : east ? crossed : Math.max(1, Math.round(crossed * 0.67));
-  const severity = crossed === 0 ? 'none' : crossed <= 2 ? 'mild' : crossed <= 5 ? 'moderate' : 'severe';
+  const { crossed, east, days, severity } = estimate(offsetMin(now, from.tz), offsetMin(now, to.tz));
+  const [bh, bm] = (bedtime || '23:00').split(':').map(Number);
+  const bedMin = bh * 60 + bm;
+  const before = preFlightBedtimes(crossed, east, bedMin);
+  const plan = dailyPlan(crossed, east, bedMin);
 
   const sevColor: Record<string, string> = {
     none: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20',
@@ -39,17 +45,16 @@ const JetLag: React.FC = () => {
 
   const tips = crossed === 0
     ? [t('No time-zone change, so you should not get jet lag.')]
-    : east
-    ? [
-        t('A few days before you fly, go to bed and wake up earlier.'),
-        t('At your destination, get bright morning light and avoid it late in the evening.'),
-        t('Consider melatonin in the early evening, local time.'),
-      ]
     : [
-        t('A few days before you fly, go to bed and wake up later.'),
-        t('At your destination, get light in the late afternoon and evening.'),
-        t('Stay awake until a normal local bedtime and avoid early-morning light.'),
+        east
+          ? t('At your destination, get bright morning light. It moves your body clock earlier.')
+          : t('At your destination, get light in the evening. It moves your body clock later.'),
+        t('During the day, keep any nap to 20-30 minutes. Longer naps make it harder to sleep at night.'),
+        t('On the plane, drink water and limit alcohol and caffeine.'),
+        t('Melatonin only helps at the right time, and the wrong time can make things worse. Ask a doctor before using it.'),
       ];
+
+  const panelHeading = 'text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3';
 
   return (
     <div className="glass-panel rounded-2xl overflow-hidden relative glow-line isolate">
@@ -67,7 +72,7 @@ const JetLag: React.FC = () => {
           <>
             <div className="flex items-center justify-center gap-2 mb-1">
               {east ? <Sunrise className="w-5 h-5 text-amber-400" /> : <Sunset className="w-5 h-5 text-blue-400" />}
-              <span className="text-sm text-zinc-400">{east ? t('Traveling east') : t('Traveling west')}</span>
+              <span className="text-sm text-zinc-400">{east ? t('Body clock moves east') : t('Body clock moves west')}</span>
             </div>
             <div className="text-3xl sm:text-4xl font-mono font-light text-white tabular-nums">
               {crossed} {crossed === 1 ? t('time zone') : t('time zones')}
@@ -80,8 +85,54 @@ const JetLag: React.FC = () => {
         )}
       </div>
 
+      {crossed > 0 && (
+        <div className="px-5 py-5 border-t border-white/5 relative">
+          <h2 className={panelHeading}>{t('Your plan')}</h2>
+          <label className="flex items-center gap-3 text-sm text-zinc-400 mb-4">
+            {t('Your usual bedtime')}
+            <input
+              type="time"
+              value={bedtime}
+              onChange={(e) => setBedtime(e.target.value)}
+              className="bg-zinc-800/60 text-zinc-100 border border-white/10 rounded-lg px-3 py-2 font-mono text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+              style={{ colorScheme: 'dark' }}
+            />
+          </label>
+
+          <p className="text-sm text-zinc-300 mb-1">{t('Before you fly')}</p>
+          <ol className="text-sm text-zinc-400 mb-4 space-y-1">
+            {before.map((min, i) => (
+              <li key={i} className="flex justify-between border-b border-white/5 py-1">
+                <span>{before.length - i === 1 ? t('The night before') : `${before.length - i} ${t('nights before')}`}</span>
+                <span className="font-mono text-zinc-200">{clock(min)}</span>
+              </li>
+            ))}
+          </ol>
+
+          <table className="w-full text-sm">
+            <caption className="text-left text-sm text-zinc-300 mb-1">{t('After you land, with no change before the flight')}</caption>
+            <thead>
+              <tr className="text-left text-xs text-zinc-500 border-b border-white/10">
+                <th scope="col" className="py-1.5 font-medium">{t('Day')}</th>
+                <th scope="col" className="py-1.5 font-medium">{t('Body clock off by')}</th>
+                <th scope="col" className="py-1.5 font-medium">{t('Sleepy around')}</th>
+              </tr>
+            </thead>
+            <tbody className="text-zinc-400">
+              {plan.map((row) => (
+                <tr key={row.day} className="border-b border-white/5">
+                  <td className="py-1.5">{row.day}</td>
+                  <td className="py-1.5 font-mono">{row.gap === 0 ? t('Adjusted') : `${row.gap} h`}</td>
+                  <td className="py-1.5 font-mono text-zinc-200">{clock(row.sleepy)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       <div className="px-5 py-5 border-t border-white/5 relative">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">{t('Tips to adjust faster')}</h2>
+        <h2 className={panelHeading}>{t('Tips to adjust faster')}</h2>
         <ul className="space-y-2">
           {tips.map((tip, i) => (
             <li key={i} className="flex gap-2.5 text-sm text-zinc-400 leading-relaxed">
@@ -89,7 +140,7 @@ const JetLag: React.FC = () => {
             </li>
           ))}
         </ul>
-        <p className="text-[11px] text-zinc-600 mt-4">{t('This is a rough estimate; recovery varies from person to person.')}</p>
+        <p className="text-[11px] text-zinc-500 mt-4">{t('Averages, not a prediction. Recovery varies from person to person, and this is not medical advice.')}</p>
       </div>
     </div>
   );

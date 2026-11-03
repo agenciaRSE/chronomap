@@ -4,6 +4,7 @@ import { X, Search, Users, Calendar, Download, Link2, Check } from 'lucide-react
 import citiesData from './cities.json';
 import { googleCalUrl, icsDataUrl } from './lib/calendar';
 import { ymdInTz, hourInTz, timeLabel, dayLabel, wallToUtc } from './lib/tz';
+import { findSlots, isNight, isWork } from './lib/planner';
 import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
@@ -16,10 +17,6 @@ type City = { slug: string; name: string; country: string; tz: string };
 type Row = { key: string; label: string; tz: string };
 const CITIES = citiesData as City[];
 
-const WORK_START = 9; // 09:00 inclusive
-const WORK_END = 18; // 18:00 exclusive
-const isWork = (h: number) => h >= WORK_START && h < WORK_END;
-const isNight = (h: number) => h < 7 || h >= 22;
 const refHourLabel = (h: number) => (h === 0 ? '12a' : h < 12 ? `${h}a` : h === 12 ? '12p' : `${h - 12}p`);
 
 // A city whose IANA zone matches the visitor's, for a friendly first row.
@@ -56,6 +53,7 @@ const Planner: React.FC = () => {
   });
   const [query, setQuery] = useState('');
   const [copied, setCopied] = useState(false);
+  const [date, setDate] = useState(''); // empty = today in the first city
   const ref = rows[0];
 
   useEffect(() => {
@@ -96,7 +94,8 @@ const Planner: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const dayKey = ymdInTz(now, ref.tz);
+  const [py, pm, pd] = date.split('-').map(Number);
+  const dayKey = date ? { y: py, mo: pm, d: pd } : ymdInTz(now, ref.tz);
   // 24 UTC instants, one per hour of the reference city's local day.
   const instants = useMemo(() => {
     const { y, mo, d } = dayKey;
@@ -105,10 +104,11 @@ const Planner: React.FC = () => {
   }, [ref.tz, dayKey.y, dayKey.mo, dayKey.d]);
 
   // Columns where every city is inside working hours = a good meeting slot.
-  const overlap = useMemo(
-    () => instants.map((inst) => rows.every((r) => isWork(hourInTz(inst, r.tz)))),
+  const slots = useMemo(
+    () => findSlots(instants.map((inst) => rows.map((r) => hourInTz(inst, r.tz)))),
     [instants, rows]
   );
+  const overlap = instants.map((_, h) => slots.all.includes(h));
 
   const nowRefHour = hourInTz(now, ref.tz);
   const [selCol, setSelCol] = useState<number>(nowRefHour);
@@ -155,7 +155,17 @@ const Planner: React.FC = () => {
         )}
       </div>
 
-      <div className="flex justify-center mb-6">
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+        <label className="flex items-center gap-2 text-xs text-zinc-400">
+          {t('Date')}
+          <input
+            type="date"
+            value={date || `${dayKey.y}-${String(dayKey.mo).padStart(2, '0')}-${String(dayKey.d).padStart(2, '0')}`}
+            onChange={(e) => setDate(e.target.value)}
+            className="bg-zinc-800/60 text-zinc-100 border border-white/10 rounded-lg px-2 py-1.5 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+            style={{ colorScheme: 'dark' }}
+          />
+        </label>
         <button
           onClick={handleShare}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-200 rounded-lg border border-white/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
@@ -164,6 +174,17 @@ const Planner: React.FC = () => {
           {copied ? t('Link copied') : t('Share this plan')}
         </button>
       </div>
+
+      {rows.length > 1 && (
+        <button
+          onClick={() => setSelCol(slots.all[0] ?? slots.best.col)}
+          className={`block w-full text-center text-sm rounded-xl border px-4 py-3 mb-4 transition-all ${slots.all.length ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300 hover:bg-emerald-500/15' : 'bg-amber-500/10 border-amber-500/20 text-amber-300 hover:bg-amber-500/15'}`}
+        >
+          {slots.all.length
+            ? `${slots.all.length} ${slots.all.length === 1 ? t('hour suits everyone') : t('hours suit everyone')}, ${t('from')} ${timeLabel(instants[slots.all[0]], ref.tz)} ${t('in')} ${ref.label.replace(` ${t('(You)')}`, '')}`
+            : `${t('No hour suits everyone. Closest:')} ${timeLabel(instants[slots.best.col], ref.tz)} ${t('in')} ${ref.label.replace(` ${t('(You)')}`, '')}, ${slots.best.inWork}/${rows.length} ${t('in working hours')}`}
+        </button>
+      )}
 
       {/* Grid */}
       <div className="glass-panel rounded-2xl p-3 sm:p-4 overflow-x-auto">
