@@ -131,6 +131,8 @@ const ES: Record<string, string> = {
   'Zoom In': 'Acercar',
   'Zoom Out': 'Alejar',
   'Reset View': 'Restablecer vista',
+  'Pause rotation': 'Pausar rotación',
+  'Play rotation': 'Reanudar rotación',
   'Current time in': 'Hora actual en',
   'Sunrise': 'Amanecer',
   'Sunset': 'Atardecer',
