@@ -338,6 +338,37 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     }
   }, [currentTime, getTimeAt]);
 
+  // Last cursor position over the globe, so the tooltip can follow the spin without mouse moves.
+  const globePointerRef = useRef<{ x: number; y: number; clientX: number; clientY: number } | null>(null);
+
+  const hoverGlobeAt = (proj: d3.GeoProjection, p: { x: number; y: number; clientX: number; clientY: number }) => {
+    const coords = proj.invert?.([p.x, p.y]);
+    if (coords) {
+      const [lng, lat] = coords;
+      if (isFinite(lng) && isFinite(lat)) {
+        const country = findCountryAt(lng, lat);
+        if (country) {
+          const finalCountry = country === "Israel" ? "Occupied territories" : country;
+          setHoveredInfo({ x: p.clientX, y: p.clientY, name: shortenName(finalCountry), time: getTimeAt(lat, lng), lat, lng });
+          setHoveredCountry(country);
+          return;
+        }
+      }
+    }
+    setHoveredInfo(null);
+    setHoveredCountry(null);
+  };
+
+  // The globe turns under a still cursor (auto-spin, inertia, centering): re-test what's under it.
+  useEffect(() => {
+    const p = globePointerRef.current;
+    if (!isGlobe || !p) return;
+    // A city marker under the cursor owns the tooltip (its own handlers set it).
+    const el = document.elementFromPoint(p.clientX, p.clientY);
+    if (el?.tagName === 'circle' && el.classList.contains('cursor-pointer')) return;
+    hoverGlobeAt(projection, p);
+  }, [projection]);
+
   // --- Interaction Handling ---
   useEffect(() => {
     if (!svgRef.current || !mapGroupRef.current) return;
@@ -473,36 +504,16 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       zoomBehaviorRef.current = zoom;
 
       svg.on("mousemove", (event) => {
-        const [relX, relY] = d3.pointer(event);
+        const [x, y] = d3.pointer(event);
+        globePointerRef.current = { x, y, clientX: event.clientX, clientY: event.clientY };
         const tempProjection = d3.geoOrthographic()
           .scale(baseScale * globeZoomRef.current)
           .translate([width / 2, height / 2])
           .rotate(rotationRef.current)
           .clipAngle(90);
-        const coords = tempProjection.invert?.([relX, relY]);
-        if (coords) {
-          const [lng, lat] = coords;
-          if (isFinite(lng) && isFinite(lat)) {
-             const country = findCountryAt(lng, lat);
-             const finalCountry = country === "Israel" ? "Occupied territories" : country;
-             if (country) {
-               const time = getTimeAt(lat, lng);
-               setHoveredInfo({
-                 x: event.clientX,
-                 y: event.clientY,
-                 name: shortenName(finalCountry),
-                 time,
-                 lat,
-                 lng
-               });
-               setHoveredCountry(country);
-               return;
-             }
-          }
-        }
-        setHoveredInfo(null);
-        setHoveredCountry(null);
+        hoverGlobeAt(tempProjection, globePointerRef.current);
       }).on("mouseleave", () => {
+        globePointerRef.current = null;
         setHoveredInfo(null);
         setHoveredCountry(null);
       });
