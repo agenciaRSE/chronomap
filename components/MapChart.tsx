@@ -43,7 +43,11 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const [mapData, setMapData] = useState<{ features: any[], borders: any } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 960, height: 500 });
   
-  const [isGlobe, setIsGlobe] = useState(() => initialView?.g ?? window.innerWidth < 768);
+  const [isGlobe, setIsGlobe] = useState(() => initialView?.g ?? true);
+  // Slow idle spin on a fresh visit; a shared link keeps its exact camera. Any user gesture stops it.
+  const [autoRotate, setAutoRotate] = useState(
+    () => !initialView && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
   const [hoveredInfo, setHoveredInfo] = useState<{
     x: number;
     y: number;
@@ -78,6 +82,19 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   useEffect(() => {
     onViewChange?.({ g: isGlobe, r: rotation, z: globeZoom, t: [mapTransform.x, mapTransform.y, mapTransform.k] });
   }, [isGlobe, rotation, globeZoom, mapTransform, onViewChange]);
+
+  useEffect(() => {
+    if (!isGlobe || !autoRotate) return;
+    const DEG_PER_SEC = 4;
+    let last = performance.now();
+    let frame = requestAnimationFrame(function spin(now) {
+      const dt = Math.min(now - last, 100); // clamp so a backgrounded tab doesn't jump
+      last = now;
+      setRotation(r => [r[0] + (DEG_PER_SEC * dt) / 1000, r[1], r[2]]);
+      frame = requestAnimationFrame(spin);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [isGlobe, autoRotate]);
 
   useEffect(() => {
     return () => {
@@ -209,11 +226,12 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
     const zoom = zoomBehaviorRef.current;
 
     svg.interrupt("centering");
+    setAutoRotate(false);
     if (inertiaRef.current) {
         cancelAnimationFrame(inertiaRef.current);
         inertiaRef.current = null;
     }
-    
+
     const p1: [number, number] = [-rotationRef.current[0], -rotationRef.current[1]];
     const p2: [number, number] = [lng, lat];
     const interpolator = d3.geoInterpolate(p1, p2);
@@ -347,6 +365,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
         })
         .on("start", (event) => {
           svg.interrupt("centering");
+          setAutoRotate(false);
           if (inertiaRef.current) {
             cancelAnimationFrame(inertiaRef.current);
             inertiaRef.current = null;
@@ -436,7 +455,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
           return false;
         })
         // sourceEvent is null for programmatic zooms: only a user gesture cancels centering.
-        .on("start", (event) => { if (event.sourceEvent) svg.interrupt("centering"); })
+        .on("start", (event) => { if (event.sourceEvent) { svg.interrupt("centering"); setAutoRotate(false); } })
         .on("zoom", (event) => {
           setGlobeZoom(event.transform.k);
         });
@@ -490,7 +509,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
       const zoom = d3.zoom<SVGSVGElement, unknown>()
         .scaleExtent([1, 12])
         .translateExtent([[-100, -100], [dimensions.width + 100, dimensions.height + 100]])
-        .on("start", (event) => { if (event.sourceEvent) svg.interrupt("centering"); })
+        .on("start", (event) => { if (event.sourceEvent) { svg.interrupt("centering"); setAutoRotate(false); } })
         .on("zoom", handle2DZoom);
 
       zoomBehaviorRef.current = zoom;
