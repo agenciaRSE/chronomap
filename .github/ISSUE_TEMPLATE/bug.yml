@@ -1,0 +1,24 @@
+name: 🐛 Bug report
+description: Something shows the wrong time or doesn't work
+labels: [bug]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: URL where it happens
+      placeholder: https://www.chronomap.top/meeting-planner
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened and what did you expect?
+      description: For time zone bugs, include the city or zone, the date and both times.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: Chrome 131 on Windows 11 / Safari on iPhone

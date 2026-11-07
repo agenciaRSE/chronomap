@@ -1,0 +1,19 @@
+name: 💡 Idea or new tool
+description: Suggest a feature, a language or a new tool
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like ChronoMap to do?
+      description: Tell us the problem it solves. Mockups or examples are welcome.
+    validations:
+      required: true
+  - type: dropdown
+    id: help
+    attributes:
+      label: Would you like to build it?
+      options:
+        - Yes, I'd like to open a pull request
+        - Maybe, with some guidance
+        - No, just suggesting it
