@@ -26,3 +26,7 @@ Override the source with the optional `COMMONS_FEED_URL` env var.
 ## Deploy
 
 Hosted on Vercel, connected to this repo. Pushing to `main` triggers a production deploy.
+
+---
+
+Made by [Diego Meijide · AGENCIA RSE](https://agenciarse.com/en/studio/) · [MIT License](LICENSE)
