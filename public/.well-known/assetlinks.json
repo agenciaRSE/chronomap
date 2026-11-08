@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "top.chronomap.app",
+      "sha256_cert_fingerprints": [
+        "7D:57:ED:4C:CA:4E:D7:22:5F:6E:5C:75:CD:D9:5F:96:52:32:04:5E:BB:EE:F7:6F:71:7E:6D:95:84:45:FB:90"
+      ]
+    }
+  }
+]
