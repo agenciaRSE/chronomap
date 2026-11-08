@@ -1,67 +1,45 @@
-
 {
   "id": "/",
   "name": "ChronoMap World Clock",
   "short_name": "ChronoMap",
-  "description": "Interactive 3D-style world map and timezone converter.",
+  "description": "Interactive world clock, time zone map and Discord timestamp generator.",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "minimal-ui"],
-  "background_color": "#050505",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#09090b",
   "theme_color": "#09090b",
   "orientation": "any",
-  "categories": ["utilities", "productivity", "world clock", "travel"],
+  "categories": ["utilities", "productivity", "travel"],
   "prefer_related_applications": false,
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://agenciarse.com/manifest.json"
-    }
-  ],
-  "iarc_rating_id": "",
   "shortcuts": [
     {
-      "name": "Timestamp Generator",
+      "name": "Discord Timestamp Generator",
       "short_name": "Timestamps",
       "description": "Open the Discord Timestamp Generator",
-      "url": "/?action=discord",
-      "icons": [
-        {
-          "src": "https://agenciarse.com/wp-content/uploads/2025/11/pwa-icon.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
+      "url": "/discord-timestamp-generator",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Time Zone Map",
+      "short_name": "Time zones",
+      "description": "Current time in every time zone",
+      "url": "/time-zone-map",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ],
   "icons": [
-    {
-      "src": "https://agenciarse.com/wp-content/uploads/2025/11/pwa-icon.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://agenciarse.com/wp-content/uploads/2025/11/pwa-icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/pwa-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "screenshots": [
-    {
-      "src": "https://www.chronomap.top/og.png",
-      "sizes": "1200x630",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Desktop Dashboard"
-    },
-    {
-      "src": "https://agenciarse.com/wp-content/uploads/2025/11/screenshot-mobile.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Mobile View"
-    }
+    { "src": "/screenshots/phone-1.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow", "label": "Live world clock on a 3D globe" },
+    { "src": "/screenshots/phone-2.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow", "label": "Discord timestamp generator" },
+    { "src": "/screenshots/phone-3.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow", "label": "Time zone map with live city clocks" },
+    { "src": "/og.png", "sizes": "1200x630", "type": "image/png", "form_factor": "wide", "label": "ChronoMap on desktop" }
   ]
 }

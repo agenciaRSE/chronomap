@@ -4,10 +4,11 @@ import App from './App';
 import './src/lib/analytics';
 import './src/index.css';
 
-// Unregister any stale service workers (avoids serving cached old assets).
+// Register the offline-fallback service worker (needed for the Android/Play Store app).
+// It replaces any older worker on this scope and deletes its caches, so stale assets can't be served.
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    registrations.forEach((registration) => registration.unregister());
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
 }
 
