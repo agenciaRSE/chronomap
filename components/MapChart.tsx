@@ -342,7 +342,10 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
   const globePointerRef = useRef<{ x: number; y: number; clientX: number; clientY: number } | null>(null);
 
   const hoverGlobeAt = (proj: d3.GeoProjection, p: { x: number; y: number; clientX: number; clientY: number }) => {
-    const coords = proj.invert?.([p.x, p.y]);
+    // orthographic invert clamps off-disc points to the horizon, so reject them first
+    const [cx, cy] = proj.translate();
+    const offGlobe = Math.hypot(p.x - cx, p.y - cy) > proj.scale();
+    const coords = offGlobe ? null : proj.invert?.([p.x, p.y]);
     if (coords) {
       const [lng, lat] = coords;
       if (isFinite(lng) && isFinite(lat)) {
@@ -470,6 +473,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
              if (!rect) return;
              const relX = clientX - rect.left;
              const relY = clientY - rect.top;
+             if (Math.hypot(relX - width / 2, relY - height / 2) > baseScale * globeZoomRef.current) return; // click off the globe
              const tempProjection = d3.geoOrthographic().scale(baseScale * globeZoomRef.current).translate([width / 2, height / 2]).rotate(rotationRef.current).clipAngle(90);
              const coords = tempProjection.invert?.([relX, relY]);
              if (coords) {
