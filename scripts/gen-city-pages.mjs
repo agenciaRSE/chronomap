@@ -846,7 +846,7 @@ export function generate() {
   entries.push({ name: 'time-index', file: filePath('time/index.html') });
 
   const urls = [
-    { loc: `${SITE}/`, mod: '2026-07-06' },
+    { loc: `${SITE}/`, mod: '2026-11-14' },
     { loc: `${SITE}/es`, mod: '2026-07-06' },
     { loc: `${SITE}/es/time-zone-converter`, mod: '2026-11-03' },
     { loc: `${SITE}/es/time-zone-map`, mod: '2026-07-06' },
@@ -860,13 +860,13 @@ export function generate() {
     { loc: `${SITE}/es/privacy`, mod: '2026-11-02' },
     { loc: `${SITE}/time`, mod: HUB_UPDATED },
     { loc: `${SITE}/time-zone-converter`, mod: '2026-11-03' },
-    { loc: `${SITE}/time-zone-map`, mod: '2026-07-06' },
-    { loc: `${SITE}/discord-timestamp-generator`, mod: '2026-11-03' },
+    { loc: `${SITE}/time-zone-map`, mod: '2026-11-14' },
+    { loc: `${SITE}/discord-timestamp-generator`, mod: '2026-11-14' },
     { loc: `${SITE}/meeting-planner`, mod: '2026-11-03' },
-    { loc: `${SITE}/flight-time-calculator`, mod: '2026-11-03' },
-    { loc: `${SITE}/jet-lag-calculator`, mod: '2026-11-03' },
+    { loc: `${SITE}/flight-time-calculator`, mod: '2026-11-14' },
+    { loc: `${SITE}/jet-lag-calculator`, mod: '2026-11-14' },
     { loc: `${SITE}/flight-route-map`, mod: '2026-07-06' },
-    { loc: `${SITE}/clock-widget`, mod: '2026-07-06' },
+    { loc: `${SITE}/clock-widget`, mod: '2026-11-14' },
     { loc: `${SITE}/windows`, mod: '2026-07-06' },
     { loc: `${SITE}/about`, mod: '2026-11-02' },
     { loc: `${SITE}/privacy`, mod: '2026-11-02' },

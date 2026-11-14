@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#09090b" />
-    <title>Flight Time Calculator — Arrival Time &amp; Duration Across Time Zones | ChronoMap</title>
+    <title>Flight Time Calculator — Flight Arrival Time &amp; Duration Across Time Zones | ChronoMap</title>
     <meta name="description" content="Free flight time calculator. Enter your departure city and time, arrival city and flight duration to see the local arrival time — or work out the real flight duration between two local times. Time-zone and DST aware." />
     <meta name="keywords" content="flight time calculator, flight arrival time calculator, flight duration calculator, what time will i arrive, arrival time calculator, flight time with time difference, time zone flight calculator" />
     <meta name="robots" content="index, follow" />
@@ -15,7 +15,7 @@
     <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/flight-time-calculator" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.chronomap.top/flight-time-calculator" />
-    <meta property="og:title" content="Flight Time Calculator — Arrival Time &amp; Duration Across Time Zones" />
+    <meta property="og:title" content="Flight Time Calculator — Flight Arrival Time &amp; Duration Across Time Zones" />
     <meta property="og:description" content="See your local arrival time given the flight duration, or work out the real duration between two local times — time-zone and DST aware." />
     <meta property="og:image" content="https://www.chronomap.top/og.png" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -46,7 +46,9 @@
           {"@type": "Question", "name": "Why does my flight land before it took off?", "acceptedAnswer": {"@type": "Answer", "text": "Flying west across several time zones can move the local clock back by more hours than the flight lasts. A 10-hour flight from Tokyo to Los Angeles lands at an earlier clock time than it left, usually on the same date."}},
           {"@type": "Question", "name": "Are arrival times on a ticket local?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Airlines show departure in the local time of the departure airport and arrival in the local time of the arrival airport."}},
           {"@type": "Question", "name": "Does it account for daylight saving time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It uses the rules for the date you enter, in both cities. If the clocks change on your travel date, check the result against your ticket."}},
-          {"@type": "Question", "name": "Do I need a flight number?", "acceptedAnswer": {"@type": "Answer", "text": "No. It works only from the times and duration you enter. It has no live flight data, so check real schedules with your airline."}}
+          {"@type": "Question", "name": "Do I need a flight number?", "acceptedAnswer": {"@type": "Answer", "text": "No. It works only from the times and duration you enter. It has no live flight data, so check real schedules with your airline."}},
+          {"@type": "Question", "name": "What time will I arrive?", "acceptedAnswer": {"@type": "Answer", "text": "Take your local departure time, add the flight duration, then shift it by the time difference between the two cities. Enter the departure city, time and duration in the calculator and it does it for you, including daylight saving on your travel date."}},
+          {"@type": "Question", "name": "What time will I land flying from the East Coast to the West Coast?", "acceptedAnswer": {"@type": "Answer", "text": "Los Angeles is 3 hours behind New York. A 6-hour flight leaving New York at 9:00 AM lands about 12:00 PM in Los Angeles. Going east the 3 hours are added: a 5-hour flight leaving Los Angeles at 9:00 AM lands about 5:00 PM in New York."}}
         ]
       }
     </script>
@@ -97,7 +99,7 @@
 
       <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
-        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">How to work out your arrival time</h2>
+        <h2 class="text-xl font-semibold text-white mb-4 relative z-10">Flight arrival time: what time will I arrive?</h2>
         <div class="space-y-4 text-sm text-zinc-400 leading-relaxed relative z-10">
           <p>Departure and arrival times on a ticket are both local, but the flight duration is real elapsed time. To find the arrival time, convert the departure to UTC, add the duration, then convert to the destination's offset.</p>
           <p><strong class="text-zinc-200">New York to London, 7 hours.</strong> You leave at 8:00 PM on 15 January, when New York is UTC−5. That is 01:00 UTC on the 16th. Add 7 hours to get 08:00 UTC. London is on UTC+0, so you land at 8:00 AM on the 16th.</p>
@@ -145,6 +147,14 @@
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Do I need a flight number?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
             <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">No. It works only from the times and duration you enter. It has no live flight data, so check real schedules with your airline.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>What time will I arrive?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Take your local departure time, add the flight duration, then shift it by the time difference between the two cities. Enter the departure city, time and duration above and the calculator does it, including daylight saving on your travel date.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>What time will I land flying from the East Coast to the West Coast?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Los Angeles is 3 hours behind New York. A 6-hour flight leaving New York at 9:00 AM lands about 12:00 PM in Los Angeles. Going east the 3 hours are added: a 5-hour flight leaving Los Angeles at 9:00 AM lands about 5:00 PM in New York.</p>
           </details>
         </div>
       </section>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#09090b" />
-    <title>Jet Lag Calculator — Estimate Recovery Time &amp; Get Tips | ChronoMap</title>
+    <title>Jet Lag Recovery Calculator — Days to Recover &amp; Tips | ChronoMap</title>
     <meta name="description" content="Free jet lag calculator. Enter your origin and destination to see how many time zones you cross, the direction, an estimated recovery time, and tips to adjust faster." />
     <meta name="keywords" content="jet lag calculator, jet lag estimator, how long does jet lag last, jet lag recovery time, time zones jet lag, jet lag tips, east vs west jet lag" />
     <meta name="robots" content="index, follow" />
@@ -15,11 +15,11 @@
     <link rel="alternate" hreflang="x-default" href="https://www.chronomap.top/jet-lag-calculator" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.chronomap.top/jet-lag-calculator" />
-    <meta property="og:title" content="Jet Lag Calculator — Estimate Recovery Time &amp; Get Tips" />
+    <meta property="og:title" content="Jet Lag Recovery Calculator — Days to Recover &amp; Tips" />
     <meta property="og:description" content="See how many time zones you cross, the direction, an estimated recovery time, and tips to beat jet lag." />
     <meta property="og:image" content="https://www.chronomap.top/og.png" />
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="Jet Lag Calculator | ChronoMap" />
+    <meta property="twitter:title" content="Jet Lag Recovery Calculator | ChronoMap" />
     <meta property="twitter:image" content="https://www.chronomap.top/og.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,7 @@
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Jet Lag Calculator",
+        "name": "Jet Lag Recovery Calculator",
         "url": "https://www.chronomap.top/jet-lag-calculator",
         "applicationCategory": "TravelApplication",
         "operatingSystem": "Any",
@@ -85,7 +85,7 @@
     </header>
     <main class="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-10 pb-28">
       <header class="max-w-2xl w-full text-center flex flex-col items-center mb-10 reveal">
-        <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Jet Lag Calculator</h1>
+        <h1 class="text-4xl sm:text-5xl md:text-[54px] leading-[1.08] font-semibold tracking-tight text-shimmer mb-4">Jet Lag Recovery Calculator</h1>
         <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-xl">See how many time zones your trip crosses, which direction is harder, roughly how long it takes to adjust, and how to plan your sleep around it.</p>
       </header>
 
@@ -102,6 +102,28 @@
           <p>Jet lag happens when your body clock is still on home time after you arrive. According to the <a href="https://www.cdc.gov/yellow-book/hcp/travel-air-sea/jet-lag-disorder.html" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">CDC Yellow Book</a>, people adapt at an average of about 1 hour per day after flying east and 1.5 hours per day after flying west. This calculator divides the time difference by those rates.</p>
           <p>East is harder because most people's internal clock runs slightly longer than 24 hours, so going to bed later comes more easily than going to bed earlier.</p>
           <p>If the gap is more than 12 hours, it is counted the shorter way round the clock. Los Angeles to Sydney is treated as about 5 or 6 hours west, not 18 or 19 hours east. Jet lag is usually defined as starting from two time zones, and the number of zones is only one factor: time cues at the destination, individual genetics and medication also matter.</p>
+        </div>
+      </section>
+
+      <section class="max-w-2xl w-full mx-auto mb-14 reveal glass-panel rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <h2 class="text-xl font-semibold text-white mb-4">Jet lag recovery time by time zones crossed</h2>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-4">Average days to adjust, using the CDC rates above (about 1 hour per day going east, 1.5 hours per day going west), rounded up. Use the calculator for your exact route.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left text-zinc-400">
+            <thead><tr class="text-zinc-300"><th scope="col" class="py-2 pr-4 font-medium">Time zones crossed</th><th scope="col" class="py-2 pr-4 font-medium">Flying east</th><th scope="col" class="py-2 font-medium">Flying west</th></tr></thead>
+            <tbody>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">2</td><td class="py-2 pr-4">2 days</td><td class="py-2">2 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">3</td><td class="py-2 pr-4">3 days</td><td class="py-2">2 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">4</td><td class="py-2 pr-4">4 days</td><td class="py-2">3 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">5</td><td class="py-2 pr-4">5 days</td><td class="py-2">4 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">6</td><td class="py-2 pr-4">6 days</td><td class="py-2">4 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">7</td><td class="py-2 pr-4">7 days</td><td class="py-2">5 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">8</td><td class="py-2 pr-4">8 days</td><td class="py-2">6 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">9</td><td class="py-2 pr-4">9 days</td><td class="py-2">6 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">10</td><td class="py-2 pr-4">10 days</td><td class="py-2">7 days</td></tr>
+              <tr class="border-t border-white/5"><td class="py-2 pr-4 font-mono text-zinc-200">12</td><td class="py-2 pr-4">12 days</td><td class="py-2">8 days</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 

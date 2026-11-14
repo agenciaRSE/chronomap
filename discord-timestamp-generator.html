@@ -52,7 +52,10 @@
           {"@type": "Question", "name": "Which format should I use for an event?", "acceptedAnswer": {"@type": "Answer", "text": "Combine a full date with a countdown: <t:UNIX:F> (<t:UNIX:R>). Readers see the exact time and how long is left. The ready-made messages above build this for you."}},
           {"@type": "Question", "name": "What is the default style?", "acceptedAnswer": {"@type": "Answer", "text": "f, long date and short time. Discord uses it when you write <t:UNIX> with no letter."}},
           {"@type": "Question", "name": "Why does my timestamp show as plain text?", "acceptedAnswer": {"@type": "Answer", "text": "Check that it has both angle brackets and no spaces, like <t:1618935630:F>, and that the number is in seconds rather than milliseconds. Codes do not render inside code blocks or outside Discord."}},
-          {"@type": "Question", "name": "Does the relative format update by itself?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. <t:UNIX:R> counts down or up without anyone editing the message."}}
+          {"@type": "Question", "name": "Does the relative format update by itself?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. <t:UNIX:R> counts down or up without anyone editing the message."}},
+          {"@type": "Question", "name": "How do I make a Discord timestamp?", "acceptedAnswer": {"@type": "Answer", "text": "Pick the date and time, choose a format and copy the code, for example <t:1767225600:F>. Paste it into any message and Discord shows it in each reader's own time zone."}},
+          {"@type": "Question", "name": "How do I put a dynamic time in a Discord message?", "acceptedAnswer": {"@type": "Answer", "text": "Use the relative style, <t:UNIX:R>. Discord shows it as \"in 3 hours\" or \"2 days ago\" and keeps it up to date by itself."}},
+          {"@type": "Question", "name": "Is there a Discord command for timestamps?", "acceptedAnswer": {"@type": "Answer", "text": "Discord has no built-in timestamp command. You type the code by hand or copy it from a generator like this one. Some bots add a command, but the code they post is the same."}}
         ]
       }
     </script>
@@ -176,6 +179,18 @@
           <details class="faq group glass-card rounded-lg overflow-hidden">
             <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Does the relative format update by itself?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
             <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Yes. <code class="font-mono text-blue-300">&lt;t:UNIX:R&gt;</code> counts down or up without anyone editing the message.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I make a Discord timestamp?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Pick the date and time above, choose a format and copy the code, for example <code class="font-mono text-blue-300">&lt;t:1767225600:F&gt;</code>. Paste it into any message and Discord shows it in each reader's own time zone.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>How do I put a dynamic time in a Discord message?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Use the relative style, <code class="font-mono text-blue-300">&lt;t:UNIX:R&gt;</code>. Discord shows it as "in 3 hours" or "2 days ago" and keeps it up to date by itself.</p>
+          </details>
+          <details class="faq group glass-card rounded-lg overflow-hidden">
+            <summary class="cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden p-4 flex justify-between items-center gap-3 text-sm font-medium text-zinc-300"><span>Is there a Discord command for timestamps?</span><span class="text-lg leading-none text-zinc-500 group-open:rotate-45 transition-transform duration-300 shrink-0">+</span></summary>
+            <p class="px-4 pb-4 text-sm text-zinc-500 leading-relaxed">Discord has no built-in timestamp command. You type the code by hand or copy it from a generator like this one. Some bots add a command, but the code they post is the same.</p>
           </details>
           </div>
         </div>
