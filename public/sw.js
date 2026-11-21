@@ -21,3 +21,13 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode !== 'navigate') return;
   event.respondWith(fetch(event.request).catch(() => caches.match(OFFLINE_URL)));
 });
+
+// Reminder notifications: clicking one focuses an open ChronoMap window, or opens one.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((wins) =>
+      wins.length ? wins[0].focus() : self.clients.openWindow('/')
+    )
+  );
+});

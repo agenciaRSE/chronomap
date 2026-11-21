@@ -244,6 +244,19 @@ const ES: Record<string, string> = {
   'At your destination, get light in the late afternoon and evening.': 'En tu destino, busca luz a última hora de la tarde y por la noche.',
   'Stay awake until a normal local bedtime and avoid early-morning light.': 'Aguanta despierto hasta una hora de acostarse local normal y evita la luz de la madrugada.',
   'This is a rough estimate; recovery varies from person to person.': 'Es una estimación aproximada; la recuperación varía de una persona a otra.',
+  // Reminders
+  'Reminders': 'Recordatorios',
+  'ChronoMap reminder': 'Recordatorio de ChronoMap',
+  'What to remind you (optional)': '¿Qué te recuerdo? (opcional)',
+  'Reminder text': 'Texto del recordatorio',
+  'In': 'Dentro de',
+  'At (your local time)': 'A las (tu hora local)',
+  'Set alarm': 'Poner alarma',
+  'Notifications are blocked: the alarm will only sound and show here.': 'Las notificaciones están bloqueadas: la alarma solo sonará y se verá aquí.',
+  'Keep ChronoMap open (a background tab is fine) for alarms to go off.': 'Deja ChronoMap abierto (vale en segundo plano) para que suenen las alarmas.',
+  'tomorrow': 'mañana',
+  'Delete reminder': 'Borrar recordatorio',
+  'Dismiss': 'Cerrar',
 };
 
 export const t = (s: string): string => (isES ? ES[s] ?? s : s);

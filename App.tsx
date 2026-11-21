@@ -10,6 +10,7 @@ import { DiscordGenerator } from './components/DiscordGenerator';
 import { AboutModal } from './components/AboutModal';
 import { TimeScrubber } from './components/TimeScrubber';
 import { LocationSearch } from './components/LocationSearch';
+import { Reminders } from './components/Reminders';
 import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
 import { t, isES } from './src/lib/i18n';
@@ -515,7 +516,7 @@ const App: React.FC = () => {
       <NewsTicker />
       
       {/* Header */}
-      <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-4 md:px-6 bg-black/80 backdrop-blur-md z-20">
+      <header className="flex-none h-28 border-b border-zinc-800 flex items-center justify-between px-4 md:px-6 bg-black/80 backdrop-blur-md z-40">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
           <div className="flex items-center gap-2">
             <AnimatedLogo className="w-10 h-10 md:w-12 md:h-12" />
@@ -594,6 +595,7 @@ const App: React.FC = () => {
               >
                 {shareCopied ? <Check className="w-3 h-3 text-green-500" /> : <Link2 className="w-3 h-3" />}
               </button>
+             <Reminders />
              <button
                 onClick={() => setShowDiscordGen(true)}
                 className="hidden md:flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/30 rounded-md transition-all group h-auto shadow-[0_0_15px_rgba(59,130,246,0.2)]"
