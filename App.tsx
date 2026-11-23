@@ -13,11 +13,10 @@ import { LocationSearch } from './components/LocationSearch';
 import { Reminders } from './components/Reminders';
 import { MAJOR_CITIES } from './constants';
 import { MapClickEvent, TimeState, SavedLocation, City } from './types';
-import { t, isES } from './src/lib/i18n';
+import { t, isES, dateLocale } from './src/lib/i18n';
 import { addHours, subHours, differenceInMinutes, addMinutes, addDays, addWeeks, addMonths } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
-import { enUS } from 'date-fns/locale';
 import { animate } from 'motion/react';
 import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2, Menu, Link2 } from 'lucide-react';
 
@@ -242,7 +241,7 @@ const App: React.FC = () => {
 
   const handleShareView = useCallback(async () => {
     const token = encodeShareState(locations, timeState, mapViewRef.current);
-    const url = `${window.location.origin}/?s=${token}`;
+    const url = `${window.location.origin}${isES ? '/es/' : '/'}?s=${token}`;
     try {
       await navigator.clipboard.writeText(url);
     } catch {
@@ -283,7 +282,7 @@ const App: React.FC = () => {
     setTimeState(prev => ({
       ...prev,
       formattedTime: format(prev.current, 'HH:mm:ss'),
-      formattedDate: format(prev.current, 'EEE, MMM d, yyyy', { locale: enUS })
+      formattedDate: format(prev.current, isES ? 'EEE, d MMM yyyy' : 'EEE, MMM d, yyyy', { locale: dateLocale })
     }));
   }, [timeState.current]);
 
@@ -485,11 +484,11 @@ const App: React.FC = () => {
   const formatLocationTime = (loc: SavedLocation, baseTime: Date, fmt: string) => {
     const time = getLocationTime(loc, baseTime);
     if (loc.timezone) {
-      return format(time, fmt, { locale: enUS });
+      return format(time, fmt, { locale: dateLocale });
     }
     // Arbitrary offset display hack using UTC
     const shifted = new Date(baseTime.getTime() + (loc.lngOffset * 3600 * 1000));
-    return format(shifted, fmt, { timeZone: 'UTC', locale: enUS });
+    return format(shifted, fmt, { timeZone: 'UTC', locale: dateLocale });
   };
 
   // Calculate offset for display in header
@@ -682,12 +681,9 @@ const App: React.FC = () => {
                       <div className="text-2xl font-mono font-bold text-white tabular-nums leading-none">
                         {formatLocationTime(loc, timeState.current, 'HH:mm')}
                       </div>
-                      <div className="text-xs text-zinc-500 font-medium pb-0.5">
-                        {formatLocationTime(loc, timeState.current, 'a')}
-                      </div>
                     </div>
                     <div className="text-[10px] text-zinc-600 mt-1 font-medium uppercase tracking-wide">
-                      {formatLocationTime(loc, timeState.current, 'MMM d, yyyy')}
+                      {formatLocationTime(loc, timeState.current, isES ? 'd MMM yyyy' : 'MMM d, yyyy')}
                     </div>
                 </div>
               ))}

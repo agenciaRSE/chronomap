@@ -11,6 +11,8 @@ export const isES = typeof document !== 'undefined' && document.documentElement.
 export const dateLocale = isES ? es : enUS;
 
 const ES: Record<string, string> = {
+  'Switch to 2D Map': 'Cambiar a mapa 2D',
+  'Switch to 3D Globe': 'Cambiar a globo 3D',
   // Nav / menu
   'World clock map': 'Mapa reloj mundial',
   'Cities': 'Ciudades',

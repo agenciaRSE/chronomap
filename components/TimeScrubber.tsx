@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { addMinutes, differenceInMinutes, startOfHour, getMinutes, getHours } from 'date-fns';
+import { isES } from '../src/lib/i18n';
 
 interface TimeScrubberProps {
   time: Date;
@@ -80,7 +81,7 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
       const hour12 = hourNum % 12 || 12;
       
       ctx.fillStyle = "#a1a1aa"; // zinc-400
-      ctx.fillText(`${hour12} ${ampm}`, x, height - 40);
+      ctx.fillText(isES ? `${hourNum}:00` : `${hour12} ${ampm}`, x, height - 40);
 
       // Draw intermediate ticks (every 15 mins)
       for (let m = 15; m < 60; m += 15) {

@@ -769,8 +769,8 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
             }
           }}
           className={`p-2 rounded-lg border transition-all shadow-lg ${isGlobe ? 'bg-blue-500 text-white border-blue-400' : 'bg-zinc-900/80 text-zinc-200 border-zinc-800 hover:bg-zinc-800'}`}
-          title={isGlobe ? "Switch to 2D Map" : "Switch to 3D Globe"}
-          aria-label={isGlobe ? "Switch to 2D Map" : "Switch to 3D Globe"}
+          title={isGlobe ? t("Switch to 2D Map") : t("Switch to 3D Globe")}
+          aria-label={isGlobe ? t("Switch to 2D Map") : t("Switch to 3D Globe")}
         >
           {isGlobe ? <MapIcon className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
         </button>
