@@ -8,6 +8,7 @@ import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
 import { Plus, Minus, Maximize, Globe, Map as MapIcon, Play, Pause } from 'lucide-react';
 import { t } from '../src/lib/i18n';
+import { localizePlace } from '../src/lib/placeNames';
 
 // Shareable camera state: map type (globe vs 2D), globe rotation + zoom, and the
 // 2D pan/zoom transform.
@@ -737,16 +738,18 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
                   const pos = projection([loc.lng, loc.lat]);
                   if (!pos) return null;
                   const timeStr = getTimeString(loc);
+                  const label = localizePlace(shortenName(loc.name.split(',')[0]));
+                  const boxW = Math.max(70, label.length * 5.4 + 14); // 8px uppercase: room for long names
                   return (
                     <g key={loc.id} transform={`translate(${pos[0]}, ${pos[1]})`} className={isGlobe ? 'pointer-events-none' : ''}>
                         <circle r={8 * markerScale} className="fill-blue-500/10 animate-ping" />
                         <circle r={3 * markerScale} className="fill-blue-500 stroke-blue-400/20" strokeWidth={0.5 * markerScale} />
                         <line x1="0" y1={-3 * markerScale} x2="0" y2={-25 * markerScale} className="stroke-blue-500/30" strokeWidth={1 * markerScale} />
                         <g transform={`translate(0, ${-45 * markerScale}) scale(${textScale})`}>
-                          <rect x="-35" y="0" width="70" height="32" rx="4" className="fill-black/80 stroke-zinc-700 stroke-1" />
+                          <rect x={-boxW / 2} y="0" width={boxW} height="32" rx="4" className="fill-black/80 stroke-zinc-700 stroke-1" />
                           <text x="0" y="14" className="text-[12px] font-mono font-bold fill-white pointer-events-none" textAnchor="middle" dominantBaseline="middle">{timeStr}</text>
                           <text x="0" y="26" className="text-[8px] fill-zinc-400 pointer-events-none uppercase" textAnchor="middle" dominantBaseline="middle">
-                            {shortenName(loc.name.split(',')[0])}
+                            {label}
                           </text>
                         </g>
                     </g>
@@ -814,7 +817,7 @@ export const MapChart: React.FC<MapChartProps> = ({ currentTime, onMapClick, loc
             </span>
           </div>
           <div className="text-sm font-medium text-zinc-200 truncate">
-            {hoveredInfo.name}
+            {localizePlace(hoveredInfo.name)}
           </div>
         </div>
       )}

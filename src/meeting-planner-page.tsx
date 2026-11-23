@@ -8,6 +8,7 @@ import { findSlots, isNight, isWork } from './lib/planner';
 import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
+import { localizePlace } from './lib/placeNames';
 
 // Meeting planner for /meeting-planner. Pick cities, see a 24-hour band per city
 // with working hours highlighted and the overlap where a call suits everyone.
@@ -181,8 +182,8 @@ const Planner: React.FC = () => {
           className={`block w-full text-center text-sm rounded-xl border px-4 py-3 mb-4 transition-all ${slots.all.length ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300 hover:bg-emerald-500/15' : 'bg-amber-500/10 border-amber-500/20 text-amber-300 hover:bg-amber-500/15'}`}
         >
           {slots.all.length
-            ? `${slots.all.length} ${slots.all.length === 1 ? t('hour suits everyone') : t('hours suit everyone')}, ${t('from')} ${timeLabel(instants[slots.all[0]], ref.tz)} ${t('in')} ${ref.label.replace(` ${t('(You)')}`, '')}`
-            : `${t('No hour suits everyone. Closest:')} ${timeLabel(instants[slots.best.col], ref.tz)} ${t('in')} ${ref.label.replace(` ${t('(You)')}`, '')}, ${slots.best.inWork}/${rows.length} ${t('in working hours')}`}
+            ? `${slots.all.length} ${slots.all.length === 1 ? t('hour suits everyone') : t('hours suit everyone')}, ${t('from')} ${timeLabel(instants[slots.all[0]], ref.tz)} ${t('in')} ${localizePlace(ref.label).replace(` ${t('(You)')}`, '')}`
+            : `${t('No hour suits everyone. Closest:')} ${timeLabel(instants[slots.best.col], ref.tz)} ${t('in')} ${localizePlace(ref.label).replace(` ${t('(You)')}`, '')}, ${slots.best.inWork}/${rows.length} ${t('in working hours')}`}
         </button>
       )}
 
@@ -210,7 +211,7 @@ const Planner: React.FC = () => {
           {rows.map((r) => (
             <div key={r.key} className="flex items-center group py-0.5">
               <div className="w-32 shrink-0 pr-2 flex items-center gap-1">
-                <span className="text-xs font-medium text-zinc-300 truncate" title={r.label}>{r.label}</span>
+                <span className="text-xs font-medium text-zinc-300 truncate" title={localizePlace(r.label)}>{localizePlace(r.label)}</span>
                 {rows.length > 1 && (
                   <button
                     onClick={() => removeRow(r.key)}
@@ -235,7 +236,7 @@ const Planner: React.FC = () => {
                     <button
                       key={h}
                       onClick={() => setSelCol(h)}
-                      title={`${timeLabel(inst, r.tz)} — ${r.label}`}
+                      title={`${timeLabel(inst, r.tz)} — ${localizePlace(r.label)}`}
                       aria-label={`${timeLabel(inst, r.tz)} ${t('in')} ${r.label}${good ? ', ' + t('Everyone available') : work ? ', ' + t('Working hours (9–18)') : ''}`}
                       className={`relative h-8 flex items-center justify-center text-[10px] font-mono border-r border-black/20 ${bg} ${
                         sel ? 'ring-2 ring-inset ring-blue-400 text-white' : work ? 'text-zinc-200' : 'text-zinc-500'
@@ -271,7 +272,7 @@ const Planner: React.FC = () => {
             const work = isWork(hourInTz(inst, r.tz));
             return (
               <div key={r.key} className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2">
-                <span className="text-sm text-zinc-300 truncate">{r.label}</span>
+                <span className="text-sm text-zinc-300 truncate">{localizePlace(r.label)}</span>
                 <span className="text-right shrink-0 ml-2">
                   <span className={`font-mono text-sm ${work ? 'text-emerald-300' : 'text-zinc-400'}`}>{timeLabel(inst, r.tz)}</span>
                   <span className="block text-[10px] text-zinc-600">{dayLabel(inst, r.tz)}</span>

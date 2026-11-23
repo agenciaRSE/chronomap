@@ -4,6 +4,7 @@ import { Search, MapPin, X } from 'lucide-react';
 import { MAJOR_CITIES } from '../constants';
 import { City } from '../types';
 import { t } from '../src/lib/i18n';
+import { localizePlace } from '../src/lib/placeNames';
 
 interface LocationSearchProps {
   onSelectCity: (city: City) => void;
@@ -25,7 +26,9 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
     const filtered = MAJOR_CITIES.filter(
       city => 
         city.name.toLowerCase().includes(lowerQuery) || 
-        city.country.toLowerCase().includes(lowerQuery)
+        city.country.toLowerCase().includes(lowerQuery) ||
+        localizePlace(city.name).toLowerCase().includes(lowerQuery) ||
+        localizePlace(city.country).toLowerCase().includes(lowerQuery)
     );
     setResults(filtered);
   }, [query]);
@@ -87,8 +90,8 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
                 <MapPin className="h-3.5 w-3.5" />
               </div>
               <div className="flex flex-col">
-                <span className="font-medium text-zinc-200">{city.name}</span>
-                <span className="text-xs text-zinc-500">{city.country} • {city.timezone?.split('/').pop()?.replace('_', ' ')}</span>
+                <span className="font-medium text-zinc-200">{localizePlace(city.name)}</span>
+                <span className="text-xs text-zinc-500">{localizePlace(city.country)} • {localizePlace(city.timezone?.split('/').pop()?.replace(/_/g, ' ') ?? '')}</span>
               </div>
             </button>
           ))}

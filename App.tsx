@@ -19,6 +19,7 @@ import { format, toZonedTime } from 'date-fns-tz';
 import tzlookup from 'tz-lookup';
 import { animate } from 'motion/react';
 import { Play, Pause, RotateCcw, ChevronLeft, ChevronRight, Share2, Calendar, Check, X, MapPin, Clock, History, Zap, Info, Pin, ChevronUp, ChevronDown, List, Map as MapIcon, Trash2, Menu, Link2 } from 'lucide-react';
+import { localizePlace } from './src/lib/placeNames';
 
 // Configuration for time steps
 const TIME_STEPS = [
@@ -671,11 +672,11 @@ const App: React.FC = () => {
                     
                     <div className="flex items-center justify-between mb-1 pr-16">
                       <span className="text-[9px] font-bold text-primary/80 uppercase tracking-wider truncate max-w-[70%] bg-primary/5 px-1.5 py-0.5 rounded">
-                        {loc.timezone ? loc.timezone.split('/')[1].replace(/_/g, ' ') : `GMT${loc.lngOffset >= 0 ? '+' : ''}${Math.round(loc.lngOffset)}`}
+                        {loc.timezone ? localizePlace(loc.timezone.split('/').pop()!.replace(/_/g, ' ')) : `GMT${loc.lngOffset >= 0 ? '+' : ''}${Math.round(loc.lngOffset)}`}
                       </span>
                     </div>
                     
-                    <h2 className="font-medium text-zinc-300 truncate pr-4 text-sm" title={loc.name}>{loc.name}</h2>
+                    <h2 className="font-medium text-zinc-300 truncate pr-4 text-sm" title={localizePlace(loc.name)}>{localizePlace(loc.name)}</h2>
                     
                     <div className="flex items-end gap-2 mt-2">
                       <div className="text-2xl font-mono font-bold text-white tabular-nums leading-none">
