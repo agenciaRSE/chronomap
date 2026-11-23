@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { placeNameEs } from '../src/lib/placeNames';
+import { fold, placeNameEs } from '../src/lib/placeNames';
 
 test('placeNameEs translates exonyms and countries, and leaves the rest alone', () => {
   assert.equal(placeNameEs('New York'), 'Nueva York');
@@ -17,4 +17,9 @@ test('short and map-style country names used by the app are translated', () => {
     ['Czechia', 'Chequia'], ['Ivory Coast', 'Costa de Marfil'], ['United States of America', 'Estados Unidos'],
   ];
   for (const [en, es] of cases) assert.equal(placeNameEs(en), es, en);
+});
+
+test('fold ignores case and accents', () => {
+  assert.equal(fold('Pekín'), 'pekin');
+  assert.ok(fold('Ciudad de México').includes(fold('mexico')));
 });

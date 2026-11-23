@@ -6,6 +6,7 @@ import { Plane, Plus, X, Search } from 'lucide-react';
 import airportsData from './airports.json';
 import { wallToUtc, timeLabel, dayLabel, ymdInTz } from './lib/tz';
 import { t } from './lib/i18n';
+import { fold, localizeRecord } from './lib/placeNames';
 import './lib/analytics';
 import './page.css';
 
@@ -13,8 +14,8 @@ import './page.css';
 // great-circle route on a world map and the local time at each stop. Airport
 // coords from airports.json; world geometry reused from /countries-110m.json.
 
-type Airport = { iata: string; city: string; country: string; lat: number; lng: number; tz: string };
-const AIRPORTS = airportsData as Airport[];
+type Airport = { iata: string; city: string; country: string; lat: number; lng: number; tz: string; alt?: string };
+const AIRPORTS: Airport[] = (airportsData as Airport[]).map((a) => localizeRecord(a, ['city', 'country']));
 const find = (iata: string) => AIRPORTS.find((a) => a.iata === iata)!;
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -34,8 +35,8 @@ const AirportPicker: React.FC<{ value: string; onChange: (iata: string) => void 
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return q ? AIRPORTS.filter((a) => a.city.toLowerCase().includes(q) || a.iata.toLowerCase().includes(q)).slice(0, 6) : [];
+    const q = fold(query.trim());
+    return q ? AIRPORTS.filter((a) => fold(`${a.city} ${a.alt ?? ''}`).includes(q) || a.iata.toLowerCase().includes(q)).slice(0, 6) : [];
   }, [query]);
   const a = find(value);
   return (

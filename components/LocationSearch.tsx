@@ -4,7 +4,7 @@ import { Search, MapPin, X } from 'lucide-react';
 import { MAJOR_CITIES } from '../constants';
 import { City } from '../types';
 import { t } from '../src/lib/i18n';
-import { localizePlace } from '../src/lib/placeNames';
+import { fold, localizePlace } from '../src/lib/placeNames';
 
 interface LocationSearchProps {
   onSelectCity: (city: City) => void;
@@ -22,13 +22,10 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({ onSelectCity }) 
       return;
     }
 
-    const lowerQuery = query.toLowerCase();
+    const lowerQuery = fold(query);
     const filtered = MAJOR_CITIES.filter(
       city => 
-        city.name.toLowerCase().includes(lowerQuery) || 
-        city.country.toLowerCase().includes(lowerQuery) ||
-        localizePlace(city.name).toLowerCase().includes(lowerQuery) ||
-        localizePlace(city.country).toLowerCase().includes(lowerQuery)
+        fold(`${city.name} ${city.country} ${localizePlace(city.name)} ${localizePlace(city.country)}`).includes(lowerQuery)
     );
     setResults(filtered);
   }, [query]);

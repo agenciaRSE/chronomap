@@ -8,15 +8,15 @@ import { findSlots, isNight, isWork } from './lib/planner';
 import { t } from './lib/i18n';
 import './lib/analytics';
 import './page.css';
-import { localizePlace } from './lib/placeNames';
+import { fold, localizePlace, localizeRecord } from './lib/placeNames';
 
 // Meeting planner for /meeting-planner. Pick cities, see a 24-hour band per city
 // with working hours highlighted and the overlap where a call suits everyone.
 // All time math is Intl-only (no tz lib on this island).
 
-type City = { slug: string; name: string; country: string; tz: string };
+type City = { slug: string; name: string; country: string; tz: string; alt?: string };
 type Row = { key: string; label: string; tz: string };
-const CITIES = citiesData as City[];
+const CITIES: City[] = (citiesData as City[]).map((c) => localizeRecord(c, ['name', 'country']));
 
 const refHourLabel = (h: number) => (h === 0 ? '12a' : h < 12 ? `${h}a` : h === 12 ? '12p' : `${h - 12}p`);
 
@@ -119,7 +119,7 @@ const Planner: React.FC = () => {
   }, [nowRefHour]);
 
   const results = useMemo(
-    () => CITIES.filter((c) => query.trim() && c.name.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 6),
+    () => CITIES.filter((c) => query.trim() && fold(`${c.name} ${c.alt ?? ''}`).includes(fold(query.trim()))).slice(0, 6),
     [query]
   );
   const addCity = (c: City) => {

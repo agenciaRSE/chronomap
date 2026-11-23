@@ -31,6 +31,14 @@ const CITY_ES: Record<string, string> = {
   'Sydney': 'Sídney', 'Nouméa': 'Numea', 'Occupied territories': 'Territorios ocupados',
   // Countries whose CLDR Spanish name is not the usual one in Spain
   'Ivory Coast': 'Costa de Marfil', "Côte d'Ivoire": 'Costa de Marfil',
+  // Time zone names (converter)
+  'Eastern Standard Time': 'Hora estándar del Este (EE. UU.)', 'Central Standard Time': 'Hora estándar central (EE. UU.)',
+  'Mountain Standard Time': 'Hora estándar de las Montañas (EE. UU.)', 'Pacific Standard Time': 'Hora estándar del Pacífico (EE. UU.)',
+  'Greenwich Mean Time': 'Hora media de Greenwich', 'Coordinated Universal Time': 'Tiempo universal coordinado',
+  'British Summer Time': 'Hora de verano británica', 'Central European Time': 'Hora de Europa central',
+  'India Standard Time': 'Hora estándar de la India', 'Gulf Standard Time': 'Hora estándar del Golfo',
+  'Singapore Time': 'Hora de Singapur', 'Hong Kong Time': 'Hora de Hong Kong', 'Japan Standard Time': 'Hora estándar de Japón',
+  'Korea Standard Time': 'Hora estándar de Corea', 'Australian Eastern Standard Time': 'Hora estándar del este de Australia',
 };
 
 // Short or map-style English country names that Intl does not use, mapped to their ISO code.
@@ -62,9 +70,21 @@ function countries(): Map<string, string> {
   return countryEs;
 }
 
+/** Lowercase without accents, so «pekin» finds «Pekín» and «mexico» finds «México». */
+export const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
 /** One place name (a city or a country) in Spanish; unknown names come back unchanged. */
 export function placeNameEs(name: string): string {
   return CITY_ES[name] ?? countries().get(name) ?? name;
+}
+
+/** On /es pages, a copy of a data record with the given fields in Spanish; `alt` keeps the English text so
+ *  searches still match it. On English pages the record comes back untouched. */
+export function localizeRecord<T extends object>(r: T, keys: (keyof T)[]): T & { alt?: string } {
+  if (!isES) return r;
+  const out = { ...r, alt: keys.map((k) => String(r[k])).join(' ') } as T & { alt?: string };
+  for (const k of keys) (out as Record<keyof T, unknown>)[k] = placeNameEs(String(r[k]));
+  return out;
 }
 
 /** "City, Country" (or a single place) in the page language. */

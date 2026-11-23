@@ -1,23 +1,24 @@
 import React, { useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import citiesData from '../cities.json';
+import { fold, localizeRecord, localizePlace } from './placeNames';
 
 // Shared city search-picker used by the flight and jet-lag tool islands.
-type City = { slug: string; name: string; country: string; tz: string };
-export const CITIES = citiesData as City[];
+type City = { slug: string; name: string; country: string; tz: string; alt?: string };
+export const CITIES: City[] = (citiesData as City[]).map((c) => localizeRecord(c, ['name', 'country']));
 export type Endpoint = { name: string; tz: string; slug?: string };
 
 export const cityByTz = (tz: string) => CITIES.find((c) => c.tz === tz);
-export const cityLabel = (tz: string) => cityByTz(tz)?.name ?? tz.split('/').pop()!.replace(/_/g, ' ');
+export const cityLabel = (tz: string) => cityByTz(tz)?.name ?? localizePlace(tz.split('/').pop()!.replace(/_/g, ' '));
 
 export const CityPicker: React.FC<{ value: Endpoint; onChange: (e: Endpoint) => void; label: string; options?: City[] }> = ({ value, onChange, label, options }) => {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const results = useMemo(
     () => {
-      const q = query.trim().toLowerCase();
+      const q = fold(query.trim());
       if (!q) return options ? options.slice(0, 6) : [];
-      return (options ?? CITIES).filter((c) => `${c.name} ${c.country}`.toLowerCase().includes(q)).slice(0, 6);
+      return (options ?? CITIES).filter((c) => fold(`${c.name} ${c.country} ${c.alt ?? ''}`).includes(q)).slice(0, 6);
     },
     [query, options]
   );

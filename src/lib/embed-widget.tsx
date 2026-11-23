@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import citiesData from '../cities.json';
 import { t, isES } from './i18n';
+import { fold, localizeRecord } from './placeNames';
 
 // Shared embeddable-clock widget: the live Clock and the snippet builder (with a
 // live preview). Used by the raw /embed endpoint and the /clock-widget landing.
 // Self-contained inline styles so the Clock can be framed transparently anywhere.
 
-type City = { slug: string; name: string; country: string; tz: string };
-export const CITIES = citiesData as City[];
+type City = { slug: string; name: string; country: string; tz: string; alt?: string };
+export const CITIES: City[] = (citiesData as City[]).map((c) => localizeRecord(c, ['name', 'country']));
 export const SITE = 'https://www.chronomap.top';
 export const tzLabel = (tz: string) => tz.split('/').pop()!.replace(/_/g, ' ');
 export const cityForTz = (tz: string) => CITIES.find((c) => c.tz === tz);
@@ -52,7 +53,7 @@ export const SnippetBuilder: React.FC<{ tz: string; city: string; theme: 'dark' 
   const [copied, setCopied] = useState(false);
   const city = cityForTz(tz)?.name ?? city0;
   const results = useMemo(
-    () => CITIES.filter((c) => query.trim() && c.name.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 6),
+    () => CITIES.filter((c) => query.trim() && fold(`${c.name} ${c.alt ?? ''}`).includes(fold(query.trim()))).slice(0, 6),
     [query]
   );
   const src = `${SITE}/embed?tz=${encodeURIComponent(tz)}&city=${encodeURIComponent(city)}&theme=${theme}`;
